@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: black;
+  font-size: xx-large;
+  background-color: rgb(197, 197, 197);
+}
+table { border: 3px solid black; border-spacing: 0}
+td, th { border: 1px solid black; border-spacing: 0; padding: 5px;
+			text-align: center }
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+h1{
+    position: absolute;
+    font-size: xx-large;
+    left: 500px;
+}
+
+th{
+    cursor: pointer;
+}
+th, td{
+    padding: 20px
+}
+.trying{
+    font-size: 50px;
+    font-family: Impact;
+}
+
+div{
+    position: relative;
+}
+section{
+    position: absolute;
+    top: 250px;
+    display: flex;
+}
+</style>
+</head>
+<body>
+    <header>
+        <div style="width: 100; float:left; height:200px; margin:10px">
+            <img src=https://static.clubs.nfl.com/image/private/t_editorial_landscape_12_desktop/chiefs/iwmsg6lhulvntsg327gk width="350" style="border:2px solid black">
+        </div>
+        <div style="width: 100; float:left; height:200px; top: 100px; margin:10px">
+            <p class = trying>Patrick Mahomes</p>
+        </div>
+    </header>
+<section>
+    <table id="myTable">
+        <tr>
+            <th onclick="sortTable(0)">Season</th>
+            <th onclick="sortTable(1)">TD</th>
+            <th onclick="sortTable(2)">Yards</th>
+            <th onclick="sortTable(3)">INT</th>
+        </tr>
+        <tr>
+            <td>2021</td>
+            <td>20</td>
+            <td>3200</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td>2020</td>
+            <td>30</td>
+            <td>3500</td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td>2019</td>
+            <td>25</td>
+            <td>4000</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td>2018</td>
+            <td>14</td>
+            <td>2400</td>
+            <td>4</td>
+        </tr>
+        
+    </table>
+</section>
+
+<section style = "left: 750px">
+    <table id="aTable">
+        <tr>
+            <th>Player News</th>
+        </tr>
+        <tr>
+            <td>Patrick Mahomes and the Chiefs saw their season end after a devasting loss
+                to the Bengals in overtime on Sunday. Mahomes' game was a tale of two havles.
+                In the first half, he was nearly upstoppable throwing 3 touchdown passes. However,
+                in the second half, Mahomes threw two very costly interceptions and lead to a loss for KC. </td>
+    </table>
+</section>
+
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("myTable");
+        switching = true;
+        //Loop until switching is done
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            //Loop thru rows
+            for (i = 1; i < (rows.length - 1); i++) {
+                //start w/ no switching:
+                shouldSwitch = false;
+                //Compare elements
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                //make switch
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+</script>
+</body>
+</html> 
