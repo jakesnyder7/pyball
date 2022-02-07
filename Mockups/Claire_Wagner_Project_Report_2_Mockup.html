@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+	Claire Wagner - Project Report 2 Mockup
+	CSCI 335, Wheaton College, Spring 2022
+
+	Purpose: This mockup displays a table of player stats with which the user
+	can interact by applying conditional formatting, sorting the data, and
+	reading informative hovertext.
+
+	Major Resources Consulted:
+	1. "JavaScript: The Definitive Guide" by David Flanagan, 4th ed.
+	2. "Basics of Web Development: HTML5 and CSS" by Terry Felke-Morris, 5th ed.
+	3. MDN Web Docs (https://developer.mozilla.org/en-US/)
+
+	Note: since we are planning to use JavaScript for our frontend, I created
+	this mockup as an HTML document with embedded CSS and JavaScript so that
+	I could practice working with these languages. Since we are considering
+	using React for our frontend, I also practiced using React but did not
+	incorporate that practice into this mockup.
+-->
+
+<!-- Head -->
+<head>
+	<title>Claire Wagner - Project Report 2 Mockup</title>
+	<meta charset="utf-8">
+
+	<!-- Embedded CSS -->
+	<style>
+		caption { font-weight: bold }
+		table { border: 3px solid black; border-spacing: 0 }
+		td, th { border: 1px solid black; border-spacing: 0; padding: 5px;
+			text-align: center }
+		.formatstat { background-color: cyan; color: black }
+		.invalid_input { background-color: red }
+		.neutral { background-color: none }
+	</style>
+
+</head>
+
+<!-- Body -->
+<body onload="postload_setup()">
+
+	<p>Claire Wagner - Project Report 2 Mockup</p>
+	<!-- Form to represent UI elements with which the user can interact -->
+	<form name="uiform">
+		<!-- Drop-down box to allow user to sort player data -->
+		<select id="selectsort">
+			<option value="name">Sort by Name
+			<option value="tdowns">Sort by Touchdowns
+			<option value="intercepts">Sort by Intercepts
+		</select>
+		<br><br>
+		<!-- Text input box to allow user to adjust conditional formatting comparand for format stats -->
+		<label>Highlight stats that are
+			<!-- Drop-down box to allow user to choose comparison method -->
+			<select id="selectcompare">
+				<option value="greater">greater than
+				<option value="less">less than
+				<option value="equal">equal to
+			</select>
+			<input type="text" name="formatstatcomparand" size="3">
+		</label>
+	</form>
+	<br>
+	
+	<!-- Embedded JavaScript -->
+	<script>
+
+		/* Headers for the player stat table */
+		var hdrs = ["Player", "TD", "INT"];
+
+		/* Hovertext for the player stat table headers */
+		var hdrs_hovertext = ["name of player", "number of touchdowns", "number of intercepts"];
+
+		/* Player stats to use in player stat table */
+		var players = [
+			['Tom Brady', '43', '12'],
+			['Justin Herbert', '38', '15'],
+			['Matthew Stafford', '41', '17'],
+			['Patrick Mahomes', '37', '13'],
+			['Josh Allen', '36', '15'],
+			['Kirk Cousins', '33', '7'],
+			['Aaron Rodgers', '37', '4'],
+			['Jimmy Garoppolo', '20', '12'],
+			['Mac Jones', '22', '13'],
+			['Ben Roethlisberger', '22', '10'],
+			['Carson Wentz', '27', '7'],
+			['Jared Goff', '19', '8'],
+			['Jalen Hurts', '16', '9'],
+			['Russell Wilson', '25', '6'],
+			['Teddy Bridgewater', '18', '7'],
+			['Lamar Jackson', '16', '13']
+		];
+
+		/* Array of sorted table bodies for player stat table (to allow for quicker sorting) */
+		var sorted_tbodies = new Array(hdrs.length);
+		
+		/* Comparand to use when applying conditional formatting to player stats (can be changed by user) */
+		var formatstat_comparand = null;
+
+		/* Comparison function to use when applying conditional formatting to player stats (can be changed by user) */
+		var formatstat_compare = function(a,b) { return parse_int_helper(a) > parse_int_helper(b); };
+
+		/* Add hovertext to the cells in the specified row. */
+		function add_hovertext_to_row(row, hovertext) {
+			var cells = row.cells;
+			for (var i = 0; i < cells.length && i < hovertext.length; i++) {
+				cells[i].setAttribute("title", hovertext[i]);
+			}
+		}
+
+		/* Populate the specified row with cells based on the provided array of values.
+		Attribution: Parts of this function were based on https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces
+		(used under a CC0 license: https://developer.mozilla.org/en-US/docs/MDN/About) */
+		function populate_row(row, cellvals, celltype) {
+			for (var i = 0; i < cellvals.length; i++) {
+				var cell = document.createElement(celltype);
+				var cellText = document.createTextNode(cellvals[i]);
+				cell.appendChild(cellText);
+				row.appendChild(cell);
+			}
+		}
+
+		/* Create and populate a row and attach it to the specified parent.
+		Parameters: rowParent is the parent of the row (e.g. thead or tbody);
+		celltype is the type of the cell (e.g. th or td); data is an array of arrays where
+		each subarray represents a row and contains the values to use to populate the row's cells.
+		Attribution: Parts of this function were based on https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces
+		(used under a CC0 license: https://developer.mozilla.org/en-US/docs/MDN/About)
+		*/
+		function create_and_populate_rows(rowParent, data, celltype) {
+			for (var i = 0; i < data.length; i++) {
+				var row = document.createElement("tr");
+				// create and populate cells in row
+				populate_row(row, data[i], celltype);
+				rowParent.appendChild(row);
+			}
+		}
+
+		/* Generate the initial table of player stats (sorted by the first column).
+		Postcondition: the table has been created and has the id "playerstat_table".
+		Attribution: Parts of this function were based on https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces
+		(used under a CC0 license: https://developer.mozilla.org/en-US/docs/MDN/About)
+		*/
+		function generate_initial_playerstat_table() {
+			// get document body
+			var body = document.getElementsByTagName("body")[0];
+			// create table
+			var tbl = document.createElement("table");
+			tbl.setAttribute("id", "playerstat_table");
+			tbl.createCaption().appendChild(document.createTextNode("2021 NFL Player Stats"));
+			// create thead and populate with headers
+			var tbl_head = document.createElement("thead");
+			var hdrrow = document.createElement("tr");
+			populate_row(hdrrow, hdrs, "th");
+			add_hovertext_to_row(hdrrow, hdrs_hovertext);
+			tbl_head.appendChild(hdrrow);
+			tbl.appendChild(tbl_head);
+			// create tbody and populate with player data (sorted by column 0)
+			tbl.appendChild(get_sorted_playerstat_tbody(0, 0));
+			// add table to document body
+			body.appendChild(tbl);
+		}
+
+		/* Create table body and populate with values from the provided array. */
+		function create_and_populate_tbody(arr) {
+			var tbl_body = document.createElement("tbody");
+			create_and_populate_rows(tbl_body, arr, "td");
+			return tbl_body;
+		}
+
+		/* Returns a table body containing player stats sorted by the specified column,
+		with tiebreaker_col being used to resolve ties. Handles both string and int comparison.
+		Precondition: sortcol < sorted_tbodies.length and tiebreaker_col < sorted_tbodies.length.
+		Postcondition: If this table body did not previously exist in sorted_tbodies, it has been added
+		to sorted_tbodies at the index sortcol.
+		*/
+		function get_sorted_playerstat_tbody(sortcol, tiebreaker_col) {
+			if (sorted_tbodies[sortcol] == null) {
+				sorted_tbodies[sortcol] = create_and_populate_tbody(players.sort(
+					function(aa, bb) {
+						var a = parse_int_helper(aa[sortcol]);
+						var b = parse_int_helper(bb[sortcol]);
+						if (a < b) {
+							return -1;
+						} else if (a > b) {
+							return 1;
+						} else {
+							a = parse_int_helper(aa[tiebreaker_col]);
+							b = parse_int_helper(bb[tiebreaker_col]);
+							if (a < b) {
+								return -1;
+							} else if (a > b) {
+								return 1;
+							} else {
+								return 0;
+							}
+						}
+					}));
+			}
+			return sorted_tbodies[sortcol];
+		}
+
+		/* Helper function that attempts to convert the parameter x to an int.
+		If the conversion is successful, the int will be returned. Otherwise, x will be returned. */
+		function parse_int_helper(x) {
+			var int_x = parseInt(x);
+			if (isNaN(int_x)) {
+				return x;
+			} else {
+				return int_x;
+			}
+		}
+
+		/* Sort the player stat table by the specified column, using the first column as a tiebreaker. */
+		function sort_playerstat_table(col) {
+			if (col < 0 || col >= sorted_tbodies.length) {
+				return;
+			}
+			var tbl = document.getElementById("playerstat_table");
+			var old_tbl_body = tbl.tBodies[0];
+			tbl.replaceChild(get_sorted_playerstat_tbody(col, 0), old_tbl_body);
+		}
+
+		/* Action handler for a select-one form element that sorts by the selected column. */
+		function apply_sort_select(element) {
+			if (element.type != "select-one") {
+				return;
+			} else {
+				sort_playerstat_table(element.selectedIndex);
+			}
+		}
+
+		/* Action handler for a text form element that verifies that the user input is a valid integer.
+		Postcondition: If the user input is not a valid integer, the user has been notified with
+		an alert and the background color of the text form element has been set to red. Otherwise,
+		the background color of the text form element has been set to neutral. */
+		function verify_integer_input(element) {
+			if (element.type != "text") {
+				return false;
+			}
+			var comparand = parseInt(element.value);
+			if (isNaN(comparand, 10)) {
+				element.setAttribute("class", "invalid_input");
+				alert("Error: input must be a valid number");
+				return false;
+			} else {
+				element.setAttribute("class", "neutral");
+				return true;
+			}
+		}
+
+		/* Applies formatting to the specified rows and columns using the provided compare method,
+		comparand, and classtype.
+		Postcondition: If comparand != null, the formatting has been applied to each cell c for which
+		compare(c, comparand) returns true.
+		Parameters: rows is a collection of rows to which the formatting should be applied; startcol
+		is the first column to which the formatting should be applied; endcol is the last column to
+		which the first column should be applied; classtype is a string providing the name of a CSS
+		class that specifies the desired formatting; comparand is the value against which to compare
+		the value of each cell; compare is the function to use for the comparison.
+		*/
+		function apply_comparison_formatting(rows, startcol, endcol, classtype, comparand, compare) {
+			if (comparand == null) {
+				return;
+			}
+			for (var i = 0; i < rows.length; i++) {
+				for (var j = startcol; j < endcol; j++) {
+					var cell = rows[i].cells[j];
+					var data = cell.firstChild.data;
+					if (!isNaN(data)) {
+						if (compare(data, comparand)) {
+							cell.setAttribute("class", classtype);
+						} else if (cell.getAttribute("class") == classtype) {
+							cell.setAttribute("class", "neutral");
+						}
+					}
+				}
+			}
+		}
+
+		/* Helper function to apply formatting to the player stat table based on the format stat comparand
+		inputted by the user. */
+		function apply_formatstat_helper() {
+			let rows = document.getElementById("playerstat_table").tBodies[0].rows;
+			apply_comparison_formatting(rows, 1, rows[0].cells.length, "formatstat", formatstat_comparand, 
+				formatstat_compare);
+		}
+	
+		// generate the playerstat table
+		generate_initial_playerstat_table();
+
+		/* Function to accomplish tasks that should be done after the page has finished loading,
+		such as attaching action listeners to form elements. */
+		function postload_setup() {
+			// attach action listener to formatstatcomparand
+			document.uiform.formatstatcomparand.onchange = function() { 
+				if (verify_integer_input(this)) { 
+					formatstat_comparand = parseInt(this.value);
+					apply_formatstat_helper();
+				}
+			};
+			// attach action listeneer to selectcompare
+			document.uiform.selectcompare.onchange = function() {
+				if (this.options[this.selectedIndex].value == "greater") {
+					formatstat_compare = function(a,b) { return parse_int_helper(a) > parse_int_helper(b); };
+				} else if (this.options[this.selectedIndex].value == "less") {
+					formatstat_compare = function(a,b) { return parse_int_helper(a) < parse_int_helper(b); };
+				} else {
+					formatstat_compare = function(a,b) { return parse_int_helper(a) == parse_int_helper(b); };
+				}
+				apply_formatstat_helper();
+			}
+			// attach action listener to selectsort
+			document.getElementById("selectsort").onchange = function() { 
+				apply_sort_select(this);
+				apply_formatstat_helper();
+			};
+		}
+
+	</script>
+
+</body>
+
+</html>
