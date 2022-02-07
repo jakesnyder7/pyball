@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        color: #ECEFF4;
+        font-size: xx-large;
+        background-color: #2E3440;
+      }
+      a:link {
+          color: #8FBCBB;
+      }
+      a:visited {
+          color: #B48EAD;
+      }
+      table {
+        border: 3px solid #5E81AC;
+        border-spacing: 0;
+      }
+      td,
+      th {
+        border: 1px solid #5E81AC;
+        border-spacing: 0;
+        padding: 5px;
+        text-align: center;
+      }
+      tr:nth-child(even) {
+        background-color: #4C566A;
+      }
+      h1 {
+        position: absolute;
+        font-size: xx-large;
+        left: 500px;
+      }
+
+      th {
+        cursor: pointer;
+      }
+      th,
+      td {
+        padding: 20px;
+      }
+      .trying {
+        font-size: 50px;
+        font-family: Impact;
+      }
+
+      div {
+        position: relative;
+      }
+      section {
+        position: absolute;
+        top: 250px;
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div
+        style="width: 100; float: left; height: 200px; top: 100px; margin: 10px"
+      >
+        <p class="trying">My Team</p>
+      </div>
+    </header>
+    <section>
+      <table id="myTable">
+        <tr>
+          <th onclick="sortTable(0)">RK</th>
+          <th onclick="sortTable(1)">NAME</th>
+          <th onclick="sortTable(2)">TEAM</th>
+          <th onclick="sortTable(3)">POS</th>
+          <th onclick="sortTable(4)">GMS</th>
+          <th onclick="sortTable(5)">YDS</th>
+          <th onclick="sortTable(6)">TD</th>
+          <th onclick="sortTable(7)">INT</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td><a href="">Gus</a></td>
+          <td>A</td>
+          <td>yes</td>
+          <td>2</td>
+          <td>2</td>
+          <td>0</td>
+          <td>2</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><a href="">Josh</a></td>
+            <td>B</td>
+            <td>there</td>
+            <td>3</td>
+            <td>4</td>
+            <td>1</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><a href="">Player</a></td>
+            <td>B</td>
+            <td>out there</td>
+            <td>2</td>
+            <td>128</td>
+            <td>12</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><a href="">Other</a></td>
+            <td>C</td>
+            <td>position</td>
+            <td>3</td>
+            <td>1</td>
+            <td>20</td>
+            <td>3</td>
+          </tr>
+      </table>
+    </section>
+
+    <script>
+      function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("myTable");
+        switching = true;
+        //Loop until switching is done
+        while (switching) {
+          switching = false;
+          rows = table.rows;
+          //Loop thru rows
+          for (i = 1; i < rows.length - 1; i++) {
+            //start w/ no switching:
+            shouldSwitch = false;
+            //Compare elements
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            if (Number(x.innerHTML) < Number(y.innerHTML)) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+          if (shouldSwitch) {
+            //make switch
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
