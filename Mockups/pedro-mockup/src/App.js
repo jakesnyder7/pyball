@@ -1,5 +1,7 @@
 import "./App.css";
 
+/* @author Pedro Avalos Jimenez */ 
+
 const data = [
   { rk: "1", name: "Gus", team: "team A", pos: "yes", gms: "2", yds: "2", td: "0", int: "2" },
   { rk: "2", name: "Josh", team: "team B", pos: "there", gms: "3", yds: "4", td: "1", int: "1" },
