@@ -1,5 +1,7 @@
 import "./App.css";
 
+/* @author Pedro Avalos Jimenez */ 
+
 const data = [
   {
     rk: "1",

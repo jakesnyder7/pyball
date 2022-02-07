@@ -1,0 +1,63 @@
+/* Marion Geary */
+.App {
+  margin: auto;
+  padding: 20px;
+  float: center;
+  width: 100%;
+  height: 100vh;
+  background-color: #181818;
+  color: #ffffff;
+  font: 'Arial'
+}
+
+.Playerz {
+  float: left;
+  padding: 20px;
+  width: 40%;
+  margin: auto;
+}
+
+form {
+  float: center;
+  padding: 10px;
+  width: 50%;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  color: #ffffff;
+  background-color: #404040;
+  border-radius: 0.5em;
+  border-color: #ffffff;
+}
+
+input::placeholder {
+  color: b3b3b3;
+  opacity: .8;
+}
+
+input:focus {
+  border: 3px solid #555;
+}
+
+.Vs {
+  float: left;
+  height: 200px;
+  position: relative;
+  width: 5%;
+  padding: 10px;
+}
+
+h1 {
+  float: center;
+  position: absolute;
+  bottom: 0;
+  margin: auto;
+  vertical-align: bottom;
+	display: table-cell;
+  color: #b3b3b3;
+}
+
+
