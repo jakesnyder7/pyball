@@ -1,5 +1,10 @@
 import { SortableTable } from './SortableTable.js';
 
+/**
+ * Demo function that returns a sortable table of player stats.
+ * @author Claire Wagner
+ * @returns A sortable table of player stats.
+ */
 export function SortableTableDemo() {
   /* Headers for the player stat table
   (val is the value that will be displayed in the table,
