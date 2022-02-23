@@ -3,22 +3,30 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-          Here is our new pyball React app :)
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        <button class="button-16" role="button">
+          Reset
+        </button>
+      </div>
+      <div className="App">
+        <header>
+          <p>
+            Here is our prototype :)
+          </p>
+        </header>
+        <div className="Prototype">
+        <button class="button-3" role="button">
+            Compare Two Players
+          </button>
+          <button class="button-3" role="button">
+            Manipulate Spreadsheet
+          </button>
+          <button class="button-3" role="button">
+            Edit Team
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
