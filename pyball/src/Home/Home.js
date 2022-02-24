@@ -10,7 +10,7 @@ function Home() {
           <div className="App">
             <header>
               <p>
-                Here is our prototype :)
+                Fantasy Player Portal
               </p>
             </header>
             <div className="Prototype">

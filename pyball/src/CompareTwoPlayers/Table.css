@@ -1,0 +1,52 @@
+/* Marion Geary */
+.Table {
+    display: flex;
+    padding: 100px;
+    float: center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    color: #ffffff;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    border: 2px solid #1DB954;
+    border-radius: 12px;
+
+}
+
+th {
+    border: 1px solid #b3b3b3;
+    font-family: 'Arial';
+    font-weight: 700;
+}
+
+td {
+    border: 1px solid #b3b3b3;
+}
+
+tr:hover {
+    background-color: #404040;
+}
+
+tr:hover>.greatest {
+    background-color: #1DB954;
+}
+
+tr:first-of-type  td:first-of-type {
+    border-top-left-radius: 10px;
+}
+tr:first-of-type  td:last-of-type {
+    border-top-right-radius: 10px;
+}
+
+tr:last-of-type td:first-of-type {
+    border-bottom-left-radius: 10px;
+}
+tr:last-of-type td:last-of-type {
+    border-bottom-right-radius: 10px;
+}
