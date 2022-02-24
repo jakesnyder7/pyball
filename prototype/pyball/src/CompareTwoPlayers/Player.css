@@ -1,0 +1,19 @@
+/* Marion Geary */
+.Player {
+    text-align: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-family: 'Arial';
+    float: center;
+    padding: 20px;
+}
+
+img {
+    background-color: #404040;
+    border-radius: 50%;
+    border: 2px solid #1DB954;
+}
+
+header {
+    padding: 10px;
+}
