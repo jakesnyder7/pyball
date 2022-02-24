@@ -1,6 +1,6 @@
 
 
-function CompareTwoPlayers() {
+export default function CompareTwoPlayers() {
   return (
     <div>
       <header>
@@ -10,6 +10,4 @@ function CompareTwoPlayers() {
       </header>
     </div>
   );
-}
-
-export default CompareTwoPlayers;
+};
