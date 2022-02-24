@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import React from 'react';
 import './Home.css';
+import '../Navigation/Navigation.css'
 
 function Home() {
     return (
@@ -13,20 +14,14 @@ function Home() {
               </p>
             </header>
             <div className="Prototype">
-              <NavLink to="/compare-players">
-                <button class="button-3" role="button" >
+              <NavLink to="/compare-players" className='inactive' activeClassName='active' >
                   Compare Two Players
-                </button>
               </NavLink>
-              <NavLink class="button-3" role="button" to="/manipulate-spreadsheet">
-                <button class="button-3" role="button">
+              <NavLink  to="/manipulate-spreadsheet" className='inactive' activeClassName='active' >
                   Manipulate Spreadsheet
-                </button>
               </NavLink>
-              <NavLink to="/edit-team">
-                <button class="button-3" role="button">
+              <NavLink to="/edit-team" className='inactive' activeClassName='active' >
                   Edit Team
-                </button>
               </NavLink>
             </div>
           </div>
