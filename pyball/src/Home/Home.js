@@ -9,7 +9,7 @@ function Home() {
           <div>
             <NavLink to="/">
             <button class="button-16" role="button">
-              Reset
+              Home
             </button>
             </NavLink>
           </div>

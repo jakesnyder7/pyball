@@ -1,0 +1,36 @@
+.inactive {
+    background-color: #2ea44f;
+    border: 1px solid #2ea44f;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-family: arial,sans-serif;
+    font-size: 14px;
+    height: 36px;
+    line-height: 27px;
+    min-width: 54px;
+    padding: 5px 16px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: pre;
+    margin: 3px;
+}
+
+.inactive:hover {
+    border-color: #2c974b;
+    box-shadow: rgba(0, 0, 0, .1) 0 1px 1px;
+    color: #202124;
+    background-color: #2c974b;
+}
+
+.inactive:focus {
+    border-color: #4285f4;
+    outline: none;
+  }
+
+.active {
+    background-color: #298e46;
+    box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
