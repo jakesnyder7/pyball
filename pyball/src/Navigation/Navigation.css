@@ -6,16 +6,18 @@
     cursor: pointer;
     font-family: arial,sans-serif;
     font-size: 14px;
-    height: 36px;
+    height: 28px;
     line-height: 27px;
     min-width: 54px;
-    padding: 5px 16px;
+    padding: 2px 15px;
     text-align: center;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     white-space: pre;
     margin: 3px;
+    text-decoration: none;
+
 }
 
 .inactive:hover {
@@ -33,4 +35,13 @@
 .active {
     background-color: #298e46;
     box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+
+nav {
+    background-color: #282c34;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: calc(10px + 2vmin);
 }

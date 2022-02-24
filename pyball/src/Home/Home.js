@@ -6,13 +6,6 @@ function Home() {
     return (
         <div>
           <nav>
-          <div>
-            <NavLink to="/">
-            <button class="button-16" role="button">
-              Home
-            </button>
-            </NavLink>
-          </div>
           <div className="App">
             <header>
               <p>
