@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+library(nflverse)
+library(tidymodels)
+library(tidyjson)
+library(tidyverse)
+```
+
+```{r}
+pbp <- load_pbp()
+player_stats <- load_player_stats()
+roster <- load_rosters()
+
+# roster has the images and full names and number... what other data?
+# other stats as well :)
+
+#save(pbp, player_stats, file="mystuff.Rdata")
+#load("mystuff.Rdata")
+```
+
+```{r}
+j_burrow_raw <- player_stats %>% filter(player_name == "J.Burrow") %>% mutate_if(is.character, as.factor)
+p_mahomes <- player_stats %>% filter(player_name == "P.Mahomes")
+```
+
+```{r}
+j_burrow_num <- j_burrow_raw %>% 
+  summarise(across(where(is.numeric), mean))
+
+j_burrow_fact <- j_burrow_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
+
+j_burrow <- bind_cols(j_burrow_fact, j_burrow_num)
+```
+
+```{r}
+j_burrow_json <- jsonlite::toJSON(j_burrow)
+## let's goooooooo
+```
+
+```{r}
+
+```
+
