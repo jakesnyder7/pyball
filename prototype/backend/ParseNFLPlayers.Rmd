@@ -1,14 +1,19 @@
 ---
 title: "R Notebook"
-output: html_notebook
-editor_options: 
+output:
+  html_document:
+    df_print: paged
+editor_options:
   chunk_output_type: inline
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
 
 ```{r}
 library(nflverse)
 library(tidymodels)
-library(tidyjson)
 library(tidyverse)
 ```
 
@@ -25,25 +30,50 @@ roster <- load_rosters()
 ```
 
 ```{r}
-j_burrow_raw <- player_stats %>% filter(player_name == "J.Burrow") %>% mutate_if(is.character, as.factor)
-p_mahomes <- player_stats %>% filter(player_name == "P.Mahomes")
+# filter the roster for the data about the player
+filtered_roster <- roster %>% filter(full_name == "Joe Burrow")
+
+# filter the stats for the player data
+j_burrow_raw <- player_stats %>% filter(grepl(filtered_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)
 ```
 
 ```{r}
+# average the numeric columns
 j_burrow_num <- j_burrow_raw %>% 
   summarise(across(where(is.numeric), mean))
 
+# leave the factors alone and change table length
 j_burrow_fact <- j_burrow_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
 
-j_burrow <- bind_cols(j_burrow_fact, j_burrow_num)
+# bind the tables
+j_burrow <- bind_cols(j_burrow_fact, j_burrow_num, filtered_roster)
+# now we have lots of data :)
+# for the desired player!!
 ```
 
 ```{r}
 j_burrow_json <- jsonlite::toJSON(j_burrow)
 ## let's goooooooo
+# here is a json of the data
+# right now I'm passing averages 
+# later will adjust to pass arrays of the data within
+# the JSON
 ```
 
 ```{r}
+## Let's turn this into a function :)
 
+get_player_data <- function(player_name_query) {
+  filtered_player_roster <- roster %>% filter(full_name == player_name_query)
+  player_stats_raw <- player_stats %>% filter(grepl(filtered_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)
+  player_numeric_data <- j_burrow_raw %>% 
+  summarise(across(where(is.numeric), mean))
+  player_factor_data <- j_burrow_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
+  full_player_data <- bind_cols(filtered_player_roster, player_numeric_data, player_factor_data)
+  player_json <- jsonlite::toJSON(full_player_data)
+  return(player_json)
+}
+
+get_player_data("Tom Brady")
 ```
 
