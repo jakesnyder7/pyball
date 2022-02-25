@@ -10,12 +10,14 @@ import { useTable, useSortBy, useRowState } from 'react-table';
  * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useTable).
  * @param data The data to display in the table
  * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useTable).
+ * @param formattable An object mapping column accessors to boolean values specifying whether or not
+ * that column should be conditionally formattable.
  * @returns A div containing the table.
  * Portions of this hook are based on https://stackoverflow.com/a/69128343 (CC BY-SA 4.0 license),
  * https://github.com/TanStack/react-table/blob/v7/examples/basic/src/App.js (MIT license), and
  * https://github.com/TanStack/react-table/tree/v7/examples/sorting (MIT license).
  */
-export function ManipulatableTable({columns, data}) {
+export function ManipulatableTable({columns, data, formattable}) {
 
     // The table instance
     const table = useTable(
@@ -71,8 +73,8 @@ export function ManipulatableTable({columns, data}) {
                                     {column.render('Header')}
                                     <span>
                                         {column.isSorted ? (column.isSortedDesc ? ' 🔽': ' 🔼') : ''}
-                                    </span>
-                                    {column.id !== 'name' &&
+                                    </span>                                    
+                                    {formattable[column.id] &&
                                     <div>
                                         <label>
                                             {'highlight stats less than: '}<br></br>
@@ -82,7 +84,7 @@ export function ManipulatableTable({columns, data}) {
                                                 } 
                                             } />
                                         </label>
-                                    </div>}
+                                        </div>}
                                 </th>
                             ))}
                         </tr>

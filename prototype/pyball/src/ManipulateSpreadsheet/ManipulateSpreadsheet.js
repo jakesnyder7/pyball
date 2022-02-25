@@ -17,7 +17,10 @@ function ManipulateSpreadsheet() {
         {Header: 'INT', accessor: 'int'},
     ],
     []
-  )
+  );
+
+  // specify whether or not each column should be conditionally formattable
+  const formattable = {name: false, td: true, int: true}; 
 
   // hard-coded data for prototype (will be provided by backend in final product)
   const data = React.useMemo(
@@ -53,7 +56,7 @@ function ManipulateSpreadsheet() {
           </p>
         </header>
       </div>
-      <ManipulatableTable columns={columns} data={data} />
+      <ManipulatableTable columns={columns} data={data} formattable={formattable} />
     </div>
     );
   }
