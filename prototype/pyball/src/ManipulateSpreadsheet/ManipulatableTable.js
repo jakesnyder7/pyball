@@ -19,7 +19,7 @@ function ComparandInput({columnID, applyFormat}) {
     const compareOptions = {
         'less than': (a,b) => { return a < b },
         'greater than': (a,b) => { return a > b },
-        'equal to': (a,b) => { return a == b }
+        'equal to': (a,b) => { return a === b }
     };
 
     // options for colors
