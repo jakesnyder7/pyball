@@ -31,11 +31,14 @@ function ComparandInput({columnID, applyFormat}) {
 
   const [min, setMin] = React.useState(undefined);
   const [max, setMax] = React.useState(undefined);
-  const [color, setColor] = React.useState('gray');
+  const [color, setColor] = React.useState('cyan');
 
   // options for colors
   const colorOptions = React.useMemo(
-    () => ['gray','maroon','red','purple', 'fuchsia','green','lime','olive','yellow','navy','blue','teal','cyan','orange'],
+    () => [
+      'cyan','maroon','red','purple', 'fuchsia','green','lime','olive','yellow','navy','blue',
+      'teal','gray','orange'
+    ],
     []
   );
 
@@ -61,12 +64,12 @@ function ComparandInput({columnID, applyFormat}) {
       {/* for color selection */}
       <label>
         {'color: '}
-        <select value={color} onChange={ (e) => { 
+        <select value={color} style={{backgroundColor: color}} onChange={ (e) => { 
           setColor(e.target.value);
           applyFormat(min, max, columnID, e.target.value);
         }}>
           {colorOptions.map(colorOption => (
-            <option value={colorOption}>{colorOption}</option>
+            <option value={colorOption} style={{backgroundColor: colorOption}}></option>
           ))}
         </select>
       </label>
