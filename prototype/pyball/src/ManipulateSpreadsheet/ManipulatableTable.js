@@ -11,16 +11,9 @@ import { useTable, useSortBy, useRowState } from 'react-table';
  */
 function ComparandInput({columnID, applyFormat}) {
 
-    const [comparand, setComparand] = React.useState(undefined);
+    const [min, setMin] = React.useState(undefined);
+    const [max, setMax] = React.useState(undefined);
     const [color, setColor] = React.useState('gray');
-    const [compare, setCompare] = React.useState('less than');
-
-    // options for comparison against comparand
-    const compareOptions = {
-        'less than': (a,b) => { return a < b },
-        'greater than': (a,b) => { return a > b },
-        'equal to': (a,b) => { return a === b }
-    };
 
     // options for colors
     const colorOptions = React.useMemo(
@@ -31,30 +24,25 @@ function ComparandInput({columnID, applyFormat}) {
     // return form
     return (
         <form>
-            {'highlight stats that are '}
+            {'highlight stats from '}
 
-            {/* for comparison selection */}
-            <select value={compare} onChange={ (e) => { 
-                setCompare(e.target.value);
-                applyFormat(comparand, columnID, color, compareOptions[e.target.value]);
-            }}>
-                {Object.keys(compareOptions).map(compareOption => (
-                    <option value={compareOption}>{compareOption}</option>
-                ))}
-            </select>
-
-            {/* for comparand input */}
-            <input type='number' placeholder='enter comparand' value={comparand} onChange={ (e) => {
-                setComparand(e.target.value);
-                applyFormat(e.target.value, columnID, color, compareOptions[compare]); } 
-            } />
-             
+            {/* for lower bound input */}
+            <input type='number' width={5} placeholder='min' value={min} onChange={ (e) => {
+                setMin(e.target.value);
+                applyFormat(e.target.value, max, columnID, color);
+            }} />
+            {' to '}
+            {/* for upper bound input */}
+            <input type='number' placeholder='max' value={max} onChange={ (e) => {
+                setMax(e.target.value);
+                applyFormat(min, e.target.value, columnID, color) 
+            }} />
             {/* for color selection */}
             <label>
                 {'color: '}
                 <select value={color} onChange={ (e) => { 
                     setColor(e.target.value);
-                    applyFormat(comparand, columnID, e.target.value, compareOptions[compare]);
+                    applyFormat(min, max, columnID, e.target.value);
                 }}>
                     {colorOptions.map(colorOption => (
                         <option value={colorOption}>{colorOption}</option>
@@ -98,25 +86,31 @@ export function ManipulatableTable({columns, data, formattable}) {
 
     /**
      * Function to apply conditional formatting to the cells in the specified column.
-     * Applies the specified background color to all cells in that column with values
-     * that are less than the comparand.
-     * @param comparand The comparand against which to compare cell values.
+     * Applies the specified background color to all cells in that column with values that
+     * lie in the specified range.
+     * @param min The lower bound (inclusive) of the range.
+     * @param max The upper bound (inclusive) of the range.
      * @param columnID The id of the column to which to apply the conditional formatting.
      * @param color The background color to apply.
-     * @param compare A function defining comparison against the comparand.
-     * Postcondition: The background colors of all cells in the given column with values that are
-     * less than the comparand have been set to the specified color. The background colors of all
-     * other cells in that column have been set to null. No other cell's background color has been
-     * changed.
+     * Postcondition: The background colors of all cells in the given column with values that lie
+     * in the range defined by min and max have been set to the specified color. The background
+     * colors of all other cells in that column have been set to null. No other cell's background
+     * color has been changed.
     */
-    function applyConditionalFormatting(comparand, columnID, color, compare) {
-        if (!isNaN(parseInt(comparand))) {
+
+     function applyConditionalFormatting(min, max, columnID, color) {
+        function validInt(x) {
+            return !isNaN(parseInt(x));
+        }
+        if (validInt(min) && validInt(max)) {
             table.rows.forEach(row => {
                 row.cells.forEach(cell => {
                     cell.setState( (oldval) => {
                         return (
                             { backgroundColor: 
-                                cell.column.id === columnID ? (compare(cell.value, comparand) ? color : null) : oldval}
+                                cell.column.id === columnID
+                                ? (cell.value >= min && cell.value <= max) ? color : null
+                                : oldval}
                         );
                     });
                 })
