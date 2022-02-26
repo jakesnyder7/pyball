@@ -2,6 +2,71 @@ import React from 'react';
 import { useTable, useSortBy, useRowState } from 'react-table';
 
 /**
+ * Hook to define a form for the application of conditional formatting.
+ * @author Claire Wagner
+ * @param columnID The id of the column to which to apply the conditional formatting.
+ * @param applyFormat A function to apply the conditional formatting.
+ * @return The form.
+ * Parameters: comparand, column ID, color, and function defining comparison against the comparand.
+ */
+function ComparandInput({columnID, applyFormat}) {
+
+    const [comparand, setComparand] = React.useState(undefined);
+    const [color, setColor] = React.useState('gray');
+    const [compare, setCompare] = React.useState('less than');
+
+    // options for comparison against comparand
+    const compareOptions = {
+        'less than': (a,b) => { return a < b },
+        'greater than': (a,b) => { return a > b },
+        'equal to': (a,b) => { return a == b }
+    };
+
+    // options for colors
+    const colorOptions = React.useMemo(
+        () => ['gray','maroon','red','purple', 'fuchsia','green','lime','olive','yellow','navy','blue','teal','cyan'],
+        []
+    );
+
+    // return form
+    return (
+        <form>
+            {'highlight stats that are '}
+
+            {/* for comparison selection */}
+            <select value={compare} onChange={ (e) => { 
+                setCompare(e.target.value);
+                applyFormat(comparand, columnID, color, compareOptions[e.target.value]);
+            }}>
+                {Object.keys(compareOptions).map(compareOption => (
+                    <option value={compareOption}>{compareOption}</option>
+                ))}
+            </select>
+
+            {/* for comparand input */}
+            <input type='number' placeholder='enter comparand' value={comparand} onChange={ (e) => {
+                setComparand(e.target.value);
+                applyFormat(e.target.value, columnID, color, compareOptions[compare]); } 
+            } />
+             
+            {/* for color selection */}
+            <label>
+                {'color: '}
+                <select value={color} onChange={ (e) => { 
+                    setColor(e.target.value);
+                    applyFormat(comparand, columnID, e.target.value, compareOptions[compare]);
+                }}>
+                    {colorOptions.map(colorOption => (
+                        <option value={colorOption}>{colorOption}</option>
+                    ))}
+                </select>
+            </label>
+
+        </form>
+    );
+}
+
+/**
  * Hook to define a table that supports various manipulations.
  * Currently supports limited conditional formatting and sorting by single or multiple columns.
  * Uses react-table.
@@ -38,22 +103,20 @@ export function ManipulatableTable({columns, data, formattable}) {
      * @param comparand The comparand against which to compare cell values.
      * @param columnID The id of the column to which to apply the conditional formatting.
      * @param color The background color to apply.
+     * @param compare A function defining comparison against the comparand.
      * Postcondition: The background colors of all cells in the given column with values that are
      * less than the comparand have been set to the specified color. The background colors of all
      * other cells in that column have been set to null. No other cell's background color has been
      * changed.
     */
-    function applyConditionalFormatting(comparand, columnID, color) {
-        //const columnID = 'td';
-        //const comparand = e.target.value;
-        // apply conditional formatting if that 
+    function applyConditionalFormatting(comparand, columnID, color, compare) {
         if (!isNaN(parseInt(comparand))) {
             table.rows.forEach(row => {
                 row.cells.forEach(cell => {
                     cell.setState( (oldval) => {
                         return (
                             { backgroundColor: 
-                                cell.column.id === columnID ? (cell.value < comparand ? color : null) : oldval}
+                                cell.column.id === columnID ? (compare(cell.value, comparand) ? color : null) : oldval}
                         );
                     });
                 })
@@ -69,22 +132,16 @@ export function ManipulatableTable({columns, data, formattable}) {
                     {table.headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render('Header')}
-                                    <span>
+                                <th {...column.getHeaderProps()}>
+                                    <span {...column.getSortByToggleProps()}>
+                                        {column.render('Header')}
                                         {column.isSorted ? (column.isSortedDesc ? ' 🔽': ' 🔼') : ''}
-                                    </span>                                    
-                                    {formattable[column.id] &&
-                                    <div>
-                                        <label>
-                                            {'highlight stats less than: '}<br></br>
-                                            <input placeholder='enter comparand' onChange={ (e) => 
-                                                { applyConditionalFormatting(
-                                                    e.target.value, column.id, 'cyan');
-                                                } 
-                                            } />
-                                        </label>
-                                        </div>}
+                                    </span>
+                                    {formattable[column.id] && <div>
+                                       <ComparandInput columnID={column.id} applyFormat={
+                                            applyConditionalFormatting
+                                        } />                            
+                                    </div>} 
                                 </th>
                             ))}
                         </tr>
