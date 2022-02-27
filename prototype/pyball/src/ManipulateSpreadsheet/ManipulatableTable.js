@@ -2,19 +2,21 @@ import React from 'react';
 import { useTable, useSortBy, useRowState, useFilters } from 'react-table';
 
 /**
- * Default filtering UI.
- * Based on https://github.com/TanStack/react-table/blob/v7/examples/filtering/src/App.js (MIT license).
- */
-function DefaultColumnFilter({column: { filterValue, preFilteredRows, setFilter }}) {
-  const count = preFilteredRows.length;
-  
+* Default filtering UI.
+* Source: https://github.com/TanStack/react-table/blob/v7/examples/filtering/src/App.js (MIT license).
+*/
+function DefaultColumnFilter({
+  column: { filterValue, preFilteredRows, setFilter },
+}) {
+  const count = preFilteredRows.length
+
   return (
     <input
       value={filterValue || ''}
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
       }}
-      placeholder={`filter ${count} records...`}
+      placeholder={`Search ${count} records...`}
     />
   )
 }
