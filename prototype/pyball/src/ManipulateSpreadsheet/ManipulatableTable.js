@@ -2,8 +2,8 @@ import React from 'react';
 import { useTable, useSortBy, useRowState, useFilters } from 'react-table';
 
 /**
-* Default filtering UI.
-* Source: https://github.com/TanStack/react-table/blob/v7/examples/filtering/src/App.js (MIT license).
+ * Default filtering UI.
+ * Source: https://github.com/TanStack/react-table/blob/v7/examples/filtering/src/App.js (MIT license).
 */
 function DefaultColumnFilter({
   column: { filterValue, preFilteredRows, setFilter },
@@ -88,6 +88,8 @@ function ComparandInput({columnID, applyFormat}) {
  * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useTable).
  * @param data The data to display in the table
  * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useTable).
+ * @param filterTypes Filter types to use when filtering data instead of the default options (optional)
+ * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useFilters).
  * @param formattable An object mapping column accessors to boolean values specifying whether or not
  * that column should be conditionally formattable (true if yes, false if no).
  * @returns A div containing the table.
@@ -96,57 +98,7 @@ function ComparandInput({columnID, applyFormat}) {
  * https://github.com/TanStack/react-table/tree/v7/examples/sorting, and
  * https://github.com/TanStack/react-table/blob/v7/examples/filtering (MIT license).
  */
-export function ManipulatableTable({columns, data, formattable}) {
-
-  /**
-   * Helper function for comparing two strings.
-   * Returns true if either the entire first string or at least one word in it
-   * begins with the same characters as the second string.
-   * Words are defined as being separated by spaces.
-   * @param str1 The first string.
-   * @param str2 The second string.
-   * @returns Whether or not at the first string or at least one word in it
-   * starts with the same characters as the second.
-   */
-  function anyWordStartsWithHelper(str1, str2) {
-    let compStr1 = str1.toLowerCase();
-    let compStr2 = str2.toLowerCase();
-    if (compStr1.startsWith(compStr2)) {
-      return true;
-    }
-    let compStr1Words = compStr1.split(' ');
-    for (let i = 1; i < compStr1Words.length; i++) {
-      if (compStr1Words[i].startsWith(compStr2)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // Filter types
-  const filterTypes = React.useMemo(
-    () => ({
-      startswith: (rows, id, filterValue) => {
-        return rows.filter(row => {
-          const rowValue = row.values[id]
-            return rowValue !== undefined
-              ? String(rowValue)
-                .toLowerCase()
-                .startsWith(String(filterValue).toLowerCase())
-              : true
-        })
-      },
-      any_word_startswith: (rows, id, filterValue) => {
-        return rows.filter(row => {
-          const rowValue = row.values[id]
-            return rowValue !== undefined
-              ? anyWordStartsWithHelper(String(rowValue), String(filterValue))
-              : true
-        })
-      }
-    }),
-    []
-  );
+export function ManipulatableTable({columns, data, filterTypes, formattable}) {
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -176,17 +128,17 @@ export function ManipulatableTable({columns, data, formattable}) {
   )
 
   /**
-  * Function to apply conditional formatting to the cells in the specified column.
-  * Applies the specified background color to all cells in that column with values that
-  * lie in the specified range.
-  * @param min The lower bound (inclusive) of the range.
-  * @param max The upper bound (inclusive) of the range.
-  * @param columnID The id of the column to which to apply the conditional formatting.
-  * @param color The background color to apply.
-  * Postcondition: The background colors of all cells in the given column with values that lie
-  * in the range defined by min and max have been set to the specified color. The background
-  * colors of all other cells in that column have been set to null. No other cell's background
-  * color has been changed.
+   * Function to apply conditional formatting to the cells in the specified column.
+   * Applies the specified background color to all cells in that column with values that
+   * lie in the specified range.
+   * @param min The lower bound (inclusive) of the range.
+   * @param max The upper bound (inclusive) of the range.
+   * @param columnID The id of the column to which to apply the conditional formatting.
+   * @param color The background color to apply.
+   * Postcondition: If min and max are valid ints, then the background colors of all cells
+   * in the given column with values that lie in the range defined by min and max have been
+   * set to the specified color. The background colors of all other cells in that column have
+   * been set to null. No other cell's background color has been changed.
   */
   function applyConditionalFormatting(min, max, columnID, color) {
     // Helper function to determine whether argument is a valid int
