@@ -1,8 +1,9 @@
 import Navigation from '../Navigation/Navigation';
 import './CompareTwoPlayers.css';
-import { useState } from 'react';
 import { Player } from './Player.js';
+import NFLPlayer from './NFLPlayer.js';
 import { Table } from './Table.js';
+import useFetch from '../api/UseFetch.js';
 
 /**
  * Hook to display the web app.
@@ -10,16 +11,11 @@ import { Table } from './Table.js';
  * @returns A div containing all app elements.
  */
 function App() {
-
-  // Variables to hold the two queried players
-  let player1 = {};
-  let player2 = {};
-
   // A sample player - in the real app, the player data will be fetched
   // in the backend
   const PMahomes = {
-    name: 'Patrick Mahomes',
-    src: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/tlg2oo5yrk6mins3nxxe',
+    full_name: 'Patrick Mahomes',
+    headshot_url: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/tlg2oo5yrk6mins3nxxe',
     rating: 91.3,
     td: 3,
     int: 2,
@@ -27,10 +23,16 @@ function App() {
     yds: 275
   };
 
+  // Empty player to use as placeholder before queries entered
+  const emptyPlayer = {
+    full_name: "",
+    headshot_url: 'https://pdtxar.com/wp-content/uploads/2019/04/person-placeholder.jpg',
+  }
+
   // Another sample player
   const JBurrow = {
-    name: 'Joe Burrow',
-    src: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/fhvbn2cstui3nchv8vil',
+    full_name: 'Joe Burrow',
+    headshot_url: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/fhvbn2cstui3nchv8vil',
     rating: 86.5,
     td: 2,
     int: 1,
@@ -38,36 +40,8 @@ function App() {
     yds: 250
   };
 
-  // State function
-  const [input, setInput] = useState({});
-
-  // Update results of search in each textbox
-  const handleChange = ({ target }) => {
-      const { name, value } = target;
-      setInput((prev) => ({
-          ...prev,
-          [name]: value
-        })
-      );
-  }
-
-  // State functions to show the results of each search
-  const [showResult1, setShowResult1] = useState(false);
-  const [showResult2, setShowResult2] = useState(false);
-
-  // Update the status of the first search result
-  // In this mockup, any input leads to a result. In the real app, a query
-  // will have to match a player's name
-  const onSubmit1 = (event) => {
-    setShowResult1(true);
-    event.preventDefault();
-  };
-
-  // Update the status of the second search result
-  const onSubmit2 = (event) => {
-    setShowResult2(true);
-    event.preventDefault();
-  };
+  const { data, setData } = useFetch();
+  //const { data2, setData2 } = useFetch();
 
   return (
     <div>
@@ -75,14 +49,13 @@ function App() {
       <div className='CompareTwoPlayers'>
       <div className='PlayerDiv' >
         <div className='Playerz' >
-          { showResult1 && <Player player={PMahomes} /> }
-          <form onSubmit={onSubmit1} >
-            <input
-                type='text'
-                placeholder="Enter player name"
-                onChange={handleChange}
-            />
-          </form>
+          { data.results.length > 0 ? <Player player={data.results[0]} /> : <Player player={emptyPlayer} /> }
+          <input
+              type="text"
+              placeholder="Enter player name"
+              value={data.query}
+              onChange={(e) => setData({ ...data, query: e.target.value })}
+          />
         </div>
         <div className='Vs' >
           <h1>
@@ -90,17 +63,18 @@ function App() {
           </h1>
         </div>
         <div className='Playerz' >
-          { showResult2 && <Player player={JBurrow} />}
-          <form onSubmit={onSubmit2} >
+          { data.results.length > 0 ? <Player player={PMahomes} /> : <Player player={emptyPlayer} /> }
+          <form>
               <input
                   type='text'
                   placeholder="Enter player name"
-                  onChange={handleChange}
+                  value={data.query}
+                  onChange={(e) => setData({ ...data, query: e.target.value })}
               />
           </form>
         </div>
         </div>
-          { (showResult2 && showResult1) && <Table player1={PMahomes} player2={JBurrow} /> }
+          { (data.results.length > 0 && data.results.length) && <Table player1={PMahomes} player2={JBurrow} /> }
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ roster <- load_rosters()
 
 get_player_data <- function(player_name_query) {
   filtered_player_roster <- roster %>% filter(full_name == player_name_query)
-  if(filtered_player_roster$position == 'K' || filtered_player_roster$position == 'PK') {
+  if(filtered_player_roster$position == 'K') {
     player_stats_raw <- player_stats_kicker %>% filter(grepl(filtered_player_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)
   } else {
     player_stats_raw <- player_stats %>% filter(grepl(filtered_player_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)

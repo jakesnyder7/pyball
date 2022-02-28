@@ -7,13 +7,13 @@ import './Player.css';
  * @param {*} props 
  * @returns A div containing the name and image of the player.
  */
-export function Player(props) {
+export function Player({ player }) {
     
     return (
         <div className='Player' >
-            <img src={props.player.src} alt={props.player.name} height={200} />
+            <img src={player.headshot_url} alt={player.full_name} height={200} />
             <header>
-                {props.player.name}
+                {player.full_name}
             </header>
         </div>
     );

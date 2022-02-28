@@ -26,6 +26,9 @@ def nfl_player(request, name):
     result = player_strvec[0]
     parsed = json.loads(result)
 
+    if parsed == []:
+        parsed = {'message': 'Our platform currently only supports offensive players and kickers. Try another search term.'}
+
     if request.method == 'GET':
         return JsonResponse(parsed, status=status.HTTP_200_OK, safe=False)
     else:
