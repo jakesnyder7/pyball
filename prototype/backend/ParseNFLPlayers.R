@@ -13,7 +13,8 @@ get_player_data <- function(player_name_query) {
     summarise(across(where(is.numeric), mean))
   player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
   full_player_data <- bind_cols(filtered_player_roster, player_numeric_data, player_factor_data)
-  player_json <- jsonlite::toJSON(full_player_data)
-  return(player_json)
+  return(full_player_data)
+  #player_json <- jsonlite::toJSON(full_player_data)
+  #return(player_json)
 }
 
