@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 
 import rpy2.robjects as robjects
 import pandas as pd
+import json
 
 
 # Create your views here.
@@ -21,9 +22,8 @@ parse_nfl_player_r = robjects.globalenv['get_player_data']
 
 @api_view(['GET', 'POST', 'DELETE'])
 def nfl_player(request, name):
-    player = parse_nfl_player_r(name)
-    player_df = r.data(player)
-    result = player_df.to_json(orient="records")
+    player_strvec = parse_nfl_player_r(name)
+    result = player_strvec[0]
     parsed = json.loads(result)
 
     if request.method == 'GET':

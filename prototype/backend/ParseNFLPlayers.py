@@ -7,18 +7,11 @@ r['source']('ParseNFLPlayers.R')
 
 parse_nfl_player_r = ro.globalenv['get_player_data']
 
-rdf = parse_nfl_player_r("Patrick Mahomes")
+fake_json = parse_nfl_player_r("Patrick Mahomes")
 
-df1 = pd.DataFrame()
-print(df1.to_json())
-df = ro.conversion.rpy2py(rdf)
+real_json = fake_json[0]
 
-print(df)
-print(rdf)
-
-print(df.to_json())
-json_df = df.to_json()
-
+## let's do some work to just parse the fake json. Pandas is being the worst
 parsed = json.loads(json_df)
 json.dumps(parsed, indent=4)
 
