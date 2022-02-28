@@ -17,6 +17,3 @@ get_player_data <- function(player_name_query) {
   return(player_json)
 }
 
-## here is the function call... just need to figure out how to make it work with the desired query
-get_player_data("Saquon Barkley")
-

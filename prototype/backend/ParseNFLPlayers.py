@@ -7,4 +7,4 @@ parse_nfl_player_r = robjects.globalenv['get_player_data']
 
 player_json = parse_nfl_player_r("Patrick Mahomes")
 
-print(player_json)
+#print(player_json)
