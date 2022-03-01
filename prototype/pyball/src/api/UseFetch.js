@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import Got from './Got';
 
-const useFetch = () => {
-    const [data, setData] = useState({
+const useFetch1 = () => {
+    const [data1, setData1] = useState({
       query: "",
       results: [],
     });
   
     useEffect(() => {
-      if (data.query !== "") {
+      if (data1.query !== "") {
         const timeoutId = setTimeout(() => {
           const fetch = async () => {
             try {
-              const res = await Got.get(`/${data.query}/`);
-              setData({ ...data, results: res.data });
+              const res = await Got.get(`/${data1.query}/`);
+              setData1({ ...data1, results: res.data });
             } catch (err) {
               console.error(err);
             }
@@ -22,9 +22,9 @@ const useFetch = () => {
         }, 1000);
         return () => clearTimeout(timeoutId);
       }
-    }, [data.query]);
+    }, [data1.query]);
   
-    return { data, setData };
+    return { data1, setData1 };
   };
 
-export default useFetch;
+export default useFetch1;

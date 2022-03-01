@@ -12,7 +12,6 @@ import rpy2.robjects as robjects
 import pandas as pd
 import json
 
-
 # Create your views here.
 
 r = robjects.r

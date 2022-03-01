@@ -2,10 +2,9 @@ library(nflverse)
 library(tidymodels)
 library(tidyverse)
 
-pbp <- load_pbp()
-player_stats <- load_player_stats()
-player_stats_kicker <- load_player_stats(stat_type = "kicking")
-roster <- load_rosters()
+player_stats <- load_player_stats(seasons = most_recent_season())
+player_stats_kicker <- load_player_stats(seasons = most_recent_season(), stat_type = "kicking")
+roster <- load_rosters(seasons = most_recent_season())
 
 get_player_data <- function(player_name_query) {
   filtered_player_roster <- roster %>% filter(full_name == player_name_query)
@@ -20,5 +19,7 @@ get_player_data <- function(player_name_query) {
   player_json <- jsonlite::toJSON(full_player_data)
   return(player_json)
 }
+
+get_player_data("Patrick Mahomes")
 
 

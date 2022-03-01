@@ -20,7 +20,7 @@ export function Table(props) {
             <table>
                 <tr>
                     <th colspan="3">
-                    Average Weekly Stats from 2021 Season
+                        Average Weekly Stats from 2021 Season
                     </th>
                 </tr>
                 <tr>

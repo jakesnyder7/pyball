@@ -2,7 +2,9 @@ import Navigation from '../Navigation/Navigation';
 import './CompareTwoPlayers.css';
 import { Player } from './Player.js';
 import { Table } from './Table.js';
-import useFetch from '../api/UseFetch.js';
+import useFetch1 from '../api/UseFetch.js';
+import useFetch2 from '../api/useFetch2';
+
 
 /**
  * Hook to display the web app.
@@ -39,8 +41,8 @@ function App() {
     yds: 250
   };
 
-  const { data, setData } = useFetch();
-  //const { data2, setData2 } = useFetch();
+  const { data1, setData1 } = useFetch1();
+  const { data2, setData2 } = useFetch2();
 
   return (
     <div>
@@ -48,33 +50,31 @@ function App() {
       <div className='CompareTwoPlayers'>
       <div className='PlayerDiv' >
         <div className='Playerz' >
-          { data.results.length > 0 ? <Player player={data.results[0]} /> : <Player player={emptyPlayer} /> }
+          { data1.results.length > 0 ? <Player player={data1.results[0]} /> : <Player player={emptyPlayer} /> }
           <input
               type="text"
               placeholder="Enter player name"
-              value={data.query}
-              onChange={(e) => setData({ ...data, query: e.target.value })}
+              value={data1.query}
+              onChange={(e) => setData1({ ...data1, query: e.target.value })}
           />
         </div>
-        <p>{data.results.message}</p>
+        <p>{data1.results.message}</p>
         <div className='Vs' >
           <h1>
               VS.
           </h1>
         </div>
         <div className='Playerz' >
-          { data.results.length > 0 ? <Player player={PMahomes} /> : <Player player={emptyPlayer} /> }
-          <form>
-              <input
-                  type='text'
-                  placeholder="Enter player name"
-                  value={data.query}
-                  onChange={(e) => setData({ ...data, query: e.target.value })}
-              />
-          </form>
+          { data2.results.length > 0 ? <Player player={data2.results[0]} /> : <Player player={emptyPlayer} /> }
+            <input
+                type="text"
+                placeholder="Enter player name"
+                value={data2.query}
+                onChange={(e) => setData2({ ...data2, query: e.target.value })}
+            />
         </div>
         </div>
-          { (data.results.length > 0 && data.results.length) && <Table player1={data.results[0]} player2={JBurrow} /> }
+          { (data1.results.length > 0 && data2.results.length) && <Table player1={data1.results[0]} player2={data2.results[0]} /> }
       </div>
     </div>
   );
