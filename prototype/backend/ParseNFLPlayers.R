@@ -21,7 +21,7 @@ get_player_data <- function(player_name_query) {
     player_team_data <- team_data %>% filter(team_abbr == player_factor_data$recent_team)
   }
   full_player_data <- bind_cols(filtered_player_roster, player_numeric_data, player_factor_data, player_team_data)
-  player_json <- jsonlite::toJSON(full_player_data)
+  player_json <- jsonlite::toJSON(full_player_data, pretty=TRUE)
   return(player_json)
 }
 
