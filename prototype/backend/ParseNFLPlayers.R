@@ -11,12 +11,12 @@ get_player_data <- function(player_name_query) {
   filtered_player_roster <- roster %>% filter(full_name == player_name_query)
   if(filtered_player_roster$position == 'K') {
     player_stats_raw <- player_stats_kicker %>% filter(grepl(filtered_player_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)
-    player_numeric_data <- player_stats_raw %>% summarise(across(where(is.numeric), mean))
+    player_numeric_data <- player_stats_raw %>% summarise(across(where(is.numeric), mean)) %>% mutate_if(is.numeric, round, digits = 2)
     player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
-    player_team_data <- team_data %>% filter(team == player_factor_data$recent_team)
+    player_team_data <- team_data %>% filter(team_abbr == player_factor_data$team)
   } else {
     player_stats_raw <- player_stats %>% filter(grepl(filtered_player_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)
-    player_numeric_data <- player_stats_raw %>% summarise(across(where(is.numeric), mean))
+    player_numeric_data <- player_stats_raw %>% summarise(across(where(is.numeric), mean)) %>% mutate_if(is.numeric, round, digits = 2)
     player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
     player_team_data <- team_data %>% filter(team_abbr == player_factor_data$recent_team)
   }
@@ -25,6 +25,6 @@ get_player_data <- function(player_name_query) {
   return(player_json)
 }
 
-get_player_data("Patrick Mahomes")
+get_player_data("Harrison Butker")
 
 

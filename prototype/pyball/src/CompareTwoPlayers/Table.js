@@ -34,9 +34,9 @@ export function Table(props) {
                     <td>{props.player2.passing_tds + props.player1.rushing_tds}</td>
                 </tr>
                 <tr>
-                    <td class='greatest' >{(props.player1.completions / props.player1.attempts) * 100}%</td>
+                    <td class='greatest' >{((props.player1.completions / props.player1.attempts) * 100).toFixed(2)}%</td>
                     <th>% Completion</th>
-                    <td>{(props.player2.completions / props.player2.attempts) * 100}%</td>
+                    <td>{((props.player2.completions / props.player2.attempts) * 100).toFixed(2)}%</td>
                 </tr>
                 <tr>
                     <td>{props.player1.interceptions}</td>

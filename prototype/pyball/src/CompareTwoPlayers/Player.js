@@ -16,7 +16,7 @@ export function Player({ player }) {
                 <img class="img-logo" src={player.team_logo_espn} alt={player.team_nick} height={50} />
                 <p>{player.team_name}</p>
             </div>
-            <p>{player.position} #{player.jersey_number}</p>
+            { 'jersey_number' in player ? <p>{player.position} #{player.jersey_number}</p> : null }
             <header>
                 {player.full_name}
             </header>
