@@ -1,0 +1,31 @@
+/* Jacob Snyder */
+
+table{
+    width: 100%;
+    color: rgb(255, 255, 255);
+}
+
+th {
+    font-family: 'helvetica';
+    background-color: rgb(73, 84, 95);
+    text-align: center;
+    font-size: 16px;
+}
+
+tr{
+    font-family: helvetica;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: slategray;
+    text-align: left;
+    vertical-align: bottom;
+    height: 50px;
+}
+
+tr:nth-child(even) {
+    background-color: rgb(73, 84, 95);
+  }
+
+tr:hover {
+    background-color: #363636;
+}

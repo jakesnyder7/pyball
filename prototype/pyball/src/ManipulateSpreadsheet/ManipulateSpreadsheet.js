@@ -1,6 +1,7 @@
 import Navigation from '../Navigation/Navigation';
 import React from 'react';
 import { ManipulatableTable } from './ManipulatableTable.js';
+import './ManipulateSpreadsheet.css';
 
 /**
  * Helper function for comparing two strings.
