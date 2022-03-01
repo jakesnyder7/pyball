@@ -22,6 +22,7 @@ pbp <- load_pbp()
 player_stats <- load_player_stats()
 player_stats_kicking <- load_player_stats(stat_type = "kicking")
 roster <- load_rosters()
+team_data <- load_teams()
 
 # roster has the images and full names and number... what other data?
 # other stats as well :)
@@ -32,7 +33,7 @@ roster <- load_rosters()
 
 ```{r}
 # filter the roster for the data about the player
-filtered_roster <- roster %>% filter(full_name == "Myles Garrett")
+filtered_roster <- roster %>% filter(full_name == "Joe Burrow")
 
 
 
@@ -72,7 +73,8 @@ get_player_data <- function(player_name_query) {
   player_numeric_data <- j_burrow_raw %>% 
   summarise(across(where(is.numeric), mean))
   player_factor_data <- j_burrow_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
-  full_player_data <- bind_cols(filtered_player_roster, player_numeric_data, player_factor_data)
+  player_team_data <- team_data %>% filter(team_abbr == player_factor_data$recent_team)
+  full_player_data <- bind_cols(filtered_player_roster, player_numeric_data, player_factor_data, player_team_data)
   player_json <- jsonlite::toJSON(full_player_data)
   return(player_json)
 }
@@ -99,5 +101,7 @@ get_player_data("Harrison Butker")
 ```
 ```{r}
 unique(roster$position)
+
+team_data <- load_teams()
 ```
 

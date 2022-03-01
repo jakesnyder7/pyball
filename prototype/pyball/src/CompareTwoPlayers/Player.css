@@ -8,12 +8,23 @@
     padding: 20px;
 }
 
-img {
-    background-color: #404040;
+.img-player {
+    background-color: whitesmoke;
     border-radius: 50%;
     border: 2px solid #1DB954;
 }
 
+.img-logo {
+    border: 0px solid white;
+    border-radius: 0%;
+    float: left;
+}
+
 header {
     padding: 10px;
+}
+
+p {
+    font-size: 15px;
+    font-weight: 200;
 }

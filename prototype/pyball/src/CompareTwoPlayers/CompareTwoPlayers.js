@@ -74,7 +74,7 @@ function App() {
             />
         </div>
         </div>
-          { (data1.results.length > 0 && data2.results.length) && <Table player1={data1.results[0]} player2={data2.results[0]} /> }
+          { (data1.results.length > 0 && data2.results.length > 0) && <Table player1={data1.results[0]} player2={data2.results[0]} /> }
       </div>
     </div>
   );

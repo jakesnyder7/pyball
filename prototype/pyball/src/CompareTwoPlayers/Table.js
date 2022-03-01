@@ -36,7 +36,7 @@ export function Table(props) {
                 <tr>
                     <td class='greatest' >{(props.player1.completions / props.player1.attempts) * 100}%</td>
                     <th>% Completion</th>
-                    <td>{(props.player1.completions / props.player1.attempts) * 100}%</td>
+                    <td>{(props.player2.completions / props.player2.attempts) * 100}%</td>
                 </tr>
                 <tr>
                     <td>{props.player1.interceptions}</td>
@@ -46,7 +46,7 @@ export function Table(props) {
                 <tr>
                     <td class='greatest' >{props.player1.passing_yards + props.player1.rushing_yards}</td>
                     <th>YDS</th>
-                    <td>{props.player1.passing_yards + props.player1.rushing_yards}</td>
+                    <td>{props.player2.passing_yards + props.player2.rushing_yards}</td>
                 </tr>
             </table>
         </div>
