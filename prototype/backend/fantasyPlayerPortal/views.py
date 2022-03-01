@@ -29,7 +29,7 @@ def nfl_player(request, name):
         parsed = {'message': 'Our platform currently only supports offensive players and kickers. Try another search term.'}
 
     if request.method == 'GET':
-        return JsonResponse(parsed, status=status.HTTP_200_OK, safe=False)
+        return JsonResponse(parsed, status=status.HTTP_200_OK, safe=False, json_dumps_params={"indent": 4})
     else:
         return JsonResponse({'message': 'This operation is not supported'}, status=status.HTTP_204_NO_CONTENT)
 
