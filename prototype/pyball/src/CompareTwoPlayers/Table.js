@@ -19,29 +19,34 @@ export function Table(props) {
         <div className='Table' >
             <table>
                 <tr>
-                    <td class='greatest' >{props.player1.rating}</td>
-                    <th>Rating</th>
-                    <td>{props.player2.rating}</td>
+                    <th colspan="3">
+                    Average Weekly Stats from 2021 Season
+                    </th>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.td}</td>
+                    <td class='greatest' >{props.player1.fantasy_points}</td>
+                    <th>Fantasy Points</th>
+                    <td>{props.player2.fantasy_points}</td>
+                </tr>
+                <tr>
+                    <td class='greatest' >{props.player1.passing_tds + props.player1.rushing_tds}</td>
                     <th>TD</th>
-                    <td>{props.player2.td}</td>
+                    <td>{props.player2.passing_tds + props.player1.rushing_tds}</td>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.pcomp}</td>
+                    <td class='greatest' >{(props.player1.completions / props.player1.attempts) * 100}%</td>
                     <th>% Completion</th>
-                    <td>{props.player2.pcomp}</td>
+                    <td>{(props.player1.completions / props.player1.attempts) * 100}%</td>
                 </tr>
                 <tr>
-                    <td>{props.player1.int}</td>
+                    <td>{props.player1.interceptions}</td>
                     <th>INT</th>
-                    <td class='greatest' >{props.player2.int}</td>
+                    <td class='greatest' >{props.player2.interceptions}</td>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.yds}</td>
+                    <td class='greatest' >{props.player1.passing_yards + props.player1.rushing_yards}</td>
                     <th>YDS</th>
-                    <td>{props.player2.yds}</td>
+                    <td>{props.player1.passing_yards + props.player1.rushing_yards}</td>
                 </tr>
             </table>
         </div>

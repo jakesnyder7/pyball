@@ -1,7 +1,6 @@
 import Navigation from '../Navigation/Navigation';
 import './CompareTwoPlayers.css';
 import { Player } from './Player.js';
-import NFLPlayer from './NFLPlayer.js';
 import { Table } from './Table.js';
 import useFetch from '../api/UseFetch.js';
 
@@ -57,6 +56,7 @@ function App() {
               onChange={(e) => setData({ ...data, query: e.target.value })}
           />
         </div>
+        <p>{data.results.message}</p>
         <div className='Vs' >
           <h1>
               VS.
@@ -74,7 +74,7 @@ function App() {
           </form>
         </div>
         </div>
-          { (data.results.length > 0 && data.results.length) && <Table player1={PMahomes} player2={JBurrow} /> }
+          { (data.results.length > 0 && data.results.length) && <Table player1={data.results[0]} player2={JBurrow} /> }
       </div>
     </div>
   );
