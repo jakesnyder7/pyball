@@ -1,0 +1,115 @@
+---
+title: "PracticeR"
+author: "Marion Geary"
+date: "3/1/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+# Practice R
+
+Welcome to R! As a little background, R is an open source statistical programming language written largely in C. It is largely a functional programming language. (There is some object oriented stuff but it's super weird.) This is an R Markdown file, which is pretty much R's version of a Jupyter Notebook combining markdown text and code.
+
+To start, let's import some libraries.
+
+```{r}
+# This is a super popular collection of packages designed for data science. It provides standardization 
+# across all of its packages which is super helpful (and not always the case with an opensource 
+# language). When using the tidyverse, dataframes are called "tibbles".
+library(tidyverse)
+# This is a collections of packages for machine learning! It is created with the same principles and syntax
+# as the tidyverse
+library(tidymodels)
+# This collection of packages has all of our data and functions. It mimics the syntax of the tidyverse
+library(nflverse)
+```
+
+Press the green play button in the upper right hand corner to run the whole code chunk or run a single line using `Cmd/Ctrl + Enter`.
+
+To add a code chunk, use `Cmd/Ctrl + Opt + I`.
+
+The assignment operator in `R` is `<-`.
+
+```{r}
+# Load in data from the nflverse
+player_stats <- load_player_stats(seasons = most_recent_season())
+player_stats_kicker <- load_player_stats(seasons = most_recent_season(), stat_type = "kicking")
+roster <- load_rosters(seasons = most_recent_season())
+team_data <- load_teams()
+```
+
+Now we can work with the data! Check out these [help files](https://www.rstudio.com/resources/cheatsheets/) to get started - I recommend starting with `dplyr` for filtering data or `ggplot` for creating graphs.
+
+Here's a quick run through of how to manipulate data.
+
+```{r}
+# The `%>%` operator is called a "pipe". It's a way to combine multiple functions in one line of code. Example:
+player_stats_grouped <- group_by(player_stats, recent_team)
+player_stats_grouped_max <- summarise(player_stats_grouped, max_fantasy_points = max(fantasy_points_ppr))
+
+# Now let's do the same thing with a pipe %>%
+max_fantasy_points_per_team <- player_stats %>% group_by(recent_team) %>% summarise(max_fantasy_points = max(fantasy_points_ppr))
+
+# filter() gets rows
+player_stats_filter <- player_stats %>% filter(week == 5)
+
+# select() gets columns
+player_stats_select <- player_stats %>% select(starts_with("rushing") | starts_with("receiving") | starts_with("player"))
+
+# group_by() lets you manipulate data based on a group. The tibble looks the same, but it applies other functions
+# to each group rather than to the whole at once
+max_fantasy_points_per_team <- player_stats %>% group_by(recent_team) %>% summarise(max_fantasy_points = max(fantasy_points_ppr))
+
+# summarise() creates a summary table
+player_stats_summary <- player_stats %>% summarise(avg = mean(fantasy_points_ppr))
+
+# mutate() changes the tibble. For example, create a new column
+player_stats_mutate <- player_stats %>% mutate(percent_completion = completions / attempts)
+```
+
+We can also make lots of graphs! Check out the `ggplot` cheat sheet for more details.
+
+The basic structure is `ggplot(data = <DATA>) + <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`
+
+```{r}
+# Here are some plot examples
+ggplot(player_stats) + geom_point(aes(x = attempts, y = completions, color = season_type))
+
+ggplot(player_stats) + geom_boxplot(aes(x = fantasy_points_ppr)) + facet_wrap(~ recent_team)
+
+ggplot(player_stats %>% filter(player_name == "M.Stafford" | player_name == "J.Burrow"), mapping = aes(x = week, y = fantasy_points_ppr)) + geom_point() + facet_wrap(~ player_name) + geom_smooth() + labs(x = "Week", y = "Fantasy Points")
+```
+
+We can also integrate Python with R! Create a python code chunk:
+
+```{python}
+for i in range(0, 5):
+  print(i)
+```
+
+Notice that this calls the package `reticulate` from the `tidyverse`. The cheatsheet is very helpful. Here is a closer look at some helpful Python-in-R functions.
+
+```{python}
+# We can access r objects in python! And manipulate them!
+# Use r.obj_name
+r.player_stats.head()
+panthers_df = r.player_stats[r.player_stats["recent_team"] == 'CAR']
+panthers_df.tail()
+```
+
+```{r}
+# this should already be installed in the tidyverse
+# Use py$obj_name
+library(reticulate)
+# We can access python objects in r too
+panthers_r <- py$panthers_df %>% filter(week == 5)
+
+# Run a single line of python
+# The code needs to be passed as a string
+py_run_string("print(r.panthers_r['fantasy_points'].mean())")
+```
+
+Have fun exploring! Feel free to change this file.
