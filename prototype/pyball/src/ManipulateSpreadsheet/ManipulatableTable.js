@@ -132,36 +132,51 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
   /**
    * Function to apply conditional formatting to the cells in the specified column.
    * Applies the specified background color to all cells in that column with values that
-   * lie in the specified range.
+   * lie in the specified range. If both bounds are both valid ints, then the range is
+   * [min, max]. If only one bound is a valid int, then the other bound is treated as
+   * positive or negative infinity. If neither bound is a valid int, then the range is
+   * empty.
    * @param min The lower bound (inclusive) of the range.
    * @param max The upper bound (inclusive) of the range.
    * @param columnID The id of the column to which to apply the conditional formatting.
    * @param color The background color to apply.
-   * Postcondition: If min and max are valid ints, then the background colors of all cells
-   * in the given column with values that lie in the range defined by min and max have been
-   * set to the specified color. The background colors of all other cells in that column have
-   * been set to null. No other cell's background color has been changed.
+   * Postcondition: The background color of each cells in the given column has been set to
+   * the specified color if the cell value lies in the range and null otherwise. The
+   * background colors of cells in other columns have not been changed.
   */
   function applyConditionalFormatting(min, max, columnID, color) {
     // Helper function to determine whether argument is a valid int
     function validInt(x) {
       return !isNaN(parseInt(x));
     }
-    // Apply conditional formatting if both min and max are valid ints
-    if (validInt(min) && validInt(max)) {
-      rows.forEach(row => {
-        row.cells.forEach(cell => {
-          cell.setState( (oldval) => {
-            return (
-              { backgroundColor: cell.column.id === columnID
-                ? (cell.value >= min && cell.value <= max)
-                  ? color : null
-                : oldval}
-              );
-            });
+    // Helper function to determine whether value is in range
+    function inRange(min, max, val) {
+      let validMin = validInt(min);
+      let validMax = validInt(max);
+      if (validMin && validMax) {
+        return val >= min && val <= max;
+      } else if (validMin) {
+        return val >= min;
+      } else if (validMax) {
+        return val <= max;
+      }
+      return false;
+    }
+    // Apply conditional formatting
+    rows.forEach(row => {
+      row.cells.forEach(cell => {
+        cell.setState( (oldval) => {
+          return (
+            { backgroundColor: cell.column.id === columnID
+              // if cells are in the specified column, highlight them if they
+              // are in the range; otherwise, remove any preexistent highlight
+              ? (inRange(min, max, cell.value) ? color : null)
+              // if cells are not in the specified column, leave them as is
+              : oldval}
+            );
+          });
         })
       });
-    }
   };
 
   // Render the table UI 
