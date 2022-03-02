@@ -71,7 +71,9 @@ function ComparandInput({columnID, applyFormat}) {
           applyFormat(min, max, columnID, e.target.value);
         }}>
           {colorOptions.map(colorOption => (
-            <option value={colorOption} style={{backgroundColor: colorOption}}></option>
+            <option value={colorOption} style={{backgroundColor: colorOption}}>
+              {colorOption}
+            </option>
           ))}
         </select>
       </label>
