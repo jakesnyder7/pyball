@@ -24,9 +24,9 @@ export function Table(props) {
                     </th>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.fantasy_points}</td>
+                    <td class='greatest' >{props.player1.fantasy_points_ppr}</td>
                     <th>Fantasy Points</th>
-                    <td>{props.player2.fantasy_points}</td>
+                    <td>{props.player2.fantasy_points_ppr}</td>
                 </tr>
                 <tr>
                     <td class='greatest' >{props.player1.passing_tds + props.player1.rushing_tds}</td>
