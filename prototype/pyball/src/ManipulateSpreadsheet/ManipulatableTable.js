@@ -87,13 +87,13 @@ function ComparandInput({columnID, applyFormat}) {
  * Currently supports single- and multi-column sorting, filtering, and conditional formatting.
  * @author Claire Wagner
  * @param columns The columns to display in the table
- * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useTable).
+ * (must conform to react-table specifications (https://react-table.tanstack.com/docs/api/useTable)).
  * @param data The data to display in the table
- * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useTable).
+ * (must conform to react-table specifications (https://react-table.tanstack.com/docs/api/useTable)
+ * and include a boolean property called 'formattable' dictating whether or not the column should
+ * be conditionally formattable).
  * @param filterTypes Filter types to use when filtering data instead of the default options (optional)
- * (must conform to react-table specifications: https://react-table.tanstack.com/docs/api/useFilters).
- * @param formattable An object mapping column accessors to boolean values specifying whether or not
- * that column should be conditionally formattable (true if yes, false if no).
+ * (must conform to react-table specifications (https://react-table.tanstack.com/docs/api/useFilters)).
  * @returns A div containing the table.
  * Portions of this hook are based on https://stackoverflow.com/a/69128343 (CC BY-SA 4.0 license) and
  * https://github.com/TanStack/react-table/blob/v7/examples/basic,
@@ -194,7 +194,7 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
                     {column.isSorted ? (column.isSortedDesc ? ' 🔽': ' 🔼') : ''}
                   </span>
                   {/* conditional formatting UI */}
-                  {formattable[column.id] && <span>
+                  {column.formattable && <span>
                     <ComparandInput columnID={column.id} applyFormat={
                       applyConditionalFormatting
                     } />                            
