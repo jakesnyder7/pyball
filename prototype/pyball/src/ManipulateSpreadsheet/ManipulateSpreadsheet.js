@@ -1,6 +1,7 @@
 import Navigation from '../Navigation/Navigation';
 import React from 'react';
 import { ManipulatableTable } from './ManipulatableTable.js';
+import { Tabs } from './Tabs.js'
 import './ManipulateSpreadsheet.css';
 
 /**
@@ -108,18 +109,23 @@ function ManipulateSpreadsheet() {
     []
   );
 
+  // Tabs for different positions
+  const tabs = [
+      {label: 'QB', children: () => { return (<ManipulatableTable columns={columns} data={data} filterTypes={filterTypes} />); } },
+      {label: 'RB', children: "RB: coming soon"},
+      {label: 'WR', children: "WR: coming soon"},
+      {label: 'TE', children: "TE: coming soon"},
+  ];
+
   return (
     <div>
       <Navigation />
       <div>
-        <header>
-          <p>
-            Click a column header to sort by that column 
-            (hold down the shift key to sort by multiple columns at a time). 
-          </p>
-        </header>
+        <Tabs tabs={tabs} />
       </div>
+      {/*
       <ManipulatableTable columns={columns} data={data} filterTypes={filterTypes} />
+      */}
     </div>
     );
   }
