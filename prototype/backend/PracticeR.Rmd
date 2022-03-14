@@ -112,6 +112,6 @@ panthers_r <- py$panthers_df %>% filter(week == 5)
 py_run_string("print(r.panthers_r['fantasy_points'].mean())")
 ```
 
-I recommend checking out the [nflverse documentation](https://nflverse.nflverse.com/) - all of the packages in this library have some cool functions that are worth exploring, and the documenation is pretty comprehensive.
+I recommend checking out the [nflverse documentation](https://nflverse.nflverse.com/) - all of the packages in this library have some cool functions that are worth exploring, and the documentation is pretty comprehensive.
 
 Have fun exploring! Feel free to change this file.
