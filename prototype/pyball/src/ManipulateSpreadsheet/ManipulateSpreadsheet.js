@@ -1,6 +1,7 @@
 import Navigation from '../Navigation/Navigation';
 import React from 'react';
 import { ManipulatableTable } from './ManipulatableTable.js';
+import { Tabs } from './Tabs.js'
 import './ManipulateSpreadsheet.css';
 
 /**
@@ -38,14 +39,14 @@ function ManipulateSpreadsheet() {
   // define data organization into columns and column properties
   const columns = React.useMemo(
     () => [
-      {Header: 'Player', accessor: 'player', filter: 'any_word_startswith'},
-      {Header: 'Pass Yds', accessor: 'pass_yds', filter: 'startswith'},
-      {Header: 'Att', accessor: 'att', filter: 'startswith'},
-      {Header: 'Cmp', accessor: 'cmp', filter: 'startswith'},
-      {Header: 'TD', accessor: 'td', filter: 'startswith'},
-      {Header: 'INT', accessor: 'int', filter: 'startswith'},
-      {Header: 'Lng', accessor: 'lng', filter: 'startswith'},
-      {Header: 'Sck', accessor: 'sck', filter: 'startswith'},
+      {Header: 'Player', accessor: 'player', filter: 'any_word_startswith', formattable: false},
+      {Header: 'Pass Yds', accessor: 'pass_yds', filter: 'startswith', formattable: true},
+      {Header: 'Att', accessor: 'att', filter: 'startswith', formattable: true},
+      {Header: 'Cmp', accessor: 'cmp', filter: 'startswith', formattable: true},
+      {Header: 'TD', accessor: 'td', filter: 'startswith', formattable: true},
+      {Header: 'INT', accessor: 'int', filter: 'startswith', formattable: true},
+      {Header: 'Lng', accessor: 'lng', filter: 'startswith', formattable: true},
+      {Header: 'Sck', accessor: 'sck', filter: 'startswith', formattable: true},
     ],
     []
   );
@@ -74,9 +75,6 @@ function ManipulateSpreadsheet() {
     }),
     []
   );
-
-  // specify whether or not each column should be conditionally formattable
-  const formattable = {name: false, pass_yds: true, att: true, cmp: true, td: true, int: true, lng: true, sck: true}; 
 
   // hard-coded data for prototype (will be provided by backend in final product)
   // data source: https://www.nfl.com/stats/player-stats/
@@ -111,18 +109,23 @@ function ManipulateSpreadsheet() {
     []
   );
 
+  // Tabs for different positions
+  const tabs = [
+      {label: 'QB', children: () => { return (<ManipulatableTable columns={columns} data={data} filterTypes={filterTypes} />); } },
+      {label: 'RB', children: "RB: coming soon"},
+      {label: 'WR', children: "WR: coming soon"},
+      {label: 'TE', children: "TE: coming soon"},
+  ];
+
   return (
     <div>
       <Navigation />
       <div>
-        <header>
-          <p>
-            Click a column header to sort by that column 
-            (hold down the shift key to sort by multiple columns at a time). 
-          </p>
-        </header>
+        <Tabs tabs={tabs} />
       </div>
-      <ManipulatableTable columns={columns} data={data} filterTypes={filterTypes} formattable={formattable} />
+      {/*
+      <ManipulatableTable columns={columns} data={data} filterTypes={filterTypes} />
+      */}
     </div>
     );
   }
