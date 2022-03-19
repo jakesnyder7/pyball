@@ -20,5 +20,6 @@ from fantasyPlayerPortal import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/<str:name>/', views.nfl_player),
+    path('api/player/<str:name>/', views.nfl_player),
+    path('api/position/<str:pos>/', views.position_players),
 ]
