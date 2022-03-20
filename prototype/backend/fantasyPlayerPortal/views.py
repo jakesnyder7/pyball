@@ -21,6 +21,9 @@ r['source']('ParseNFLPlayers.R')
 ## R function to get the data from a player based on name
 parse_nfl_player_r = robjects.globalenv['get_player_data']
 
+## R function to get the data based on position
+parse_position_players_r = robjects.globalenv['get_position_players']
+
 @api_view(['GET', 'POST', 'DELETE'])
 def nfl_player(request, name):
     player_strvec = parse_nfl_player_r(name)
