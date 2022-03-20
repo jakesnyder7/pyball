@@ -19,9 +19,7 @@ team_data <- load_teams()
 get_player_data <- function(player_name_query) {
   player_name_query <- str_to_title(player_name_query)
   filtered_player_roster <- roster %>% filter(str_to_title(full_name) == player_name_query) %>% select(-season)
-  print(filtered_player_roster)
   player_name_str <- paste(substr(filtered_player_roster$first_name, 0, 1), ".", filtered_player_roster$last_name, sep = "")
-  print(filtered_player_roster$position)
   if(filtered_player_roster$position == 'K') {
     player_stats_raw <- player_stats_kicker %>% filter(player_name == player_name_str) %>% mutate_if(is.character, as.factor) %>% filter(recent_team == filtered_player_roster$team)
     if(dim(player_stats_raw)[1] == 0) {
@@ -65,7 +63,6 @@ get_position_players <- function(position_query) {
   position_roster <- roster %>% filter(position == position_query | depth_chart_position == position_query)
   position_info <- list()
   for(player in position_roster$full_name) {
-    print(player)
     player_data <- jsonlite::fromJSON(get_player_data(player))
     position_info[[player]] <- player_data
   }
