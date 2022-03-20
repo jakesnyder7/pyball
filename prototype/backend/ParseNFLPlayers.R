@@ -17,6 +17,7 @@ team_data <- load_teams()
 #' @param player_name_query The name of the desired player
 #' @return Data on the player formatted as a JSON
 get_player_data <- function(player_name_query) {
+  player_name_query <- str_to_title(player_name_query)
   filtered_player_roster <- roster %>% filter(full_name == player_name_query) %>% select(-season)
   player_name_str <- paste(substr(filtered_player_roster$first_name, 0, 1), ".", filtered_player_roster$last_name, sep = "")
   if(filtered_player_roster$position == 'K') {
@@ -49,6 +50,7 @@ get_player_data <- function(player_name_query) {
 
 # examples highlighting the two cases for player data return
 get_player_data("Patrick Mahomes")
+get_player_data("patrick mahomes")
 get_player_data("Maxx Williams")
 get_player_data("Trace McSorley")
 
