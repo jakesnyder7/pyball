@@ -25,8 +25,9 @@ get_player_data <- function(player_name_query) {
       broken_json <- jsonlite::toJSON(broken, pretty=TRUE)
       return(broken_json)
     }
-    player_numeric_data <- player_stats_raw %>% summarise(across(where(is.numeric), mean)) %>% mutate_if(is.numeric, round, digits = 2)
-    player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
+    player_numeric_data <- player_stats_raw %>% select((where(is.numeric)), -season)
+    player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor), season) %>% 
+      select(!season_type)
     player_team_data <- team_data %>% filter(team_abbr == player_factor_data$team)
   } else {
     player_stats_raw <- player_stats %>% filter(grepl(filtered_player_roster$last_name, player_name)) %>% mutate_if(is.character, as.factor)
@@ -35,11 +36,12 @@ get_player_data <- function(player_name_query) {
       broken_json <- jsonlite::toJSON(broken, pretty=TRUE)
       return(broken_json)
     }
-    player_numeric_data <- player_stats_raw %>% summarise(across(where(is.numeric), mean)) %>% mutate_if(is.numeric, round, digits = 2)
-    player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor)) %>% select(!season_type)
+    player_numeric_data <- player_stats_raw %>% select((where(is.numeric)), -season)
+    player_factor_data <- player_stats_raw %>% slice_head(n = 1) %>% select(where(is.factor), season) %>% 
+      select(!season_type)
     player_team_data <- team_data %>% filter(team_abbr == player_factor_data$recent_team)
   }
-  full_player_data <- bind_cols(filtered_player_roster, player_numeric_data, player_factor_data, player_team_data)
+  full_player_data <- c(filtered_player_roster, player_numeric_data, player_factor_data, player_team_data)
   player_json <- jsonlite::toJSON(full_player_data, pretty=TRUE)
   return(player_json)
 }
