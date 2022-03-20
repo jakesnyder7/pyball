@@ -18,7 +18,7 @@ team_data <- load_teams()
 #' @return Data on the player formatted as a JSON
 get_player_data <- function(player_name_query) {
   player_name_query <- str_to_title(player_name_query)
-  filtered_player_roster <- roster %>% filter(str_to_title(full_name) == player_name_query) %>% select(-season)
+  filtered_player_roster <- roster %>% filter(str_to_title(full_name) == player_name_query) %>% select(-season) %>% slice_head(n = 1)
   player_name_str <- paste(substr(filtered_player_roster$first_name, 0, 1), ".", filtered_player_roster$last_name, sep = "")
   if(filtered_player_roster$position == 'K') {
     player_stats_raw <- player_stats_kicker %>% filter(player_name == player_name_str) %>% mutate_if(is.character, as.factor) %>% filter(recent_team == filtered_player_roster$team)
@@ -34,7 +34,7 @@ get_player_data <- function(player_name_query) {
   } else {
     player_stats_raw <- player_stats %>% filter(player_name == player_name_str) %>% mutate_if(is.character, as.factor) %>% filter(recent_team == filtered_player_roster$team)
     if(dim(player_stats_raw)[1] == 0) {
-      broken <- add_column(filtered_player_roster %>% select(full_name), message = "Not an active player")
+      broken <- add_column(filtered_player_roster %>% select(full_name), message = "Not an active player or not linked to team")
       broken_json <- jsonlite::toJSON(broken, pretty=TRUE)
       return(broken_json)
     }
@@ -71,4 +71,8 @@ get_position_players <- function(position_query) {
 }
 
 get_position_players("QB")
+get_position_players("RB")
+get_position_players("WR")
 get_player_data("Colt McCoy")
+get_player_data("Chris Thompson")
+
