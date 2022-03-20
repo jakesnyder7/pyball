@@ -1,15 +1,12 @@
 import Navigation from '../Navigation/Navigation';
+import { Roster } from './Roster.js'
 
 function EditTeam() {
     return (
       <div>
         <Navigation />
         <div>
-          <header>
-            <p>
-                Here is the Edit Team page!
-            </p>
-          </header>
+          <Roster/>
         </div>
       </div>
     );
