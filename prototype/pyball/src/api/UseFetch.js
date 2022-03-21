@@ -12,7 +12,7 @@ const useFetch1 = () => {
         const timeoutId = setTimeout(() => {
           const fetch = async () => {
             try {
-              const res = await Got.get(`/${data1.query}/`);
+              const res = await Got.get(`/player/${data1.query}/`);
               setData1({ ...data1, results: res.data });
             } catch (err) {
               console.error(err);

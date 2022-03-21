@@ -26,13 +26,13 @@ function App() {
 
   // Empty player to use as placeholder before queries entered
   const emptyPlayer = {
-    full_name: "",
-    headshot_url: 'https://pdtxar.com/wp-content/uploads/2019/04/person-placeholder.jpg',
+    full_name: [""],
+    headshot_url: ['https://pdtxar.com/wp-content/uploads/2019/04/person-placeholder.jpg'],
   }
 
   // Another sample player
   const JBurrow = {
-    full_name: 'Joe Burrow',
+    full_name: ['Joe Burrow'],
     headshot_url: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/fhvbn2cstui3nchv8vil',
     rating: 86.5,
     td: 2,
@@ -50,7 +50,7 @@ function App() {
       <div className='CompareTwoPlayers'>
       <div className='PlayerDiv' >
         <div className='Playerz' >
-          { data1.results.length > 0 ? <Player player={data1.results[0]} /> : <Player player={emptyPlayer} /> }
+          { Object.keys(data1.results).length > 2 ? <Player player={data1.results} /> : <Player player={emptyPlayer} /> }
           <input
               type="text"
               placeholder="Enter player name"
@@ -65,7 +65,7 @@ function App() {
           </h1>
         </div>
         <div className='Playerz' >
-          { data2.results.length > 0 ? <Player player={data2.results[0]} /> : <Player player={emptyPlayer} /> }
+          { Object.keys(data2.results).length > 2 ? <Player player={data2.results} /> : <Player player={emptyPlayer} /> }
             <input
                 type="text"
                 placeholder="Enter player name"
@@ -74,7 +74,7 @@ function App() {
             />
         </div>
         </div>
-          { (data1.results.length > 0 && data2.results.length > 0) && <Table player1={data1.results[0]} player2={data2.results[0]} /> }
+          { (Object.keys(data1.results).length > 0 && Object.keys(data2.results).length > 0) && <Table player1={data1.results} player2={data2.results} /> }
       </div>
     </div>
   );

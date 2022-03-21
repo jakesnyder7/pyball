@@ -20,33 +20,33 @@ export function Table(props) {
             <table>
                 <tr>
                     <th colspan="3">
-                        Average Weekly Stats from 2021 Season
+                        Stats from Week 1 of 2021 Season
                     </th>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.fantasy_points_ppr}</td>
+                    <td class='greatest' >{props.player1.fantasy_points_ppr[0]}</td>
                     <th>Fantasy Points</th>
-                    <td>{props.player2.fantasy_points_ppr}</td>
+                    <td>{props.player2.fantasy_points_ppr[0]}</td>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.passing_tds + props.player1.rushing_tds}</td>
+                    <td class='greatest' >{props.player1.passing_tds[0] + props.player1.rushing_tds[0]}</td>
                     <th>TD</th>
-                    <td>{props.player2.passing_tds + props.player1.rushing_tds}</td>
+                    <td>{props.player2.passing_tds[0] + props.player1.rushing_tds[0]}</td>
                 </tr>
                 <tr>
-                    <td class='greatest' >{((props.player1.completions / props.player1.attempts) * 100).toFixed(2)}%</td>
+                    <td class='greatest' >{((props.player1.completions[0] / props.player1.attempts[0]) * 100).toFixed(2)}%</td>
                     <th>% Completion</th>
-                    <td>{((props.player2.completions / props.player2.attempts) * 100).toFixed(2)}%</td>
+                    <td>{((props.player2.completions[0] / props.player2.attempts[0]) * 100).toFixed(2)}%</td>
                 </tr>
                 <tr>
-                    <td>{props.player1.interceptions}</td>
+                    <td>{props.player1.interceptions[0]}</td>
                     <th>INT</th>
-                    <td class='greatest' >{props.player2.interceptions}</td>
+                    <td class='greatest' >{props.player2.interceptions[0]}</td>
                 </tr>
                 <tr>
-                    <td class='greatest' >{props.player1.passing_yards + props.player1.rushing_yards}</td>
+                    <td class='greatest' >{props.player1.passing_yards[0] + props.player1.rushing_yards[0]}</td>
                     <th>YDS</th>
-                    <td>{props.player2.passing_yards + props.player2.rushing_yards}</td>
+                    <td>{props.player2.passing_yards[0] + props.player2.rushing_yards[0]}</td>
                 </tr>
             </table>
         </div>
