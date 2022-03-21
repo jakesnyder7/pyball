@@ -4,6 +4,7 @@ import { Player } from './Player.js';
 import { Table } from './Table.js';
 import useFetch1 from '../api/UseFetch.js';
 import useFetch2 from '../api/useFetch2';
+import { ComparisonChart } from './ComparisonChart';
 
 
 /**
@@ -76,6 +77,7 @@ function App() {
         </div>
           { (Object.keys(data1.results).length > 0 && Object.keys(data2.results).length > 0) && <Table player1={data1.results} player2={data2.results} /> }
       </div>
+      <ComparisonChart />
     </div>
   );
 }
