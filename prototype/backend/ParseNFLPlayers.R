@@ -9,6 +9,7 @@
 library(nflverse)
 library(tidymodels)
 library(tidyverse)
+library(gsisdecoder)
 
 # turn off warnings on console
 options(warn = -1)
@@ -22,7 +23,7 @@ player_stats_kicker <- load_player_stats(
 roster <- load_rosters(seasons = most_recent_season())
 team_data <- load_teams()
 
-official_player_stats <- load_pbp(seasons = most_recent_season()) %>%
+official_player_stats<- load_pbp(seasons = most_recent_season()) %>%
   filter(season_type == "REG") %>%
   calculate_player_stats()
 
