@@ -1,83 +1,66 @@
 import Navigation from '../Navigation/Navigation';
 import './CompareTwoPlayers.css';
+import React from 'react';
 import { Player } from './Player.js';
 import { Table } from './Table.js';
-import useFetch1 from '../api/UseFetch.js';
-import useFetch2 from '../api/useFetch2';
+import { UseFetchInput } from '../api/UseFetchInput.js';
 import { ComparisonChart } from './ComparisonChart';
 
-
 /**
- * Hook to display the web app.
- * @author Marion Geary
- * @returns A div containing all app elements.
+ * Hook to display player information along a search bar to retrieve player information.
+ * @authors Marion Geary and Claire Wagner
+ * @param data The player data.
+ * @param setData A function to use to update the player data.
+ * @returns 
  */
-function App() {
-  // A sample player - in the real app, the player data will be fetched
-  // in the backend
-  const PMahomes = {
-    full_name: 'Patrick Mahomes',
-    headshot_url: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/tlg2oo5yrk6mins3nxxe',
-    rating: 91.3,
-    td: 3,
-    int: 2,
-    pcomp: 66.7,
-    yds: 275
-  };
-
+function PlayerDiv({data, setData}) {
   // Empty player to use as placeholder before queries entered
-  const emptyPlayer = {
+   const emptyPlayer = {
     full_name: [""],
     headshot_url: ['https://pdtxar.com/wp-content/uploads/2019/04/person-placeholder.jpg'],
   }
 
-  // Another sample player
-  const JBurrow = {
-    full_name: ['Joe Burrow'],
-    headshot_url: 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/fhvbn2cstui3nchv8vil',
-    rating: 86.5,
-    td: 2,
-    int: 1,
-    pcomp: 60.5,
-    yds: 250
-  };
+  return (
+    <div className='Playerz' >
+      { Object.keys(data.results).length > 2 ? <Player player={data.results} /> : <Player player={emptyPlayer} /> }
+      <UseFetchInput queryPrefix="player" data={data} setData={setData} placeholderText="Enter player name"/>
+    </div>
+  );
+}
 
-  const { data1, setData1 } = useFetch1();
-  const { data2, setData2 } = useFetch2();
+
+/**
+ * Hook to display the Compare Two Players page.
+ * @author Marion Geary and Claire Wagner
+ * @returns A div containing all page elements.
+ */
+function App() {
+  
+  const [data1, setData1] = React.useState({
+    query: "",
+    results: [],
+  });
+
+  const [data2, setData2] = React.useState({
+    query: "",
+    results: [],
+  });
 
   return (
     <div>
       <Navigation />
       <div className='CompareTwoPlayers'>
-      <div className='PlayerDiv' >
-        <div className='Playerz' >
-          { Object.keys(data1.results).length > 2 ? <Player player={data1.results} /> : <Player player={emptyPlayer} /> }
-          <input
-              type="text"
-              placeholder="Enter player name"
-              value={data1.query}
-              onChange={(e) => setData1({ ...data1, query: e.target.value })}
-          />
-        </div>
-        <p>{data1.results.message}</p>
-        <div className='Vs' >
-          <h1>
-              VS.
-          </h1>
-        </div>
-        <div className='Playerz' >
-          { Object.keys(data2.results).length > 2 ? <Player player={data2.results} /> : <Player player={emptyPlayer} /> }
-            <input
-                type="text"
-                placeholder="Enter player name"
-                value={data2.query}
-                onChange={(e) => setData2({ ...data2, query: e.target.value })}
-            />
-        </div>
+        <div className='PlayerDiv' >
+          <PlayerDiv data={data1} setData={setData1} />
+          <div className='Vs' >
+            <h1>
+                VS.
+            </h1>
+          </div>
+          <PlayerDiv data={data2} setData={setData2} />
         </div>
           { (Object.keys(data1.results).length > 0 && Object.keys(data2.results).length > 0) && <Table player1={data1.results} player2={data2.results} /> }
       </div>
-      <ComparisonChart />
     </div>
   );
 }
