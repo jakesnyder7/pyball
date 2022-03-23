@@ -22,6 +22,10 @@ player_stats_kicker <- load_player_stats(
 roster <- load_rosters(seasons = most_recent_season())
 team_data <- load_teams()
 
+official_player_stats <- load_pbp(seasons = most_recent_season()) %>%
+  filter(season_type == "REG") %>%
+  calculate_player_stats()
+
 #' Get the data about a specified player
 #'
 #' @param player_name_query The name of the desired player
