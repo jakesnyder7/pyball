@@ -94,13 +94,13 @@ get_player_data <- function(player_name_query) {
 # Examples highlighting the different cases for player data return.
 # This includes sample calls as well as calls that were problematic
 # in previous iterations of the functions.
-get_player_data("Patrick Mahomes")
-get_player_data("patrIck mahomes")
-get_player_data("Maxx Williams")
-get_player_data("Mike Williams")
-get_player_data("Trace McSorley")
-get_player_data("Colt McCoy")
-get_player_data("Chris Thompson")
+# get_player_data("Patrick Mahomes")
+# get_player_data("patrIck mahomes")
+# get_player_data("Maxx Williams")
+# get_player_data("Mike Williams")
+# get_player_data("Trace McSorley")
+# get_player_data("Colt McCoy")
+# get_player_data("Chris Thompson")
 
 #' Get data on all players in a specified position
 #'
@@ -119,7 +119,7 @@ get_position_players <- function(position_query) {
 }
 
 # Examples highlighting the different cases for position data return
-get_position_players("QB")
-get_position_players("RB")
-get_position_players("WR")
-get_position_players("PK")
+# get_position_players("QB")
+# get_position_players("RB")
+# get_position_players("WR")
+# get_position_players("PK")
