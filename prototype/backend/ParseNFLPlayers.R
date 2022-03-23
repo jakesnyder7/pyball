@@ -9,7 +9,9 @@
 library(nflverse)
 library(tidymodels)
 library(tidyverse)
+install.packages("gsisdecoder")
 library(gsisdecoder)
+
 
 # turn off warnings on console
 options(warn = -1)
