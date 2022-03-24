@@ -11,9 +11,10 @@ import { ComparisonChart } from './ComparisonChart';
  * @authors Marion Geary and Claire Wagner
  * @param data The player data.
  * @param setData A function to use to update the player data.
- * @returns 
+ * @param setValidResults A function to use to indicate whether results returned by the search bar are valid.
+ * @returns A div containing the player information and the search bar.
  */
-function PlayerDiv({data, setData}) {
+function PlayerDiv({data, setData, setValidResults}) {
   // Empty player to use as placeholder before queries entered
    const emptyPlayer = {
     full_name: [""],
@@ -23,7 +24,7 @@ function PlayerDiv({data, setData}) {
   return (
     <div className='Playerz' >
       { Object.keys(data.results).length > 2 ? <Player player={data.results} /> : <Player player={emptyPlayer} /> }
-      <UseFetchInput queryPrefix="player" data={data} setData={setData} placeholderText="Enter player name"/>
+      <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name"/>
     </div>
   );
 }
@@ -34,17 +35,25 @@ function PlayerDiv({data, setData}) {
  * @author Marion Geary and Claire Wagner
  * @returns A div containing all page elements.
  */
-function App() {
+function CompareTwoPlayers() {
   
+  // the data obtained from a query for Player 1
   const [data1, setData1] = React.useState({
     query: "",
     results: [],
   });
 
+  // the data obtained from a query for Player 2
   const [data2, setData2] = React.useState({
     query: "",
     results: [],
   });
+
+  // whether or not the most recent query for Player 1 produced valid results
+  const [validResults1, setValidResults1] = React.useState(false);
+
+  // whether or not the most recent query for Player 2 produced valid results
+  const [validResults2, setValidResults2] = React.useState(false);
 
   // stats to display for each position
   const stats_by_position = React.useMemo(
@@ -76,19 +85,19 @@ function App() {
       <Navigation />
       <div className='CompareTwoPlayers'>
         <div className='PlayerDiv' >
-          <PlayerDiv data={data1} setData={setData1} />
+          <PlayerDiv data={data1} setData={setData1} setValidResults={setValidResults1} />
           <div className='Vs' >
             <h1>
                 VS.
             </h1>
           </div>
-          <PlayerDiv data={data2} setData={setData2} />
+          <PlayerDiv data={data2} setData={setData2} setValidResults={setValidResults2} />
         </div>
-          { (Object.keys(data1.results).length > 0 && Object.keys(data2.results).length > 0) 
+          { validResults1 && validResults2
           && <ComparisonTable player1={data1.results} player2={data2.results} stats_by_position={stats_by_position} stat_labels={stat_labels}/> }
       </div>
     </div>
   );
 }
 
-export default App;
+export default CompareTwoPlayers;
