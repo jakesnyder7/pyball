@@ -9,7 +9,6 @@
 library(nflverse)
 library(tidymodels)
 library(tidyverse)
-install.packages("gsisdecoder")
 library(gsisdecoder)
 
 
@@ -25,9 +24,11 @@ player_stats_kicker <- load_player_stats(
 roster <- load_rosters(seasons = most_recent_season())
 team_data <- load_teams()
 
-official_player_stats<- load_pbp(seasons = most_recent_season()) %>%
+official_player_stats <- load_pbp(seasons = most_recent_season()) %>%
   filter(season_type == "REG") %>%
   calculate_player_stats()
+nextgen_stats <- load_nextgen_stats()
+combine <- load_combine()
 
 #' Get the data about a specified player
 #'
