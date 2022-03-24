@@ -1,3 +1,4 @@
+import { tab } from '@testing-library/user-event/dist/tab';
 import React from 'react';
 import './Tabs.css'
 
@@ -32,9 +33,10 @@ function Tab({label, children, activeTabLabel, onClick}) {
 export function Tabs({tabs}) {
   const [activeTabLabel, setActiveTabLabel] = React.useState(tabs[0].label);
   const [activeTabChildren, setActiveTabChildren] = React.useState(tabs[0].children);
+
   function onClick(label, children) {
-    setActiveTabLabel(label);
     setActiveTabChildren(children);
+    setActiveTabLabel(label);
   }
   return (
     <div>
@@ -46,7 +48,13 @@ export function Tabs({tabs}) {
         })}
       </ol>
       <div>
-        {activeTabChildren}
+        {tabs.map((tab) => {
+          return (
+            activeTabLabel === tab.label ?
+            tab.children
+            : ''
+          )
+        })} 
       </div>
     </div>
   );
