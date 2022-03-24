@@ -2,7 +2,7 @@ import Navigation from '../Navigation/Navigation';
 import './CompareTwoPlayers.css';
 import React from 'react';
 import { Player } from './Player.js';
-import { Table } from './Table.js';
+import { ComparisonTable } from './ComparisonTable.js';
 import { UseFetchInput } from '../api/UseFetchInput.js';
 import { ComparisonChart } from './ComparisonChart';
 
@@ -46,6 +46,31 @@ function App() {
     results: [],
   });
 
+  // stats to display for each position
+  const stats_by_position = React.useMemo(
+    () => ({
+      'QB': ['passing_yards', 'passing_tds', 'rushing_yards', 'interceptions'],
+      'RB': ['rushing_yards', 'rushing_tds', 'receptions', 'receiving_yards', 'receiving_tds'],
+      'WR': ['receptions', 'receiving_yards', 'receiving_tds'],
+    }),
+    []
+  );
+
+  // the names to display for each stat
+  const stat_labels = React.useMemo(
+    () => ({
+      'passing_yards': 'PASSING YD',
+      'passing_tds': 'PASSING TD',
+      'interceptions': 'INT',
+      'rushing_yards': 'RUSHING YD',
+      'rushing_tds': 'RUSHING TD',
+      'receptions': 'REC',
+      'receiving_yards': 'RECEIVING YD',
+      'receiving_tds': 'RECEIVING TD',
+    }),
+    []
+  );
+
   return (
     <div>
       <Navigation />
@@ -59,7 +84,8 @@ function App() {
           </div>
           <PlayerDiv data={data2} setData={setData2} />
         </div>
-          { (Object.keys(data1.results).length > 0 && Object.keys(data2.results).length > 0) && <Table player1={data1.results} player2={data2.results} /> }
+          { (Object.keys(data1.results).length > 0 && Object.keys(data2.results).length > 0) 
+          && <ComparisonTable player1={data1.results} player2={data2.results} stats_by_position={stats_by_position} stat_labels={stat_labels}/> }
       </div>
     </div>
   );
