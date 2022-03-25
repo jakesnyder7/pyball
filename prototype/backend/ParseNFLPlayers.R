@@ -7,13 +7,10 @@
 #' March 22, 2022
 
 library(nflverse)
-library(tidymodels)
 library(tidyverse)
-library(gsisdecoder)
 
+load('APIData.Rdata')
 
-# turn off warnings on console
-options(warn = -1)
 
 # load in needed data frames from nflverse
 player_stats <- load_player_stats(seasons = most_recent_season())
@@ -21,12 +18,14 @@ player_stats_kicker <- load_player_stats(
   seasons = most_recent_season(),
   stat_type = "kicking"
 )
+
 roster <- load_rosters(seasons = most_recent_season())
 team_data <- load_teams()
 
 official_player_stats <- load_pbp(seasons = most_recent_season()) %>%
   filter(season_type == "REG") %>%
   calculate_player_stats()
+
 nextgen_stats <- load_nextgen_stats()
 combine <- load_combine()
 
@@ -115,6 +114,13 @@ get_player_data <- function(player_name_query) {
 #' @param position_query The official abbreviation of the position
 #' @return Data on all players in the specified position formatted as a JSON
 get_position_players <- function(position_query) {
+  if(position_query == 'QB') {
+    return(qb_data)
+  } else if (position_query == 'RB') {
+    return(rb_data)
+  } else if (position_query == 'WR') {
+    return(wr_data)
+  } else {
   position_roster <- roster %>%
     filter(position == position_query | depth_chart_position == position_query)
   position_info <- list()
@@ -124,10 +130,11 @@ get_position_players <- function(position_query) {
   }
   position_info_json <- jsonlite::toJSON(position_info, pretty = TRUE)
   return(position_info_json)
+  }
 }
 
 # Examples highlighting the different cases for position data return
-# get_position_players("QB")
-# get_position_players("RB")
-# get_position_players("WR")
+# qb_data <- get_position_players("QB")
+# rb_data <- get_position_players("RB")
+# wr_data <- get_position_players("WR")
 # get_position_players("PK")
