@@ -42,9 +42,10 @@ function average(array) {
   /**
    * Hook to define a ManipulatableTable that displays player stats.
    * @param data The player data.
+   * @param columns The columns for the table.
    * @returns The table.
    */
-  export function PositionTable({data}) {
+  export function PositionTable({data, columns}) {
     
     // define filter types for the table
     const filterTypes = React.useMemo(
@@ -71,27 +72,26 @@ function average(array) {
       []
     );
   
-    // the columns for the table
-    const columns = React.useMemo(
-      () => [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Passing Yard Avg', accessor: 'passing_yd_avg', filter: 'startswith', formattable: true},
-        {Header: 'Rushing Yard Avg', accessor: 'rushing_yd_avg', filter: 'startswith', formattable: true},
-        {Header: 'Receiving Yard Avg', accessor: 'receiving_yd_avg', filter: 'startswith', formattable: true},
-      ],
-      []
-    );
-  
+    function getStat(player, accessor) {
+      let stat = player[accessor];
+      if (accessor === 'full_name') {
+        return String(stat);
+      } else if (stat.length > 1) {
+        return average(stat);
+      } else {
+        return parseFloat(stat);
+      }
+    }
+
     // build table data from the provided data
-    const tableData = new Array();
+    const tableData = [];
     Object.values(data).forEach(player => {
       if (player.full_name != null) {
-        tableData.push({
-          'full_name': String(player.full_name),
-          'passing_yd_avg': parseInt(average(player.passing_yards)),
-          'rushing_yd_avg': parseInt(average(player.rushing_yards)),
-          'receiving_yd_avg': parseInt(average(player.receiving_yards)),
+        let row = {};
+        columns.forEach((header) => {
+          row[header.accessor] = getStat(player, header.accessor);
         });
+        tableData.push(row);
       }
     });
     const memoizedTableData = React.useMemo(

@@ -52,24 +52,29 @@ function RosterRow({position}) {
       <td width={75}>
         { /* display the search bar if no valid player query has been submitted; 
              otherwise, display the player's name */ }
-        {validResults && data.results.position == position && <RemoveButton onClick={removeButtonOnClick}/>}
+        {validResults && String(data.results.position) === position
+        && <RemoveButton onClick={removeButtonOnClick}/>}
         {' '}
         {position}
       </td>
       { /* if a valid player query has been submitted, display various player stats */ }
       <td>
-        {validResults && data.results.position == position ? data.results.full_name
-        : <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name"/> 
+        {validResults && String(data.results.position) === position 
+          ? data.results.full_name
+          : <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name" /> 
         }
       </td>
       <td>
-        {validResults && data.results.position == position && average(data.results.fantasy_points)}
+        {validResults && String(data.results.position) === position
+        && average(data.results.fantasy_points)}
       </td>
       <td>
-        {validResults && data.results.position == position && Math.min.apply(null, data.results.fantasy_points)}
+        {validResults && String(data.results.position) === position 
+        && Math.min.apply(null, data.results.fantasy_points)}
       </td>
       <td>
-        {validResults && data.results.position == position && Math.max.apply(null, data.results.fantasy_points)}
+        {validResults && String(data.results.position) === position 
+        && Math.max.apply(null, data.results.fantasy_points)}
       </td>
     </tr>
   );
@@ -95,9 +100,9 @@ export function Roster() {
       <thead>
         <th>Position</th>
         <th>Player</th>
-        <th>Mean</th>
-        <th>Min</th>
-        <th>Max</th>
+        <th>Fantasy Pt Avg</th>
+        <th>Fantasy Pt Min</th>
+        <th>Fantasy Pt Max</th>
       </thead>
       <tbody>
         {starters.map(starter => <RosterRow position={starter}/>)}

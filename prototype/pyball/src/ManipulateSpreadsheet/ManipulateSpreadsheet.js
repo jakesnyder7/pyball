@@ -36,10 +36,38 @@ function ManipulateSpreadsheet() {
     fetchData();
   }, []);
 
+  // columns for each table by position
+  const columns = React.useMemo(
+    () => ({
+      QB: [
+        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
+        {Header: 'Pass Yd Avg', accessor: 'passing_yards', filter: 'startswith', formattable: true},
+        {Header: 'Pass TD Avg', accessor: 'passing_tds', filter: 'startswith', formattable: true},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', filter: 'startswith', formattable: true},
+        {Header: 'INT Avg', accessor: 'interceptions', filter: 'startswith', formattable: true}
+      ],
+      RB: [
+        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', filter: 'startswith', formattable: true},
+        {Header: 'Rush TD Avg', accessor: 'rushing_tds', filter: 'startswith', formattable: true},
+        {Header: 'Rec Avg', accessor: 'receptions', filter: 'startswith', formattable: true},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', filter: 'startswith', formattable: true},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', filter: 'startswith', formattable: true}
+      ],
+      WR: [
+        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
+        {Header: 'Rec Avg', accessor: 'receptions', filter: 'startswith', formattable: true},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', filter: 'startswith', formattable: true},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', filter: 'startswith', formattable: true}
+      ]
+    }),
+    []
+  );
+  
   const tabs = React.useMemo(
     () => [
-      {label: 'QB', position: 'QB', children: <PositionTable data={data1}/> },
-      {label: 'RB', position: 'RB', children: <PositionTable data={data2}/> },
+      {label: 'QB', position: 'QB', children: <PositionTable data={data1} columns={columns['QB']}/> },
+      {label: 'RB', position: 'RB', children: <PositionTable data={data2} columns={columns['RB']}/> },
     ],
     [data1, data2]
   );
@@ -48,7 +76,9 @@ function ManipulateSpreadsheet() {
     <div>
       <Navigation />
       <div>
-        {(data1 === '' || data2 === '') ? "Fetching data..." : <Tabs tabs={tabs}/>}
+        {(data1 === '' || data2 === '') 
+          ? <header>{"Fetching data..."}</header>
+          : <Tabs tabs={tabs}/>}
       </div>
     </div>
     );

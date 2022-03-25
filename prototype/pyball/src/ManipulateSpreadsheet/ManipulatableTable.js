@@ -151,15 +151,14 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
     }
     // Helper function to determine whether value is in range
     function inRange(min, max, val) {
-      let valAsInt = parseInt(val);
       let validMin = validInt(min);
       let validMax = validInt(max);
       if (validMin && validMax) {
-        return valAsInt >= min && valAsInt <= max;
+        return val >= min && val <= max;
       } else if (validMin) {
-        return valAsInt >= min;
+        return val >= min;
       } else if (validMax) {
-        return valAsInt <= max;
+        return val <= max;
       }
       return false;
     }
