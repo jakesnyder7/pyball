@@ -94,13 +94,11 @@ function average(array) {
         tableData.push(row);
       }
     });
-    const memoizedTableData = React.useMemo(
-      () => tableData,
-      []
-    );
-  
+
     return (
-      <ManipulatableTable columns={columns} data={memoizedTableData} filterTypes={filterTypes} />
+      <ManipulatableTable columns={columns} data={tableData} filterTypes={filterTypes} />
     );
   }
+
+export const MemoizedPositionTable = React.memo(PositionTable);
   

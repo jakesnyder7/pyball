@@ -1,9 +1,23 @@
 import Navigation from '../Navigation/Navigation';
 import React from 'react';
-import { PositionTable } from './PositionTable.js';
+import { MemoizedPositionTable } from './PositionTable.js';
 import { Tabs } from './Tabs.js';
 import './ManipulateSpreadsheet.css';
 import Got from '../api/Got.js';
+
+/**
+ * Helper function to check if all values in an array are truthy.
+ * @param array The array to check.
+ * @returns True if all values are truthy, false otherwise.
+ */
+function allTruthy(array) {
+  for (let i = 0; i < array.length; i++) {
+    if (!array[i]) {
+      return false;
+    }
+  }
+  return true;
+}
 
 /**
  * Hook to define and display the manipulatable spreadsheet page.
@@ -11,30 +25,6 @@ import Got from '../api/Got.js';
  * @returns A div containing all page elements.
  */
 function ManipulateSpreadsheet() {
-
-  const [data1, setData1] = React.useState('');
-  const [data2, setData2] = React.useState('');
-
-  const query1 = '/position/QB/';
-  const query2 = '/position/RB/';
-
-  React.useEffect(() => {
-    const fetchData = async() => {
-      try {
-        const res1 = await Got.get(`${query1}`);
-        setData1(res1.data);
-      } catch (err) {
-        console.error(err);
-      }
-      try {
-        const res2 = await Got.get(`${query2}`);
-        setData2(res2.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
-  }, []);
 
   // columns for each table by position
   const columns = React.useMemo(
@@ -63,22 +53,54 @@ function ManipulateSpreadsheet() {
     }),
     []
   );
-  
-  const tabs = React.useMemo(
-    () => [
-      {label: 'QB', position: 'QB', children: <PositionTable data={data1} columns={columns['QB']}/> },
-      {label: 'RB', position: 'RB', children: <PositionTable data={data2} columns={columns['RB']}/> },
-    ],
+
+  // State to keep track of the data for each table
+  const [data1, setData1] = React.useState('');
+  const [data2, setData2] = React.useState('');
+
+  // The positions and associated data for the tables
+  const tables = React.useMemo (
+    () => ([
+      { position: 'QB', data: data1, setData: setData1 },
+      { position: 'RB', data: data2, setData: setData2 },
+    ]),
     [data1, data2]
+  );
+
+  // Fetch player data (should only occur once)
+  React.useEffect(() => {
+    alert('called');
+    const fetchData = async() => {
+      try {
+        for (let i = 0; i < tables.length; i++) {
+          const res = await Got.get(`/position/${tables[i].position}/`);
+          tables[i].setData(res.data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, []); // no dependencies since this should only occur once
+  
+  // The tabs containing the tables
+  const tabs = React.useMemo(
+    () => (
+      tables.map((table) => (
+        {label: table.position, children: <MemoizedPositionTable data={table.data} columns={columns[table.position]}/> }
+      ))
+    ),
+    [tables, columns]
   );
 
   return (
     <div>
       <Navigation />
       <div>
-        {(data1 === '' || data2 === '') 
-          ? <header>{"Fetching data..."}</header>
-          : <Tabs tabs={tabs}/>}
+        { /* Render tabs only if all data has been fetched */ }
+        {allTruthy(tables.map((table) => table.data))
+          ? <Tabs tabs={tabs}/>
+          : <header>{"Fetching data..."}</header>}
       </div>
     </div>
     );
