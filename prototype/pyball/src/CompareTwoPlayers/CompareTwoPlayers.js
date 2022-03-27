@@ -8,7 +8,7 @@ import { ComparisonChart } from './ComparisonChart';
 
 /**
  * Hook to display player information along a search bar to retrieve player information.
- * @authors Marion Geary and Claire Wagner
+ * @author Marion Geary and Claire Wagner
  * @param data The player data.
  * @param setData A function to use to update the player data.
  * @param setValidResults A function to use to indicate whether results returned by the search bar are valid.

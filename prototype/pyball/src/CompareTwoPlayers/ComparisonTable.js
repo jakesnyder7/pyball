@@ -3,6 +3,7 @@ import React from 'react';
 
 /**
  * Hook to define a dropdown menu with options that are integers.
+ * @author Claire Wagner
  * @param options An array of integer options for the menu.
  * @param choice The selected option.
  * @param setChoice A function to update the selected option.
@@ -27,7 +28,7 @@ function IntOptionSelect({options, choice, setChoice, addOne, label}) {
 
  /**
   * Hook to define a table that shows player information based on the position of Player 1.
-  * @author Claire Wagner
+  * @author Claire Wagner and Marion Geary
   * @param player1 The stats for the first player.
   * @param player2 The stats for the second player.
   * @param stats_by_position The stats to display for each position.
