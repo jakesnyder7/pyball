@@ -16,12 +16,31 @@ function RemoveButton({onClick}) {
 }
 
 /**
+ * Helper function to compute the average of an array.
+ * @author Claire Wagner
+ * @param array The array.
+ * @returns The average.
+ */
+ function average(array) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
+  }
+  return Number.parseFloat(sum / array.length, 2).toFixed(2);
+}
+
+/**
  * Hook to define a roster entry.
  * @author Claire Wagner
- * @param position The position of the player in the entry.
+ * @param label The label for the roster entry.
+ * @param positions A list of valid positions for this roster entry.
+ * @param stats A list of stats to display. Each stat must have a property called 'accessor'
+ * that will be used as the accessor to select the relevant data from search results, as well
+ * as a property called 'function' that will be called on that data to produce the stat that
+ * will be displayed (for example, to average the data and/or format it for display).
  * @returns The roster entry as a row.
  */
-function RosterRow({position}) {
+function RosterRow({label, positions, stats}) {
 
   // the data obtained from a query
   const [data, setData] = React.useState({
@@ -38,13 +57,15 @@ function RosterRow({position}) {
     setValidResults(false);
   }
 
-  // helper function to compute the average of an array
-  function average(array) {
-    let sum = 0;
-    for (let i = 0; i < array.length; i++) {
-      sum += array[i];
+  // helper function to check if the player's position is a valid match for this roster entry
+  function validPosition() {
+    const pos = String(data.results.position);
+    for (let i = 0; i < positions.length; i++) {
+      if (positions[i] === pos) {
+        return true;
+      }
     }
-    return Number.parseFloat(sum / array.length, 2).toFixed(2);
+    return false;
   }
 
   return (
@@ -52,30 +73,25 @@ function RosterRow({position}) {
       <td width={75}>
         { /* display the search bar if no valid player query has been submitted; 
              otherwise, display the player's name */ }
-        {validResults && String(data.results.position) === position
+        {validResults && validPosition()
         && <RemoveButton onClick={removeButtonOnClick}/>}
         {' '}
-        {position}
+        {label}
       </td>
-      { /* if a valid player query has been submitted, display various player stats */ }
+      { /* if a valid player query has been submitted, display the player's name */ }
       <td>
-        {validResults && String(data.results.position) === position 
+        {validResults && validPosition() 
           ? data.results.full_name
           : <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name" /> 
         }
       </td>
-      <td>
-        {validResults && String(data.results.position) === position
-        && average(data.results.fantasy_points)}
-      </td>
-      <td>
-        {validResults && String(data.results.position) === position 
-        && Math.min.apply(null, data.results.fantasy_points)}
-      </td>
-      <td>
-        {validResults && String(data.results.position) === position 
-        && Math.max.apply(null, data.results.fantasy_points)}
-      </td>
+      { /* if a valid player query has been submitted, display player stats */ }
+      {stats.map((stat) => (
+        <td>
+          {validResults && validPosition()
+          && stat.function(data.results[stat.accessor])}
+        </td>
+      ))}
     </tr>
   );
 
@@ -88,11 +104,47 @@ function RosterRow({position}) {
  * Parameters: comparand, column ID, color, and function defining comparison against the comparand.
  */
 export function Roster() {
-  const starters = React.useMemo(
+
+  // Definition of roster positions
+  const rosterPositions = React.useMemo(
+    () => ({
+      'QB': { number: 1},
+      'RB': { number: 2},
+      'WR': { number: 2},
+      'TE': { number: 1},
+      'Flex': { number: 1, positions: ['RB', 'WR', 'TE'] },
+      'K': { number: 1},
+    }),
+    []
+  );
+
+  // Define stats to display for each roster entry
+  const stats = React.useMemo(
     () => [
-      'QB', 'RB', 'RB', 'WR', 'TE', 'Flex', 'K', 'D/ST'
+      { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: average },
+      { label: 'Fantasy Pts Min', accessor: 'fantasy_points', function: (data) => Math.min.apply(null, data) },
+      { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: (data) => Math.max.apply(null, data) }
     ],
     []
+  );
+
+  // Helper function to build the roster
+  function buildRoster(rosterPos) {
+    const roster = [];
+    Object.keys(rosterPos).forEach((pos) => {
+      for (let i = 0; i < rosterPos[pos].number; i++) {
+        roster.push(
+          <RosterRow label={pos} positions={ rosterPos[pos].positions == null ? [pos] : rosterPos[pos].positions} stats={stats}/>
+        );
+      }
+    });
+    return roster;
+  }
+
+  // Memoized roster
+  const roster = React.useMemo(
+    () => (buildRoster(rosterPositions)),
+    [rosterPositions]
   );
   
   return (
@@ -100,12 +152,14 @@ export function Roster() {
       <thead>
         <th>Position</th>
         <th>Player</th>
-        <th>Fantasy Pt Avg</th>
-        <th>Fantasy Pt Min</th>
-        <th>Fantasy Pt Max</th>
+        { stats.map((stat) => 
+          <th>
+            {stat.label}
+          </th>
+        )}
       </thead>
       <tbody>
-        {starters.map(starter => <RosterRow position={starter}/>)}
+        {roster}
       </tbody>
     </table>
   );
