@@ -69,7 +69,6 @@ function ManipulateSpreadsheet() {
 
   // Fetch player data (should only occur once)
   React.useEffect(() => {
-    alert('called');
     const fetchData = async() => {
       try {
         for (let i = 0; i < tables.length; i++) {
