@@ -1,5 +1,6 @@
 import React from 'react';
 import { UseFetchInput } from '../api/UseFetchInput.js';
+import './Roster.css';
 
 /**
  * Hook to define a button to trigger the removal of an element.
@@ -9,8 +10,8 @@ import { UseFetchInput } from '../api/UseFetchInput.js';
  */
 function RemoveButton({onClick}) {
   return (
-    <button onClick={onClick} style={{backgroundColor: 'red'}}>
-      ×
+    <button onClick={onClick} className='removeButton'>
+      {'–'}
     </button>
   );
 }
@@ -89,7 +90,8 @@ function RosterRow({label, positions, stats}) {
       {stats.map((stat) => (
         <td>
           {validResults && validPosition()
-          && stat.function(data.results[stat.accessor])}
+          //&& stat.function(data.results[stat.accessor])}
+          && (data.results[stat.accessor] == null ? "N/A" : stat.function(data.results[stat.accessor]))}
         </td>
       ))}
     </tr>
