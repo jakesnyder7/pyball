@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTable, useSortBy, useRowState, useFilters } from 'react-table';
+import { ConditionalFormatForm } from './ConditionalFormatForm.js';
 
 /**
  * Default filtering UI.
@@ -19,67 +20,6 @@ function DefaultColumnFilter({
       placeholder={`Search ${count} records...`}
     />
   )
-}
-
-/**
- * Hook to define a form for the application of conditional formatting.
- * @author Claire Wagner
- * @param columnID The id of the column to which to apply the conditional formatting.
- * @param applyFormat A function to apply the conditional formatting.
- * @return The form.
- * Parameters: comparand, column ID, color, and function defining comparison against the comparand.
- */
-function ComparandInput({columnID, applyFormat}) {
-
-  const [min, setMin] = React.useState(undefined);
-  const [max, setMax] = React.useState(undefined);
-  const [color, setColor] = React.useState('cyan');
-
-  // options for colors
-  const colorOptions = React.useMemo(
-    () => [
-      'cyan','maroon','red','purple', 'fuchsia','green','lime','olive','yellow','navy','blue',
-      'teal','gray','orange'
-    ],
-    []
-  );
-
-  // return form
-  return (
-    <form>
-      {'highlight '}
-
-      {/* for lower bound input */}
-      <input type='number' width={5} placeholder='min' value={min} onChange={ (e) => {
-        setMin(e.target.value);
-        applyFormat(e.target.value, max, columnID, color);
-      }} />
-
-      {' to '}
-
-      {/* for upper bound input */}
-        <input type='number' placeholder='max' value={max} onChange={ (e) => {
-          setMax(e.target.value);
-          applyFormat(min, e.target.value, columnID, color) 
-        }} />
-      
-      {/* for color selection */}
-      <label>
-        {'color: '}
-        <select value={color} style={{backgroundColor: color}} onChange={ (e) => { 
-          setColor(e.target.value);
-          applyFormat(min, max, columnID, e.target.value);
-        }}>
-          {colorOptions.map(colorOption => (
-            <option value={colorOption} style={{backgroundColor: colorOption}}>
-              {colorOption}
-            </option>
-          ))}
-        </select>
-      </label>
-
-    </form>
-  );
 }
 
 /**
@@ -140,11 +80,12 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
    * @param max The upper bound (inclusive) of the range.
    * @param columnID The id of the column to which to apply the conditional formatting.
    * @param color The background color to apply.
+   * @param textcolor The text color to apply.
    * Postcondition: The background color of each cells in the given column has been set to
    * the specified color if the cell value lies in the range and null otherwise. The
    * background colors of cells in other columns have not been changed.
   */
-  function applyConditionalFormatting(min, max, columnID, color) {
+  function applyConditionalFormatting(min, max, columnID, color, textcolor) {
     // Helper function to determine whether argument is parseable as a float
     function validFloat(x) {
       return !isNaN(parseFloat(x));
@@ -168,16 +109,30 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
       row.cells.forEach(cell => {
         cell.setState( (oldval) => {
           return (
-            { backgroundColor: cell.column.id === columnID
+            { ...oldval, backgroundColor: cell.column.id === columnID
               // if cells are in the specified column, highlight them if they
               // are in the range; otherwise, remove any preexistent highlight
-              ? (inRange(min, max, cell.value) ? color : null)
+              ? (inRange(min, max, cell.value)
+                ? color
+                : null)
               // if cells are not in the specified column, leave them as is
-              : oldval}
+              : oldval.backgroundColor }
             );
-          });
-        })
+        });
+        cell.setState( (oldval) => {
+          return (
+            { ...oldval, textColor: cell.column.id === columnID
+              // if cells are in the specified column, highlight them if they
+              // are in the range; otherwise, remove any preexistent highlight
+              ? (inRange(min, max, cell.value)
+                ? textcolor
+                : null)
+              // if cells are not in the specified column, leave them as is
+          : oldval.textColor }
+            );
+        });
       });
+    });
   };
 
   // Render the table UI 
@@ -196,7 +151,7 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
                   </span>
                   {/* conditional formatting UI */}
                   {column.formattable && <span>
-                    <ComparandInput columnID={column.id} applyFormat={
+                    <ConditionalFormatForm columnID={column.id} applyFormat={
                       applyConditionalFormatting
                     } />                            
                   </span>} 
@@ -216,7 +171,7 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
                   return (
                     <td {...cell.getCellProps([{
                       // for conditional formatting
-                      style: { backgroundColor: cell.state.backgroundColor }
+                      style: { backgroundColor: cell.state.backgroundColor, color: cell.state.textColor }
                     }])}>
                       {cell.render('Cell')}
                     </td>
