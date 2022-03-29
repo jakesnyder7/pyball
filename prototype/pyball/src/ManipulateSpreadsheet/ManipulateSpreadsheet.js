@@ -2,6 +2,7 @@ import Navigation from '../Navigation/Navigation';
 import React from 'react';
 import { MemoizedPositionTable } from './PositionTable.js';
 import { Tabs } from './Tabs.js';
+import { average } from '../Stats/MathFunctions.js';
 import './ManipulateSpreadsheet.css';
 import Got from '../api/Got.js';
 
@@ -12,35 +13,39 @@ import Got from '../api/Got.js';
  */
 function ManipulateSpreadsheet() {
 
-  // columns for each table by position
+  // Columns for each table by position
+  // 'Header' is the header for the column, 'accessor' is the accessor to use to select the relevant
+  // data, 'function' is the function to use on the data in the column before displaying it (if any),
+  // 'filter' is the filter type to apply to the column, and 'formattable' indicates whether the column
+  // should be conditionally formattable
   const columns = React.useMemo(
     () => ({
       QB: [
         {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Pass Yd Avg', accessor: 'passing_yards', filter: 'startswith', formattable: true},
-        {Header: 'Pass TD Avg', accessor: 'passing_tds', filter: 'startswith', formattable: true},
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', filter: 'startswith', formattable: true},
-        {Header: 'INT Avg', accessor: 'interceptions', filter: 'startswith', formattable: true}
+        {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: (data) => {return average(data, 10)}, filter: 'startswith', formattable: true},
+        {Header: 'Pass TD Avg', accessor: 'passing_tds', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average, filter: 'startswith', formattable: true},
+        {Header: 'INT Avg', accessor: 'interceptions', function: average, filter: 'startswith', formattable: true}
       ],
       RB: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', filter: 'startswith', formattable: true},
-        {Header: 'Rush TD Avg', accessor: 'rushing_tds', filter: 'startswith', formattable: true},
-        {Header: 'Rec Avg', accessor: 'receptions', filter: 'startswith', formattable: true},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', filter: 'startswith', formattable: true},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', filter: 'startswith', formattable: true}
+        {Header: 'Player', accessor: 'full_name', function: average, filter: 'any_word_startswith', formattable: false},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
       ],
       WR: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Rec Avg', accessor: 'receptions', filter: 'startswith', formattable: true},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', filter: 'startswith', formattable: true},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', filter: 'startswith', formattable: true}
+        {Header: 'Player', accessor: 'full_name', function: average, filter: 'any_word_startswith', formattable: false},
+        {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
       ],
       TE: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Rec Avg', accessor: 'receptions', filter: 'startswith', formattable: true},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', filter: 'startswith', formattable: true},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', filter: 'startswith', formattable: true}
+        {Header: 'Player', accessor: 'full_name', function: average, filter: 'any_word_startswith', formattable: false},
+        {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
       ]
     }),
     []
@@ -93,22 +98,12 @@ function ManipulateSpreadsheet() {
     [tables, columns]
   );
 
-  // Helper function to check if all data has been fetched.
-  function allDataFetched() {
-    for (let i = 0; i < tables.length; i++) {
-      if (!tables[i].data) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   return (
     <div>
       <Navigation />
       <div>
         { /* Render tabs only if all data has been fetched */ }
-        {allDataFetched()
+        {tables.every((table) => table.data != false)
           ? <Tabs tabs={tabs}/>
           : <header>{"Fetching data..."}</header>}
       </div>

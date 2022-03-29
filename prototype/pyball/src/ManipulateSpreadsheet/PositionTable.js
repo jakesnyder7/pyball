@@ -26,19 +26,6 @@ import { ManipulatableTable } from './ManipulatableTable.js';
     return false;
   }
 
-/**
- * Helper function to compute the average of an array.
- * @param array The array.
- * @returns The average.
- */
-function average(array) {
-    let sum = 0;
-    for (let i = 0; i < array.length; i++) {
-      sum += array[i];
-    }
-    return Number.parseFloat(sum / array.length, 2).toFixed(2);
-  }
-  
   /**
    * Hook to define a ManipulatableTable that displays player stats.
    * @param data The player data.
@@ -72,14 +59,15 @@ function average(array) {
       []
     );
   
-    function getStat(player, accessor) {
-      let stat = player[accessor];
-      if (accessor === 'full_name') {
+    function getStat(player, accessor, func) {
+      if (player[accessor] == null) {
+        return "N/A";
+      }
+      let stat = (func != null ? func(player[accessor]) : player[accessor]);
+      if (isNaN(parseFloat(stat))) {
         return String(stat);
-      } else if (stat.length > 1) {
-        return average(stat);
       } else {
-        return parseFloat(stat);
+        return Number(stat);
       }
     }
 
@@ -89,7 +77,7 @@ function average(array) {
       if (player.full_name != null) {
         let row = {};
         columns.forEach((header) => {
-          row[header.accessor] = getStat(player, header.accessor);
+          row[header.accessor] = getStat(player, header.accessor, header.function);
         });
         tableData.push(row);
       }
@@ -101,4 +89,3 @@ function average(array) {
   }
 
 export const MemoizedPositionTable = React.memo(PositionTable);
-  
