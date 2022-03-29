@@ -51,9 +51,9 @@ function RosterRow({label, positions, stats, query, setRosterRecord, rosterRecor
   // helper function to check if the player's position is a valid match for this roster entry
   const validPosition = React.useCallback(() => {
     return validResults && data.results.position != null
-      && !positions.every((pos)=> pos !== String(data.results.position));
+      && positions.includes(String(data.results.position));
   },
-  [validResults, data, positions]);
+  [validResults, data.results, positions]);
 
   // each time a player is added to this roster entry, update the roster record at the corresponding index
   React.useEffect(() => {
