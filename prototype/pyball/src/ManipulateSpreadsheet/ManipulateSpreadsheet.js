@@ -28,7 +28,7 @@ function ManipulateSpreadsheet() {
         {Header: 'INT Avg', accessor: 'interceptions', function: average, filter: 'startswith', formattable: true}
       ],
       RB: [
-        {Header: 'Player', accessor: 'full_name', function: average, filter: 'any_word_startswith', formattable: false},
+        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
         {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average, filter: 'startswith', formattable: true},
         {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average, filter: 'startswith', formattable: true},
         {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
@@ -36,13 +36,13 @@ function ManipulateSpreadsheet() {
         {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
       ],
       WR: [
-        {Header: 'Player', accessor: 'full_name', function: average, filter: 'any_word_startswith', formattable: false},
+        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
         {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
         {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
         {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
       ],
       TE: [
-        {Header: 'Player', accessor: 'full_name', function: average, filter: 'any_word_startswith', formattable: false},
+        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
         {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
         {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
         {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
@@ -103,7 +103,7 @@ function ManipulateSpreadsheet() {
       <Navigation />
       <div>
         { /* Render tabs only if all data has been fetched */ }
-        {tables.every((table) => table.data != false)
+        {tables.every((table) => table.data)
           ? <Tabs tabs={tabs}/>
           : <header>{"Fetching data..."}</header>}
       </div>
