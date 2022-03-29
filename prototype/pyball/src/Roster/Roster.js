@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFetchInput } from '../api/UseFetchInput.js';
-import './Roster.css';
 import { average } from '../Stats/MathFunctions.js';
+import './Roster.css';
 
 /**
  * Hook to define a button to trigger the removal of an element.
@@ -57,11 +57,11 @@ function RosterRow({label, positions, stats, query, setRosterRecord, rosterRecor
 
   // each time a player is added to this roster entry, update the roster record at the corresponding index
   React.useEffect(() => {
-    setRosterRecord((oldval) => {
-      const tmp = oldval.map((entry) => entry);
+    setRosterRecord((oldrecord) => {
+      const tmp = oldrecord.map((entry) => entry);
       tmp[rosterRecordIndex] = validPosition()
         ? data.results.full_name
-        : (validResults ? oldval[rosterRecordIndex] : null);
+        : (validResults ? oldrecord[rosterRecordIndex] : null);
       return tmp;
     });
   }, [setRosterRecord, rosterRecordIndex, validPosition, data.results, validResults]);
@@ -148,9 +148,12 @@ export function Roster() {
   // Record of roster entries
   const [rosterRecord, setRosterRecord] =  React.useState(new Array(roster.length));
   
-  // Each time the roster record is updated, store the new version in local storage
+  // Update 'roster' in local storage each time rosterRecord changes
   React.useEffect(() => {
-    localStorage.setItem('roster', JSON.stringify(rosterRecord));
+    // call localStorage.setItem only when the value of rosterRecord has changed
+    if (localStorage.getItem('roster') !== JSON.stringify(rosterRecord)) {
+      localStorage.setItem('roster', JSON.stringify(rosterRecord));
+    }
   }, [rosterRecord]);
 
   return (

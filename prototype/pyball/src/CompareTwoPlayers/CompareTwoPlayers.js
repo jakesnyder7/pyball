@@ -14,7 +14,7 @@ import { ComparisonChart } from './ComparisonChart';
  * @param setValidResults A function to use to indicate whether results returned by the search bar are valid.
  * @returns A div containing the player information and the search bar.
  */
-function PlayerDiv({data, setData, setValidResults}) {
+function PlayerDiv({data, setData, validResults, setValidResults}) {
   // Empty player to use as placeholder before queries entered
    const emptyPlayer = {
     full_name: [""],
@@ -23,7 +23,7 @@ function PlayerDiv({data, setData, setValidResults}) {
 
   return (
     <div className='Playerz' >
-      { Object.keys(data.results).length > 2 ? <Player player={data.results} /> : <Player player={emptyPlayer} /> }
+      { validResults ? <Player player={data.results} /> : <Player player={emptyPlayer} /> }
       <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name"/>
     </div>
   );
@@ -61,6 +61,8 @@ function CompareTwoPlayers() {
       'QB': ['passing_yards', 'passing_tds', 'rushing_yards', 'interceptions'],
       'RB': ['rushing_yards', 'rushing_tds', 'receptions', 'receiving_yards', 'receiving_tds'],
       'WR': ['receptions', 'receiving_yards', 'receiving_tds'],
+      'TE': ['receptions', 'receiving_yards', 'receiving_tds'],
+      'K': ['fg_made', 'fg_missed'],
     }),
     []
   );
@@ -76,6 +78,8 @@ function CompareTwoPlayers() {
       'receptions': 'REC',
       'receiving_yards': 'RECEIVING YD',
       'receiving_tds': 'RECEIVING TD',
+      'fg_made': 'FG MADE',
+      'fg_missed': 'FG_MISSED',
     }),
     []
   );
@@ -85,13 +89,13 @@ function CompareTwoPlayers() {
       <Navigation />
       <div className='CompareTwoPlayers'>
         <div className='PlayerDiv' >
-          <PlayerDiv data={data1} setData={setData1} setValidResults={setValidResults1} />
+          <PlayerDiv data={data1} setData={setData1} validResults={validResults1} setValidResults={setValidResults1} />
           <div className='Vs' >
             <h1>
                 VS.
             </h1>
           </div>
-          <PlayerDiv data={data2} setData={setData2} setValidResults={setValidResults2} />
+          <PlayerDiv data={data2} setData={setData2} validResults={validResults2} setValidResults={setValidResults2} />
         </div>
           { validResults1 && validResults2
           && <ComparisonTable player1={data1.results} player2={data2.results} stats_by_position={stats_by_position} stat_labels={stat_labels}/> }

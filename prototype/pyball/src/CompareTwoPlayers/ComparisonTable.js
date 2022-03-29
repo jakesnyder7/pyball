@@ -43,7 +43,18 @@ function IntOptionSelect({options, choice, setChoice, addOne, label}) {
     // the week for which to show stats
     const [weekChoice, setWeekChoice] = React.useState(parseInt(Object.keys(weeks)[0]) + 1);
 
+    // helper function that returns player[stat][index] if it exists and "N/A" otherwise
+    function getStatByIndex(player, stat, index) {
+        if (stat in player) {
+            if (player[stat][index] != null) {
+                return player[stat][index];
+            }
+        }
+        return "N/A";
+    }
+    
      return (
+         stats_by_position[player1.position] != null &&
          <div className='Table' >
              <table>
                  <tr>
@@ -56,11 +67,11 @@ function IntOptionSelect({options, choice, setChoice, addOne, label}) {
                  {stats_by_position[player1.position].map((stat) => 
                     <tr>
                         <td>
-                            {player1[stat][weekChoice - 1] == null ? "N/A": player1[stat][weekChoice - 1]}
+                            {getStatByIndex(player1, stat, weekChoice - 1)}
                         </td>
                         <th>{stat_labels[stat]}</th>
                         <td>
-                            {player2[stat][weekChoice - 1] == null ? "N/A": player2[stat][weekChoice - 1]}
+                            {getStatByIndex(player2, stat, weekChoice - 1)}
                         </td>
                     </tr>
                  )}
