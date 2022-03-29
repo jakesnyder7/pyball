@@ -1,6 +1,7 @@
 import React from 'react';
 import { UseFetchInput } from '../api/UseFetchInput.js';
 import './Roster.css';
+import { average } from '../Stats/MathFunctions.js';
 
 /**
  * Hook to define a button to trigger the removal of an element.
@@ -17,20 +18,6 @@ function RemoveButton({onClick}) {
 }
 
 /**
- * Helper function to compute the average of an array.
- * @author Claire Wagner
- * @param array The array.
- * @returns The average.
- */
- function average(array) {
-  let sum = 0;
-  for (let i = 0; i < array.length; i++) {
-    sum += array[i];
-  }
-  return Number.parseFloat(sum / array.length, 2).toFixed(2);
-}
-
-/**
  * Hook to define a roster entry.
  * @author Claire Wagner
  * @param label The label for the roster entry.
@@ -39,13 +26,16 @@ function RemoveButton({onClick}) {
  * that will be used as the accessor to select the relevant data from search results, as well
  * as a property called 'function' that will be called on that data to produce the stat that
  * will be displayed (for example, to average the data and/or format it for display).
+ * @param query The initial query for which to search (optional).
+ * @param setRosterRecord A function to use to update the roster record array with valid query results.
+ * @param rosterRecordIndex The index to use when updating the roster record array.
  * @returns The roster entry as a row.
  */
-function RosterRow({label, positions, stats}) {
+function RosterRow({label, positions, stats, query, setRosterRecord, rosterRecordIndex}) {
 
   // the data obtained from a query
   const [data, setData] = React.useState({
-    query: "",
+    query: query == null ? '' : query,
     results: [],
   });
 
@@ -54,34 +44,41 @@ function RosterRow({label, positions, stats}) {
 
   // event handler for button to remove player from roster
   function removeButtonOnClick() {
-    data.query = '';
+    setData({ ...data, results: null, query: '' });
     setValidResults(false);
   }
-
+  
   // helper function to check if the player's position is a valid match for this roster entry
-  function validPosition() {
-    const pos = String(data.results.position);
-    for (let i = 0; i < positions.length; i++) {
-      if (positions[i] === pos) {
-        return true;
-      }
-    }
-    return false;
-  }
+  const validPosition = React.useCallback(() => {
+    return validResults && data.results.position != null
+      && !positions.every((pos)=> pos !== String(data.results.position));
+  },
+  [validResults, data, positions]);
+
+  // each time a player is added to this roster entry, update the roster record at the corresponding index
+  React.useEffect(() => {
+    setRosterRecord((oldval) => {
+      const tmp = oldval.map((entry) => entry);
+      tmp[rosterRecordIndex] = validPosition()
+        ? data.results.full_name
+        : (validResults ? oldval[rosterRecordIndex] : null);
+      return tmp;
+    });
+  }, [setRosterRecord, rosterRecordIndex, validPosition, data.results, validResults]);
 
   return (
     <tr>
       <td width={75}>
         { /* display the search bar if no valid player query has been submitted; 
              otherwise, display the player's name */ }
-        {validResults && validPosition()
-        && <RemoveButton onClick={removeButtonOnClick}/>}
+        {validPosition()
+          && <RemoveButton onClick={removeButtonOnClick}/>}
         {' '}
         {label}
       </td>
       { /* if a valid player query has been submitted, display the player's name */ }
       <td>
-        {validResults && validPosition() 
+        {validPosition() 
           ? data.results.full_name
           : <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name" /> 
         }
@@ -89,14 +86,12 @@ function RosterRow({label, positions, stats}) {
       { /* if a valid player query has been submitted, display player stats */ }
       {stats.map((stat) => (
         <td>
-          {validResults && validPosition()
-          //&& stat.function(data.results[stat.accessor])}
-          && (data.results[stat.accessor] == null ? "N/A" : stat.function(data.results[stat.accessor]))}
+          {validPosition()
+            && (data.results[stat.accessor] == null ? "N/A" : stat.function(data.results[stat.accessor]))}
         </td>
       ))}
     </tr>
   );
-
 }
 
 /**
@@ -136,7 +131,8 @@ export function Roster() {
     Object.keys(rosterPos).forEach((pos) => {
       for (let i = 0; i < rosterPos[pos].number; i++) {
         roster.push(
-          <RosterRow label={pos} positions={ rosterPos[pos].positions == null ? [pos] : rosterPos[pos].positions} stats={stats}/>
+          { label: pos, positions: (rosterPos[pos].positions == null ? [pos] : rosterPos[pos].positions) }
+          //<RosterRow label={pos} positions={ rosterPos[pos].positions == null ? [pos] : rosterPos[pos].positions} stats={stats}/>
         );
       }
     });
@@ -148,12 +144,21 @@ export function Roster() {
     () => (buildRoster(rosterPositions)),
     [rosterPositions]
   );
+
+  // Record of roster entries
+  const [rosterRecord, setRosterRecord] =  React.useState(new Array(roster.length));
   
+  // Each time the roster record is updated, store the new version in local storage
+  React.useEffect(() => {
+    localStorage.setItem('roster', JSON.stringify(rosterRecord));
+  }, [rosterRecord]);
+
   return (
     <table>
       <thead>
         <th>Position</th>
         <th>Player</th>
+        {/* Headers */}
         { stats.map((stat) => 
           <th>
             {stat.label}
@@ -161,7 +166,10 @@ export function Roster() {
         )}
       </thead>
       <tbody>
-        {roster}
+        {/* Roster entries */}
+        {roster.map((entry, index) =>
+          <RosterRow label={entry.label} positions={ entry.positions } stats={stats} query={localStorage.getItem('roster') != null ? JSON.parse(localStorage.getItem('roster'))[index] : null} setRosterRecord={setRosterRecord} rosterRecordIndex={index}/>
+        )}
       </tbody>
     </table>
   );
