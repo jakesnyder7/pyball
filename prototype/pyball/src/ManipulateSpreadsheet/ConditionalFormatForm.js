@@ -66,7 +66,7 @@ export function ConditionalFormatForm({columnID, applyFormat}) {
           applyFormat(min, max, columnID, e.target.value, colorOptions[e.target.value].textcolor);
         }}>
           {sortedColors.map(color => (
-            <option value={color} style={{backgroundColor: color, color: 'black'}}>
+            <option value={color} style={{backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black'}}>
               {colorOptions[color].label}
             </option>
           ))}
