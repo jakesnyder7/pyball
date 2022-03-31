@@ -13,43 +13,41 @@ import Got from '../api/Got.js';
  */
 function ManipulateSpreadsheet() {
 
-  // Columns for each table by position
-  // 'Header' is the header for the column, 'accessor' is the accessor to use to select the relevant
-  // data, 'function' is the function to use on the data in the column before displaying it (if any),
-  // 'filter' is the filter type to apply to the column, and 'formattable' indicates whether the column
-  // should be conditionally formattable
-  const columns = React.useMemo(
+  // Stats to display in each table, organized by position
+  // 'Header' is the header for the column containing the stat; 'accessor' is the accessor to use
+  // to select the relevant data; 'function' is the function to use on the data in the column before
+  // displaying it (if any)
+  // Optional properties: 'sortDescFirst' (boolean, true by default in PositionTable) to sort first by
+  // descending order; 'formattable' (boolean, true by default in PositionTable) to indicate whether or
+  // not the column should be conditionally formattable
+  const stats = React.useMemo(
     () => ({
       QB: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: (data) => {return average(data, 10)}, filter: 'startswith', formattable: true},
-        {Header: 'Pass TD Avg', accessor: 'passing_tds', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average, filter: 'startswith', formattable: true},
-        {Header: 'INT Avg', accessor: 'interceptions', function: average, filter: 'startswith', formattable: true}
+        {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: average},
+        {Header: 'Pass TD Avg', accessor: 'passing_tds', function: average},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
+        {Header: 'INT Avg', accessor: 'interceptions', function: average}
       ],
       RB: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
+        {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average},
+        {Header: 'Rec Avg', accessor: 'receptions', function: average},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
       ],
       WR: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
+        {Header: 'Rec Avg', accessor: 'receptions', function: average},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
       ],
       TE: [
-        {Header: 'Player', accessor: 'full_name', filter: 'any_word_startswith', formattable: false},
-        {Header: 'Rec Avg', accessor: 'receptions', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average, filter: 'startswith', formattable: true},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average, filter: 'startswith', formattable: true}
-      ]
+        {Header: 'Rec Avg', accessor: 'receptions', function: average},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
+      ],
     }),
     []
-  );
+  ); 
 
   // State to keep track of the data for each table
   const [data1, setData1] = React.useState('');
@@ -92,10 +90,10 @@ function ManipulateSpreadsheet() {
   const tabs = React.useMemo(
     () => (
       tables.map((table) => (
-        {label: table.position, children: <MemoizedPositionTable data={table.data} columns={columns[table.position]}/> }
+        {label: table.position, children: <MemoizedPositionTable data={table.data} stats={stats[table.position]}/> }
       ))
     ),
-    [tables, columns]
+    [tables, stats]
   );
 
   return (
@@ -105,7 +103,8 @@ function ManipulateSpreadsheet() {
         { /* Render tabs only if all data has been fetched */ }
         {tables.every((table) => table.data)
           ? <Tabs tabs={tabs}/>
-          : <header>{"Fetching data..."}</header>}
+          : <img className='center' src='https://upload.wikimedia.org/wikipedia/commons/7/7a/Ajax_loader_metal_512.gif' alt='loading icon'/>
+        }
       </div>
     </div>
     );

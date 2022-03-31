@@ -32,15 +32,18 @@ function DefaultColumnFilter({
  * (must conform to react-table specifications (https://react-table.tanstack.com/docs/api/useTable)
  * and include a boolean property called 'formattable' dictating whether or not the column should
  * be conditionally formattable).
+ * @param sortTypes sort types to use when sorting data instead of the default options (optional)
+ * (must conform to react-table specifications (https://react-table.tanstack.com/docs/api/useFilters)).
  * @param filterTypes Filter types to use when filtering data instead of the default options (optional)
  * (must conform to react-table specifications (https://react-table.tanstack.com/docs/api/useFilters)).
+ * @param hiddenColumns An array of columns to hide initially (optional).
  * @returns A div containing the table.
  * Portions of this hook are based on https://stackoverflow.com/a/69128343 (CC BY-SA 4.0 license) and
  * https://github.com/TanStack/react-table/blob/v7/examples/basic,
  * https://github.com/TanStack/react-table/tree/v7/examples/sorting, and
  * https://github.com/TanStack/react-table/blob/v7/examples/filtering (MIT license).
  */
-export function ManipulatableTable({columns, data, filterTypes, formattable}) {
+export function ManipulatableTable({columns, data, sortTypes, filterTypes, hiddenColumns}) {
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -50,7 +53,6 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
     []
   );
 
-  // The table instance
   const {
     getTableProps,
     getTableBodyProps,
@@ -62,12 +64,16 @@ export function ManipulatableTable({columns, data, filterTypes, formattable}) {
       columns,
       data,
       defaultColumn,
-      filterTypes
+      sortTypes,
+      filterTypes,
+      initialState: {
+        hiddenColumns: hiddenColumns,
+      },
     },
     useFilters,
     useSortBy,
     useRowState
-  )
+  );
 
   /**
    * Function to apply conditional formatting to the cells in the specified column.
