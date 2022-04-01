@@ -51,8 +51,8 @@ import { NavLink } from 'react-router-dom';
  export function ConditionalRosterElement({playername, toDisplay}) {
 
     const inRosterRecord = React.useCallback(() => {
-        return localStorage.getItem('roster')
-            && JSON.parse(localStorage.getItem('roster')).some((entry) => String(entry) === String(playername));
+        return localStorage.getItem('pyballRoster')
+            && JSON.parse(localStorage.getItem('pyballRoster')).some((entry) => String(entry) === String(playername));
     },
     [playername]);
   
