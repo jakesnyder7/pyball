@@ -29,13 +29,7 @@ import { NavLink } from 'react-router-dom';
     return (
         playerInRoster
         ? <NavLink to="/edit-team" target='_blank'>
-           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='added to roster' alt='added to roster' height={20} />
-           }
-           {/*
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Antu_task-complete.svg/512px-Antu_task-complete.svg.png' title='added to roster' alt='added to roster' height={20} />
-    */}
-            {/*<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Eo_circle_green_white_checkmark.svg/240px-Eo_circle_green_white_checkmark.svg.png' title='added to roster' alt='added to roster' height={20} />
-            */}
+           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='added to roster' alt='added to roster' height={20} /> }
           </NavLink>
         : null
     );
