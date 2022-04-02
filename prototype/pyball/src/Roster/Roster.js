@@ -20,6 +20,7 @@ export function Roster() {
       'TE': { number: 1},
       'Flex': { number: 1, positions: ['RB', 'WR', 'TE'] },
       'K': { number: 1},
+      'BN': { number: 6, positions: ['QB', 'RB', 'WR', 'TE', 'Flex', 'K'] }
     }),
     []
   );
