@@ -1,7 +1,6 @@
 import React from 'react';
 import { average } from '../Stats/MathFunctions.js';
 import { RosterRow } from './RosterRow.js';
-import './Roster.css';
 
 /**
  * Hook to define a roster.

@@ -33,9 +33,7 @@ function PlayerSearchForm({query, setQuery, onSubmit}) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <span style={{padding: '0.5px'}}>
-        <button onClick={onSubmit} >Add</button>
-      </span>
+      <button onClick={onSubmit} >Add</button>
     </form>
   );
 }
