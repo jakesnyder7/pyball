@@ -1,6 +1,6 @@
 import React from 'react';
 import Got from '../api/Got.js';
-import './Roster.css';
+import './RosterRow.css';
 
 /**
  * Hook to define a button to trigger the removal of an element.
@@ -26,35 +26,63 @@ function RemoveButton({onClick}) {
  */
 function PlayerSearchForm({query, setQuery, onSubmit}) {
   return (
-    <form style={{whiteSpace: 'nowrap'}}>
+    <form style={{display: 'flex', flexDirection: 'row'}}>
       <input
         type='text'
         placeholder='Enter player name'
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        style={{display: 'inline-block'}}
       />
-      {' '}
-      <button onClick={onSubmit}>Add</button>
+      <span style={{padding: '0.5px'}}>
+        <button onClick={onSubmit} >Add</button>
+      </span>
     </form>
   );
 }
 
 /**
+ * Hook to define a component that displays a message and prompts the user to select 'Yes' or 'No' in response.
+ * @author Claire Wagner
+ * @param message The message to display.
+ * @param onYes The function to call if the user selects 'Yes'.
+ * @param onNo The function to call if the user selects 'No'.
+ * @returns A div containing the component.
+ */
+function YesNoChoice({message, onYes, onNo}) {
+  return (
+    <div style={{whiteSpace: 'nowrap', padding: '5px'}}>
+      <header>
+        {message}
+      </header>
+      <button onClick={onYes}>
+        {'Yes'}
+      </button>
+      {' '}
+      <button onClick={onNo}>
+        {'No'}
+      </button>
+    </div>
+  )
+}
+
+/**
  * Hook to define a component that displays a message and asks for the user's acknowledgment.
+ * @author Claire Wagner
  * @param message The message to display.
  * @param onAcknowledge The function to call when the user acknowledges the message. 
  * @returns A div containing the component.
  */
 function AcknowledgeMessage({message, onAcknowledge}) {
   return (
-    <div style={{whiteSpace: 'nowrap'}}>
+    <div style={{whiteSpace: 'nowrap', padding: '5px'}}>
       <header style={{display: 'inline-block'}}>
         {message}
       </header>
-      <button style={{display: 'inline-block'}} onClick={onAcknowledge}>
-        {'Ok'}
-      </button>
+      <span style={{padding: '5px'}}>
+        <button style={{display: 'inline-block'}} onClick={onAcknowledge}>
+          {'Ok'}
+        </button>
+      </span>
     </div>
   )
 }
@@ -152,12 +180,25 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
         message={errorMsg}
         onAcknowledge={()=> {
           setQuery('');
+          setData(null);
           setMode('search');
           setErrorMsg('Unspecified error.');
         }}
       />
     } else if (mode === 'valid') {
       return <header>{data.full_name}</header>;
+    } else if (mode === 'remove') {
+      return <YesNoChoice
+        message={"Remove " + data.full_name + " from roster?"}
+        onYes={()=>{
+          modifyRoster(null);
+          setQuery('');
+          setData(null);
+          setMode('search');
+        }}
+        onNo={()=>{
+          setMode('valid');
+        }}/>
     } else {
       return null;
     }
@@ -239,12 +280,10 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
 
   return (
     <tr>
-      <td>
+      <td width='65' style={{textAlign: 'left', padding: '10px'}}>
         {mode === 'valid'
           && <RemoveButton onClick={() => {
-            modifyRoster(null);
-            setQuery('');
-            setMode('search');
+            setMode('remove');
           }}/>}
         {' '}
         {label}
