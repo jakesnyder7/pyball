@@ -1,5 +1,11 @@
 /* Jacob Snyder */
 
+.center {
+    display: block;
+    margin: auto;
+    width: 50%;
+}
+
 table{
     width: 100%;
     color: rgb(255, 255, 255);

@@ -10,41 +10,6 @@ import { NavLink } from 'react-router-dom';
  export function RosterCheckmark({playername}) {
 
     const inRosterRecord = React.useCallback(() => {
-        return localStorage.getItem('roster')
-            && !JSON.parse(localStorage.getItem('roster')).every((entry) => String(entry) !== String(playername));
-    },
-    [playername]);
-  
-    const [playerInRoster, setPlayerInRoster] = React.useState(inRosterRecord());
-  
-    window.addEventListener('storage', e => {
-        setPlayerInRoster(inRosterRecord(playername));
-    });
-  
-    React.useEffect(() => {
-        setPlayerInRoster(inRosterRecord(playername));
-    },
-    [playername]);
-  
-    return (
-        playerInRoster
-        ? <NavLink to="/edit-team" target='_blank'>
-           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='added to roster' alt='added to roster' height={20} /> }
-          </NavLink>
-        : null
-    );
-  }
-
-/**
- * Hook that returns the provided argument if the specified player is in the roster and null otherwise.
- * @author Claire Wagner
- * @param playername The name of the player.
- * @param toDisplay The element to return if the player is in the roster.
- * @returns The provided argument if the player is in the roster, null otherwise.
- */
- export function ConditionalRosterElement({playername, toDisplay}) {
-
-    const inRosterRecord = React.useCallback(() => {
         return localStorage.getItem('pyballRoster')
             && JSON.parse(localStorage.getItem('pyballRoster')).some((entry) => String(entry) === String(playername));
     },
@@ -59,11 +24,13 @@ import { NavLink } from 'react-router-dom';
     React.useEffect(() => {
         setPlayerInRoster(inRosterRecord(playername));
     },
-    [playername]);
+    [playername, inRosterRecord]);
   
     return (
         playerInRoster
-        ? toDisplay
+        ? <NavLink to="/edit-team" target='_blank'>
+           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='added to roster' alt='added to roster' height={20} /> }
+          </NavLink>
         : null
     );
   }
