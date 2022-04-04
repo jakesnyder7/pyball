@@ -1,9 +1,13 @@
 /* Jacob Snyder */
 
 .center {
-    display: block;
     margin: auto;
-    width: 50%;
+    width: 10%; 
+    padding: 20%;
+}
+
+.Mydiv {
+    display: flex;
 }
 
 table{

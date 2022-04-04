@@ -99,11 +99,11 @@ function ManipulateSpreadsheet() {
   return (
     <div>
       <Navigation />
-      <div>
+      <div className='Mydiv'>
         { /* Render tabs only if all data has been fetched */ }
         {tables.every((table) => table.data)
           ? <Tabs tabs={tabs}/>
-          : <img className='center' src='https://upload.wikimedia.org/wikipedia/commons/7/7a/Ajax_loader_metal_512.gif' alt='loading icon'/>
+          : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
         }
       </div>
     </div>
