@@ -145,7 +145,7 @@ all_data <- all_data %>%
   select(- (grep(".xyz", names(all_data))))
 
 all_data <- all_data %>%
-  select(-c(espn_id, sportradar_id, yahoo_id, rotowire_id, pff_id, pfr_id,
+  select(-c(espn_id, sportradar_id, yahoo_id, rotowire_id, pff_id,
             fantasy_data_id, sleeper_id, player_name, cfb_id, pos, date_modified,
             player_display_name, team_abbr, player_position, player_first_name,
             player_last_name, player_short_name, player_jersey_number,
@@ -154,13 +154,16 @@ all_data <- all_data %>%
 
 all_data <- all_data %>% mutate_if(is.character, as.factor) %>% filter(!is.na(full_name))
 
+get_player_data("Lamar Jackson")
+
 #' Get the data about a specified player
 #'
 #' @param player_name_query The name of the desired player
 #' @return Data on the player formatted as a JSON
 get_player_data <- function(player_name_query) {
   query <- str_to_lower(player_name_query)
-  player_large_data <- all_data %>% filter(str_to_lower(full_name) == query)
+  gsis <- all_data %>% filter(str_to_lower(full_name) == query) %>% select(gsis_id) %>% slice(1) %>% pluck(1)
+  player_large_data <- all_data %>% filter(str_to_lower(full_name) == query) %>% filter(gsis_id == gsis)
   non_unique <- player_large_data %>%
     summarise_all(n_distinct) %>%
     select_if(. != 1)
