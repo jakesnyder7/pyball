@@ -1,5 +1,11 @@
 /* Jacob Snyder */
 
+.center {
+    display: block;
+    margin: auto;
+    width: 50%;
+}
+
 table{
     width: 100%;
     color: rgb(255, 255, 255);
@@ -12,7 +18,7 @@ th {
     font-size: 16px;
 }
 
-tr{
+tr {
     font-family: helvetica;
     font-weight: bold;
     font-size: 16px;
@@ -20,6 +26,11 @@ tr{
     text-align: left;
     vertical-align: bottom;
     height: 50px;
+}
+
+td {
+    text-align: center;
+    vertical-align: middle;
 }
 
 tr:nth-child(even) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 /**
  * Hook that displays a checkmark if the specified player is in the roster.
@@ -9,8 +10,8 @@ import React from 'react';
  export function RosterCheckmark({playername}) {
 
     const inRosterRecord = React.useCallback(() => {
-        return localStorage.getItem('roster')
-            && !JSON.parse(localStorage.getItem('roster')).every((entry) => String(entry) !== String(playername));
+        return localStorage.getItem('pyballRoster')
+            && JSON.parse(localStorage.getItem('pyballRoster')).some((entry) => String(entry) === String(playername));
     },
     [playername]);
   
@@ -23,11 +24,13 @@ import React from 'react';
     React.useEffect(() => {
         setPlayerInRoster(inRosterRecord(playername));
     },
-    [playername]);
+    [playername, inRosterRecord]);
   
     return (
         playerInRoster
-        ?   <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Eo_circle_green_checkmark.svg/240px-Eo_circle_green_checkmark.svg.png' title='added to roster' alt='added to roster' height={20} />
+        ? <NavLink to="/edit-team" target='_blank'>
+           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='added to roster' alt='added to roster' height={20} /> }
+          </NavLink>
         : null
     );
   }

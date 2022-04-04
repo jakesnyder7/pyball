@@ -33,12 +33,13 @@ input {
   box-sizing: border-box;
   color: #ffffff;
   background-color: #404040;
+  color: white;
   border-radius: 0.5em;
   border-color: #ffffff;
 }
 
 input::placeholder {
-  color: b3b3b3;
+  color: white;
   opacity: .8;
 }
 

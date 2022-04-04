@@ -1,98 +1,6 @@
 import React from 'react';
-import { UseFetchInput } from '../api/UseFetchInput.js';
 import { average } from '../Stats/MathFunctions.js';
-import './Roster.css';
-
-/**
- * Hook to define a button to trigger the removal of an element.
- * @author Claire Wagner
- * @param onClick The event handler to execute when the button is clicked. 
- * @returns The button.
- */
-function RemoveButton({onClick}) {
-  return (
-    <button onClick={onClick} className='removeButton'>
-      {'–'}
-    </button>
-  );
-}
-
-/**
- * Hook to define a roster entry.
- * @author Claire Wagner
- * @param label The label for the roster entry.
- * @param positions A list of valid positions for this roster entry.
- * @param stats A list of stats to display. Each stat must have a property called 'accessor'
- * that will be used as the accessor to select the relevant data from search results, as well
- * as a property called 'function' that will be called on that data to produce the stat that
- * will be displayed (for example, to average the data and/or format it for display).
- * @param query The initial query for which to search (optional).
- * @param setRosterRecord A function to use to update the roster record array with valid query results.
- * @param rosterRecordIndex The index to use when updating the roster record array.
- * @returns The roster entry as a row.
- */
-function RosterRow({label, positions, stats, query, setRosterRecord, rosterRecordIndex}) {
-
-  // the data obtained from a query
-  const [data, setData] = React.useState({
-    query: query == null ? '' : query,
-    results: [],
-  });
-
-  // whether or not the query produced valid results
-  const [validResults, setValidResults] = React.useState(false);
-
-  // event handler for button to remove player from roster
-  function removeButtonOnClick() {
-    setData({ ...data, results: null, query: '' });
-    setValidResults(false);
-  }
-  
-  // helper function to check if the player's position is a valid match for this roster entry
-  const validPosition = React.useCallback(() => {
-    return validResults && data.results.position != null
-      && positions.includes(String(data.results.position));
-  },
-  [validResults, data.results, positions]);
-
-  // each time a player is added to this roster entry, update the roster record at the corresponding index
-  React.useEffect(() => {
-    setRosterRecord((oldrecord) => {
-      const tmp = oldrecord.map((entry) => entry);
-      tmp[rosterRecordIndex] = validPosition()
-        ? data.results.full_name
-        : (validResults ? oldrecord[rosterRecordIndex] : null);
-      return tmp;
-    });
-  }, [setRosterRecord, rosterRecordIndex, validPosition, data.results, validResults]);
-
-  return (
-    <tr>
-      <td width={75}>
-        { /* display the search bar if no valid player query has been submitted; 
-             otherwise, display the player's name */ }
-        {validPosition()
-          && <RemoveButton onClick={removeButtonOnClick}/>}
-        {' '}
-        {label}
-      </td>
-      { /* if a valid player query has been submitted, display the player's name */ }
-      <td>
-        {validPosition() 
-          ? data.results.full_name
-          : <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name" /> 
-        }
-      </td>
-      { /* if a valid player query has been submitted, display player stats */ }
-      {stats.map((stat) => (
-        <td>
-          {validPosition()
-            && (data.results[stat.accessor] == null ? "N/A" : stat.function(data.results[stat.accessor]))}
-        </td>
-      ))}
-    </tr>
-  );
-}
+import { RosterRow } from './RosterRow.js';
 
 /**
  * Hook to define a roster.
@@ -111,6 +19,7 @@ export function Roster() {
       'TE': { number: 1},
       'Flex': { number: 1, positions: ['RB', 'WR', 'TE'] },
       'K': { number: 1},
+      'BN': { number: 6, positions: ['QB', 'RB', 'WR', 'TE', 'Flex', 'K'] }
     }),
     []
   );
@@ -145,16 +54,10 @@ export function Roster() {
     [rosterPositions]
   );
 
-  // Record of roster entries
-  const [rosterRecord, setRosterRecord] =  React.useState(new Array(roster.length));
-  
-  // Update 'roster' in local storage each time rosterRecord changes
-  React.useEffect(() => {
-    // call localStorage.setItem only when the value of rosterRecord has changed
-    if (localStorage.getItem('roster') !== JSON.stringify(rosterRecord)) {
-      localStorage.setItem('roster', JSON.stringify(rosterRecord));
-    }
-  }, [rosterRecord]);
+  // If pyballRoster does not exist in local storage yet, add it
+  if (localStorage.getItem('pyballRoster') == null) {
+    localStorage.setItem('pyballRoster', JSON.stringify(new Array(roster.length)));
+  }
 
   return (
     <table>
@@ -171,7 +74,7 @@ export function Roster() {
       <tbody>
         {/* Roster entries */}
         {roster.map((entry, index) =>
-          <RosterRow label={entry.label} positions={ entry.positions } stats={stats} query={localStorage.getItem('roster') != null ? JSON.parse(localStorage.getItem('roster'))[index] : null} setRosterRecord={setRosterRecord} rosterRecordIndex={index}/>
+          <RosterRow label={entry.label} positions={ entry.positions } stats={stats} rosterIndex={index}/>
         )}
       </tbody>
     </table>
