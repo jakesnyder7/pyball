@@ -213,8 +213,8 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
         setData(res.data);
       } catch (err) {
         console.error(err);
+        onError('Error: failed to fetch data.');
         setData(null);
-        onError('Error: no match found.');
       }
     };
 
@@ -237,6 +237,11 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
      * Postcondition: If an error was detected, onError has been called.
      */
     function checkForError() {
+      // check if data contains valid player info
+      if (data.full_name == null || data.full_name.length < 1) {
+        onError('Error: no match found.');
+        return true;
+      }
       // check if player position is invalid for this row
       if (!positions.includes(String(data.position))) {
         onError('Error: position must be ' + positionsToString() + '.');
