@@ -1,5 +1,6 @@
 import React from 'react';
 import Got from '../api/Got.js';
+import { getStat } from '../Stats/StatFunctions.js';
 import './RosterRow.css';
 
 /**
@@ -275,7 +276,7 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
       }
     }
   }, [data, mode, query, positions, rosterIndex, modifyRoster, setQuery, setMode]);
-
+  
   return (
     <tr>
       <td width='65' style={{textAlign: 'left', padding: '10px'}}>
@@ -292,9 +293,7 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
       {stats.map((stat) => (
         <td>
           {mode === 'valid' 
-            ? data[stat.accessor] == null
-              ? "N/A"
-              : stat.function(data[stat.accessor])
+            ? getStat(data, stat.accessor, stat.function)
             : null}
         </td>
       ))}

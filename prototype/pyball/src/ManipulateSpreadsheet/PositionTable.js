@@ -1,6 +1,7 @@
 import React from 'react';
 import { ManipulatableTable } from './ManipulatableTable.js';
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
+import { getStat } from '../Stats/StatFunctions.js';
 
 /**
  * Helper function for comparing two strings.
@@ -85,18 +86,6 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
       }),
       []
     );
-
-    // Helper function to get a stat given a player, accessor, and function
-    function getStat(player, accessor, func) {
-      if (player[accessor] == null || player[accessor][0] == null) {
-        return "N/A";
-      }
-      let stat = (func != null ? func(player[accessor]) : player[accessor]);
-      if (Array.isArray(stat)) {
-        stat = stat[0];
-      }
-      return String(stat);
-    }
 
     // columns to display in each table
     const columns = [

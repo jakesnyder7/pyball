@@ -1,5 +1,5 @@
 import React from 'react';
-import { average } from '../Stats/MathFunctions.js';
+import { average } from '../Stats/StatFunctions.js';
 import { RosterRow } from './RosterRow.js';
 
 /**
