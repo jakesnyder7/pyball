@@ -88,10 +88,13 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
 
     // Helper function to get a stat given a player, accessor, and function
     function getStat(player, accessor, func) {
-      if (player[accessor] == null) {
+      if (player[accessor] == null || player[accessor][0] == null) {
         return "N/A";
       }
       let stat = (func != null ? func(player[accessor]) : player[accessor]);
+      if (Array.isArray(stat)) {
+        stat = stat[0];
+      }
       return String(stat);
     }
 
