@@ -31,7 +31,6 @@ form {
 input {
   width: 100%;
   box-sizing: border-box;
-  color: #ffffff;
   background-color: #404040;
   color: white;
   border-radius: 0.5em;
@@ -39,7 +38,7 @@ input {
 }
 
 input::placeholder {
-  color: white;
+  color: lightgrey;
   opacity: .8;
 }
 
