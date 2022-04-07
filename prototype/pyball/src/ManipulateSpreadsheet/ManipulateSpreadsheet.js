@@ -2,7 +2,7 @@ import Navigation from '../Navigation/Navigation';
 import React from 'react';
 import { MemoizedPositionTable } from './PositionTable.js';
 import { Tabs } from './Tabs.js';
-import { average } from '../Stats/MathFunctions.js';
+import { average } from '../Stats/StatFunctions.js';
 import './ManipulateSpreadsheet.css';
 import Got from '../api/Got.js';
 
