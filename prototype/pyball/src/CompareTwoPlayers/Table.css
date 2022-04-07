@@ -10,6 +10,11 @@
     color: #ffffff;
 }
 
+tr:first-of-type th:first-of-type {
+    border-top-right-radius: 10px; 
+    border-top-left-radius: 10px;
+}
+
 table {
     border-collapse: separate;
     border-spacing: 0;

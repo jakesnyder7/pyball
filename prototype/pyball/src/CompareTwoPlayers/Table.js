@@ -18,8 +18,8 @@ export function Table(props) {
     return (
         <div className='Table' >
             <table>
-                <tr>
-                    <th colspan="3">
+                <tr class="Title" >
+                    <th  colspan="3" >
                         Stats from Week 1 of 2021 Season
                     </th>
                 </tr>

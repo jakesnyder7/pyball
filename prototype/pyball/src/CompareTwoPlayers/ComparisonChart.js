@@ -9,6 +9,7 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
+  import './ComparisonChart.css';
 
 export function ComparisonChart({player1, player2}) {
     ChartJS.register(
@@ -54,7 +55,8 @@ export function ComparisonChart({player1, player2}) {
                     }
                 }
             }
-        },    
+        },
+        backgroundColor: 'blue',    
       };
     
     const labels = Array.from({length: 22}, (_, i) => i + 1);
@@ -97,7 +99,7 @@ export function ComparisonChart({player1, player2}) {
         ],
       };
     return (
-        <div>
+        <div className='Chart' >
             <Line options={options} data={data} />
         </div>
     );
