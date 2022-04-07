@@ -29,9 +29,32 @@ export function ComparisonChart({player1, player2}) {
           },
           title: {
             display: true,
-            text: 'Fantasy Points (PPR) per Week',
+            text: 'PPR Fantasy Points per Week in 2021 Season',
+            font: {
+                size: 15
+            }
           },
-        },     
+        },  
+        scales: {
+            xAxes: {
+                title: {
+                    display: true,
+                    text: 'Week',
+                    font: {
+                        size: 15
+                    }
+                },
+            },
+            yAxes: {
+                title: {
+                    display: true,
+                    text: 'Fantasy Points (PPR)',
+                    font: {
+                        size: 15
+                    }
+                }
+            }
+        },    
       };
     
     const labels = Array.from({length: 22}, (_, i) => i + 1);
