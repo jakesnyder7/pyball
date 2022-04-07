@@ -1,41 +1,81 @@
-import Chart from 'chart.js/auto';
+import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+  } from 'chart.js';
 
-const labels = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-];
-
-const data = {
-  labels: labels,
-  datasets: [{
-    label: 'My First dataset',
-    backgroundColor: 'rgb(255, 99, 132)',
-    borderColor: 'rgb(255, 99, 132)',
-    data: [0, 10, 5, 2, 20, 30, 45],
-  }]
-};
-
-const config = {
-  type: 'line',
-  data: data,
-  options: {}
-};
-
-const myChart = new Chart(
-  document.getElementById('myChart'),
-  config
-);
-
-export function ComparisonChart() {
+export function ComparisonChart({player1, player2}) {
+    ChartJS.register(
+        CategoryScale,
+        LinearScale,
+        PointElement,
+        LineElement,
+        Title,
+        Tooltip,
+        Legend
+    );
     
+    const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Fantasy Points (PPR) per Week',
+          },
+        },     
+      };
+    
+    const labels = Array.from({length: 22}, (_, i) => i + 1);
+    
+    const p1Data = [];
+    let j = 0;
+    for(let i = 0; i < labels.length; i++) {
+        if(labels[i] === player1.week[j]) {
+            p1Data.push(player1.fantasy_points_ppr[j++]);
+        } else {
+            p1Data.push(0);
+        }
+    }
+
+    const p2Data = [];
+    let k = 0;
+    for(let i = 0; i < labels.length; i++) {
+        if(labels[i] === player2.week[k]) {
+            p2Data.push(player2.fantasy_points_ppr[k++]);
+        } else {
+            p2Data.push(0);
+        }
+    }
+
+    const data = {
+        labels,
+        datasets: [
+          {
+            label: player1.full_name,
+            data: p1Data,
+            borderColor: player1.team_color,
+            backgroundColor: player1.team_color2,
+          },
+          {
+            label: player2.full_name,
+            data:  p2Data,
+            borderColor: player2.team_color,
+            backgroundColor: player2.team_color2,
+          },
+        ],
+      };
     return (
         <div>
-            <canvas id="myChart"></canvas>
+            <Line options={options} data={data} />
         </div>
     );
 }
-
