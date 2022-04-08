@@ -100,7 +100,7 @@ function CompareTwoPlayers() {
           <PlayerDiv data={data2} setData={setData2} validResults={validResults2} setValidResults={setValidResults2} />
         </div>
 
-          { validResults1 && validResults2
+        { validResults1 && validResults2
           && <ComparisonTable player1={data1.results} player2={data2.results} stats_by_position={stats_by_position} stat_labels={stat_labels}/> }
           { validResults1 && validResults2 && 
           <ComparisonChart player1={data1.results} player2={data2.results} /> }
