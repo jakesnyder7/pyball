@@ -13,7 +13,9 @@ load('APIData.Rdata')
 
 # load in needed data frames from nflverse
 
-official_player_stats <- calculate_player_stats(nflreadr::load_pbp(), weekly = TRUE)
+official_player_stats <- calculate_player_stats(nflreadr::load_pbp(), weekly = TRUE) %>% filter(season_type == 'REG')
+
+official_player_stats_total <- calculate_player_stats(nflreadr::load_pbp(), weekly = FALSE)
 
 player_stats_kicking <- nflreadr::load_player_stats(seasons = most_recent_season(), stat_type = 'kicking')
 
