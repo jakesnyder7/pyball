@@ -36,6 +36,14 @@ export function averageRoundTo2(data) {
   return round(average(data),2);
 }
 
+export function getMin(data) {
+  return Math.min.apply(null, data);
+}
+
+export function getMax(data) {
+  return Math.max.apply(null, data);
+}
+
 /** 
  * Helper function to get a single stat from the provided data given a player, accessor, and function.
  * @param data The data from which to obtain the stat.
