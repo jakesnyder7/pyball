@@ -2,7 +2,7 @@ import Navigation from '../Navigation/Navigation';
 import React from 'react';
 import { MemoizedPositionTable } from './PositionTable.js';
 import { Tabs } from './Tabs.js';
-import { average } from '../Stats/StatFunctions.js';
+import { averageRoundTo2 } from '../Stats/StatFunctions.js';
 import './ManipulateSpreadsheet.css';
 import Got from '../api/Got.js';
 
@@ -20,6 +20,7 @@ function ManipulateSpreadsheet() {
   // Optional properties: 'sortDescFirst' (boolean, true by default in PositionTable) to sort first by
   // descending order; 'formattable' (boolean, true by default in PositionTable) to indicate whether or
   // not the column should be conditionally formattable
+
   const stats = React.useMemo(
     () => ({
       all: [ // stats to display for all positions
@@ -31,27 +32,30 @@ function ManipulateSpreadsheet() {
       ],
       // stats to display for only specific positions
       QB: [
-        {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: average},
-        {Header: 'Pass TD Avg', accessor: 'passing_tds', function: average},
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
-        {Header: 'INT Avg', accessor: 'interceptions', function: average},
+        {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: averageRoundTo2},
+        {Header: 'Pass TD Avg', accessor: 'passing_tds', function: averageRoundTo2},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: averageRoundTo2},
+        {Header: 'INT Avg', accessor: 'interceptions', function: averageRoundTo2},
       ],
       RB: [
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
-        {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average},
-        {Header: 'Rec Avg', accessor: 'receptions', function: average},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average},
+        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: averageRoundTo2},
+        {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: averageRoundTo2},
+        {Header: 'Rec Avg', accessor: 'receptions', function: averageRoundTo2},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: averageRoundTo2},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: averageRoundTo2},
+        {Header: 'Rec Share %', accessor: 'rec_share_%', function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}},
       ],
       WR: [
-        {Header: 'Rec Avg', accessor: 'receptions', function: average},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average},
+        {Header: 'Rec Avg', accessor: 'receptions', function: averageRoundTo2},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: averageRoundTo2},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: averageRoundTo2},
+        {Header: 'Rec Share %', accessor: 'rec_share_%', function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}},
       ],
       TE: [
-        {Header: 'Rec Avg', accessor: 'receptions', function: average},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
+        {Header: 'Rec Avg', accessor: 'receptions', function: averageRoundTo2},
+        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: averageRoundTo2},
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: averageRoundTo2},
+        {Header: 'Rec Share %', accessor: 'rec_share_%', function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}},
       ],
     }),
     []

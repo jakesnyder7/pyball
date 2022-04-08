@@ -113,9 +113,11 @@ import { getStat } from '../Stats/StatFunctions.js';
     Object.values(data).forEach(player => {
 
       if (player.gsis_id != null) {
+        // if the player has more than one id, use the first
+        let player_id = Array.isArray(player.gsis_id) ? player.gsis_id[0] : player.gsis_id;
         let row = {};
         columns.forEach((header) => {
-          row[header.accessor] = getStat(player, header.accessor, header.function, metrics[player.gsis_id]);
+          row[header.accessor] = getStat(player, header.accessor, header.function, metrics[player_id]);
         });
         // special case: set name_and_roster_status separately to incorporate the RosterCheckmark component
         row.name_and_roster_status = <span>

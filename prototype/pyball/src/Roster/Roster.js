@@ -1,5 +1,5 @@
 import React from 'react';
-import { average } from '../Stats/StatFunctions.js';
+import { averageRoundTo2 } from '../Stats/StatFunctions.js';
 import { RosterRow } from './RosterRow.js';
 import Got from '../api/Got.js'
 
@@ -29,7 +29,7 @@ export function Roster() {
   const stats = React.useMemo(
     () => [
       { label: 'Consistency Grade', accessor: 'consistency_grade', function: (data) => data },
-      { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: average },
+      { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: averageRoundTo2 },
       { label: 'Fantasy Pts Min', accessor: 'fantasy_points', function: (data) => Math.min.apply(null, data) },
       { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: (data) => Math.max.apply(null, data) },
     ],

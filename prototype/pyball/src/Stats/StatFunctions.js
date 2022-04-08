@@ -13,7 +13,27 @@ export function average(array) {
       len++;
     }
   }
-  return Number.parseFloat(sum / len, 2).toFixed(2);
+  return sum / len;
+  //return Number.parseFloat(sum / len).toFixed(2);
+}
+
+/**
+ * Round to the specified number of decimal places.
+ * @param n The number to round.
+ * @param places The number of decimal places. 
+ * @returns 
+ */
+export function round(n, places) {
+  return Number.parseFloat(n).toFixed(places);
+}
+
+/**
+ * Compute the average and round to 2 decimal places.
+ * @param data The data to round. 
+ * @returns The average of the data, rounded to 2 decimal places.
+ */
+export function averageRoundTo2(data) {
+  return round(average(data),2);
 }
 
 /** 
@@ -24,20 +44,21 @@ export function average(array) {
  * @returns The stat.
  */
 export function getStat(data, accessor, func, metrics) {
+  // Helper function to parse stat
+  function parseStat(stat) {
+    let parsed = (func != null ? func(stat) : stat);
+    if (Array.isArray(parsed)) {
+      parsed = parsed[0];
+    }
+    return String(parsed);
+  }
+
   if (data[accessor] == null || data[accessor][0] == null || String(data[accessor]) === "NA") {
     if (metrics && metrics[accessor]) {
-      return metrics[accessor];
+      return parseStat(metrics[accessor]);
+    } else {
+      return "N/A";
     }
-    //alert(data.full_name);
-    //alert(metrics == null);
-    /*if (metrics[accessor] == null) {
-      alert("metrics[accessor == null]");
-    }*/
-    return "N/A";
   }
-  let stat = (func != null ? func(data[accessor]) : data[accessor]);
-  if (Array.isArray(stat)) {
-    stat = stat[0];
-  }
-  return String(stat);
+  return parseStat(data[accessor]);
 }
