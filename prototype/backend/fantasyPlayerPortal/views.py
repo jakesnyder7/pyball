@@ -12,6 +12,11 @@ import rpy2.robjects as robjects
 import pandas as pd
 import json
 
+import ReceiverShare
+from ReceiverShare import df_sorted_rec_share
+import ConsistencyGrade
+from ConsistencyGrade import df_official_player_stats
+
 # Create your views here.
 
 ## load in the R function that parses players here
@@ -51,4 +56,19 @@ def position_players(request, pos):
     else:
         return JsonResponse({'message': 'This operation is not supported'}, status=status.HTTP_204_NO_CONTENT)
 
+def advanced_metrics(request):
+    df = df_sorted_rec_share
+    df2 = df_official_player_stats
+    df2 = df2[['player_id', 'consistency_grade']]
+
+    df = df[['player_id', 'rec_dom', 'rec_share', 'rec_share_%']]
+
+    dff = df.set_index('player_id').join(df2.set_index('player_id'), on='player_id', lsuffix='', rsuffix='')
+
+    metrics = dff.to_json(orient='index')
+
+    if request.method == 'GET':
+            return JsonResponse(metrics, status=status.HTTP_200_OK, safe=False, json_dumps_params={"indent": 4})
+    else:
+        return JsonResponse({'message': 'This operation is not supported'}, status=status.HTTP_204_NO_CONTENT)
 

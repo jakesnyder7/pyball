@@ -156,7 +156,7 @@ all_data <- all_data %>%
 
 all_data <- all_data %>% mutate_if(is.character, as.factor) %>% filter(!is.na(full_name))
 
-get_player_data("Josh Johnson")
+#get_player_data("Josh Jacobs")
 
 #' Get the data about a specified player
 #'
@@ -168,7 +168,7 @@ get_player_data <- function(player_name_query) {
   player_large_data <- all_data %>% filter(str_to_lower(full_name) == query) %>% filter(gsis_id == gsis)
   non_unique <- player_large_data %>%
     summarise_all(n_distinct) %>%
-    select_if(. != 1)
+    select_if(. != 1) 
   non_unique_cols <- colnames(non_unique)
   player_large_data_1 <- player_large_data %>% select(-non_unique_cols) %>% distinct()
   # stopifnot(dim(player_large_data_1)[1] == 1)
