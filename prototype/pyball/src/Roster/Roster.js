@@ -1,6 +1,7 @@
 import React from 'react';
 import { average } from '../Stats/StatFunctions.js';
 import { RosterRow } from './RosterRow.js';
+import Got from '../api/Got.js'
 
 /**
  * Hook to define a roster.
@@ -27,9 +28,10 @@ export function Roster() {
   // Define stats to display for each roster entry
   const stats = React.useMemo(
     () => [
+      { label: 'Consistency Grade', accessor: 'consistency_grade', function: (data) => data },
       { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: average },
       { label: 'Fantasy Pts Min', accessor: 'fantasy_points', function: (data) => Math.min.apply(null, data) },
-      { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: (data) => Math.max.apply(null, data) }
+      { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: (data) => Math.max.apply(null, data) },
     ],
     []
   );
@@ -41,7 +43,6 @@ export function Roster() {
       for (let i = 0; i < rosterPos[pos].number; i++) {
         roster.push(
           { label: pos, positions: (rosterPos[pos].positions == null ? [pos] : rosterPos[pos].positions) }
-          //<RosterRow label={pos} positions={ rosterPos[pos].positions == null ? [pos] : rosterPos[pos].positions} stats={stats}/>
         );
       }
     });
@@ -59,7 +60,24 @@ export function Roster() {
     localStorage.setItem('pyballRoster', JSON.stringify(new Array(roster.length)));
   }
 
+  // State to keep track of metrics
+  const [metrics, setMetrics] = React.useState(null);
+  
+  // Fetch metrics (should only occur once)
+  React.useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const res = await Got.get('/metrics/');
+        setMetrics(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, []); // no dependencies since this should only occur once
+
   return (
+    metrics &&
     <table>
       <thead>
         <th>Position</th>
@@ -74,7 +92,13 @@ export function Roster() {
       <tbody>
         {/* Roster entries */}
         {roster.map((entry, index) =>
-          <RosterRow label={entry.label} positions={ entry.positions } stats={stats} rosterIndex={index}/>
+          <RosterRow
+            label={entry.label}
+            positions={ entry.positions }
+            stats={stats}
+            rosterIndex={index}
+            metrics={metrics}
+          />
         )}
       </tbody>
     </table>
