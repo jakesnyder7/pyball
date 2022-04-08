@@ -34,8 +34,8 @@ import { getStat } from '../Stats/StatFunctions.js';
    * @param columns The columns for the table.
    * @returns The table.
    */
-  export function PositionTable({data, stats}) {
-    
+  export function PositionTable({data, position, stats, metrics}) {
+
     // define additional sort types for the table
     const sortTypes = React.useMemo(
       () => ({
@@ -87,15 +87,10 @@ import { getStat } from '../Stats/StatFunctions.js';
       []
     );
 
-    // columns to display in each table
-    const columns = [
-      {Header: 'Player', accessor: 'name_and_roster_status', filter: 'any_word_startswith_by_full_name', formattable: false, sortType: 'sort_by_full_name'},
-      // Helper column to use when sorting and filtering Player column
-      {Header: 'PlayerHelper', accessor: 'full_name', formattable: false},
-      {Header: 'Team', accessor: 'team', formattable: false},
-    ];
+    // columns for the table (initially consists only of columns common to all tables)
+    const columns = stats['all'].map((col) => col);
 
-    // default props to add to each stats column
+    // default props to add to each column
     const defaultProps = {
       filter: 'startswith',
       formattable: true,
@@ -104,7 +99,7 @@ import { getStat } from '../Stats/StatFunctions.js';
 
     // add a column for each stat to columns while adding the default props to that column
     // (without overriding the stat's preexistent properties)
-    stats.forEach((stat) => {
+    stats[position].forEach((stat) => {
       Object.keys(defaultProps).forEach((prop) => {
         if (stat[prop] == null) {
           stat[prop] = defaultProps[prop];
@@ -116,19 +111,30 @@ import { getStat } from '../Stats/StatFunctions.js';
     // build table data from the provided data
     const tableData = [];
     Object.values(data).forEach(player => {
-      if (player.full_name != null) {
+
+      if (player.gsis_id != null) {
         let row = {};
         columns.forEach((header) => {
-          row[header.accessor] = getStat(player, header.accessor, header.function);
+          row[header.accessor] = getStat(player, header.accessor, header.function, metrics[player.gsis_id]);
         });
         // special case: set name_and_roster_status separately to incorporate the RosterCheckmark component
-        row.name_and_roster_status = <span>{getStat(player, 'full_name')}{' '}<RosterCheckmark playername={getStat(player, 'full_name')}/></span>
+        row.name_and_roster_status = <span>
+            {getStat(player, 'full_name')}
+            {' '}
+            <RosterCheckmark playername={getStat(player, 'full_name')}/>
+          </span>
         tableData.push(row);
       }
     });
 
     return (
-      <ManipulatableTable columns={columns} data={tableData} sortTypes={sortTypes} filterTypes={filterTypes} hiddenColumns={['full_name']} />
+      <ManipulatableTable
+        columns={columns}
+        data={tableData}
+        sortTypes={sortTypes}
+        filterTypes={filterTypes}
+        hiddenColumns={['full_name']}
+      />
     );
   }
 

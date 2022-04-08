@@ -96,12 +96,13 @@ function AcknowledgeMessage({message, onAcknowledge}) {
  * as a property called 'function' that will be called on that data to produce the stat that
  * will be displayed (for example, to average the data and/or format it for display).
  * @param rosterIndex The index in the roster to which this row corresponds.
+ * @param metrics Additional metrics which can be accessed by each player's gsis_id.
  * @returns The roster entry as a row.
  * Precondition: localStorage.getItem('pyballRoster') != null.
  * Postconditon: If a player has been added to the roster, then that player has also been added
  * to 'pyballRoster' at index rosterIndex in local storage.
  */
-export function RosterRow({label, positions, stats, rosterIndex}) {
+export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
 
   // The query to use when searching for a player
   const [query, setQuery] = React.useState('');
@@ -298,7 +299,7 @@ export function RosterRow({label, positions, stats, rosterIndex}) {
       {stats.map((stat) => (
         <td>
           {mode === 'valid' 
-            ? getStat(data, stat.accessor, stat.function)
+            ? getStat(data, stat.accessor, stat.function, metrics[data.gsis_id])
             : null}
         </td>
       ))}

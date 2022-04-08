@@ -22,23 +22,31 @@ function ManipulateSpreadsheet() {
   // not the column should be conditionally formattable
   const stats = React.useMemo(
     () => ({
+      all: [ // stats to display for all positions
+        {Header: 'Player', accessor: 'name_and_roster_status', filter: 'any_word_startswith_by_full_name', formattable: false, sortType: 'sort_by_full_name', sortDescFirst: false},
+        // Helper column to use when sorting and filtering Player column
+        {Header: 'PlayerHelper', accessor: 'full_name', formattable: false, sortDescFirst: false},
+        {Header: 'Team', accessor: 'team', formattable: false, sortDescFirst: false},
+        {Header: 'Consistency Grade', accessor: 'consistency_grade', formattable: false, sortDescFirst: false},
+      ],
+      // stats to display for only specific positions
       QB: [
         {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: average},
         {Header: 'Pass TD Avg', accessor: 'passing_tds', function: average},
         {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
-        {Header: 'INT Avg', accessor: 'interceptions', function: average}
+        {Header: 'INT Avg', accessor: 'interceptions', function: average},
       ],
       RB: [
         {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
         {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average},
         {Header: 'Rec Avg', accessor: 'receptions', function: average},
         {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average},
       ],
       WR: [
         {Header: 'Rec Avg', accessor: 'receptions', function: average},
         {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
+        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average},
       ],
       TE: [
         {Header: 'Rec Avg', accessor: 'receptions', function: average},
@@ -50,10 +58,13 @@ function ManipulateSpreadsheet() {
   ); 
 
   // State to keep track of the data for each table
-  const [data1, setData1] = React.useState('');
-  const [data2, setData2] = React.useState('');
-  const [data3, setData3] = React.useState('');
+  const [data1, setData1] = React.useState(null);
+  const [data2, setData2] = React.useState(null);
+  const [data3, setData3] = React.useState(null);
   //const [data4, setData4] = React.useState('');
+
+  // State to keep track of metrics
+  const [metrics, setMetrics] = React.useState(null);
 
   // The positions and associated data for the tables
   const tables = React.useMemo (
@@ -79,6 +90,8 @@ function ManipulateSpreadsheet() {
           const res = await Got.get(`/position/${tables[i].position}/`);
           tables[i].setData(res.data);
         }
+        const res = await Got.get('/metrics/');
+        setMetrics(res.data);
       } catch (err) {
         console.error(err);
       }
@@ -89,11 +102,17 @@ function ManipulateSpreadsheet() {
   // The tabs containing the tables
   const tabs = React.useMemo(
     () => (
-      tables.map((table) => (
-        {label: table.position, children: <MemoizedPositionTable data={table.data} stats={stats[table.position]}/> }
-      ))
+      tables.map((table) => ({
+        label: table.position,
+        children: <MemoizedPositionTable
+          data={table.data}
+          position={table.position}
+          stats={stats}
+          metrics={metrics}
+        />
+      }))
     ),
-    [tables, stats]
+    [tables, stats, metrics]
   );
 
   return (
@@ -101,7 +120,7 @@ function ManipulateSpreadsheet() {
       <Navigation />
       <div className='Mydiv'>
         { /* Render tabs only if all data has been fetched */ }
-        {tables.every((table) => table.data)
+        {tables.every((table) => table.data) && metrics !== null
           ? <Tabs tabs={tabs}/>
           : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
         }
