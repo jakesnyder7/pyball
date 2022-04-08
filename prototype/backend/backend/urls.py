@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/player/<str:name>/', views.nfl_player),
     path('api/position/<str:pos>/', views.position_players),
+    path('api/metrics/', views.advanced_metrics),
 ]
