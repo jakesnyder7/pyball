@@ -23,8 +23,16 @@ export function average(array) {
  * @param function The function to apply to the data to produce the stat (optional).
  * @returns The stat.
  */
-export function getStat(data, accessor, func) {
+export function getStat(data, accessor, func, metrics) {
   if (data[accessor] == null || data[accessor][0] == null || String(data[accessor]) === "NA") {
+    if (metrics && metrics[accessor]) {
+      return metrics[accessor];
+    }
+    //alert(data.full_name);
+    //alert(metrics == null);
+    /*if (metrics[accessor] == null) {
+      alert("metrics[accessor == null]");
+    }*/
     return "N/A";
   }
   let stat = (func != null ? func(data[accessor]) : data[accessor]);
