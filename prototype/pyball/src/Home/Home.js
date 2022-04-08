@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import React from 'react';
 import './Home.css';
-import '../Navigation/Navigation.css'
+import '../Navigation/Navigation.css';
+import logo from './Fantasy_Portal_svg.png';
 
 function Home() {
     return (
@@ -9,9 +10,10 @@ function Home() {
           <nav>
           <div className="App">
             <header>
-              <p>
+              {/* <p>
                 Fantasy Player Portal
-              </p>
+              </p> */}
+              <img src={logo} alt="Logo" />
             </header>
             <div className="Prototype">
               <NavLink to="/compare-players" className='inactive' activeClassName='active' >
