@@ -23,7 +23,9 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
 
   return (
     <div className='Playerz' >
-      { validResults ? <Player player={data.results} /> : <Player player={emptyPlayer} /> }
+      { validResults && data.results.full_name != null && data.results.full_name.length > 0
+        ? <Player player={data.results} />
+        : <Player player={emptyPlayer} /> }
       <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name"/>
     </div>
   );

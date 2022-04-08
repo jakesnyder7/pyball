@@ -156,7 +156,7 @@ all_data <- all_data %>%
 
 all_data <- all_data %>% mutate_if(is.character, as.factor) %>% filter(!is.na(full_name))
 
-get_player_data("Lamar Jackson")
+get_player_data("Josh Johnson")
 
 #' Get the data about a specified player
 #'
