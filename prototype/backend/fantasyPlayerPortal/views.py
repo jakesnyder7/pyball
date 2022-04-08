@@ -66,6 +66,7 @@ def advanced_metrics(request):
     dff = df.set_index('player_id').join(df2.set_index('player_id'), on='player_id', lsuffix='', rsuffix='')
 
     metrics = dff.to_json(orient='index')
+    metrics = json.loads(metrics)
 
     if request.method == 'GET':
             return JsonResponse(metrics, status=status.HTTP_200_OK, safe=False, json_dumps_params={"indent": 4})
