@@ -58,7 +58,7 @@ export function getStat(data, accessor, func, metrics) {
     if (Array.isArray(parsed)) {
       parsed = parsed[0];
     }
-    return String(parsed);
+    return parsed;
   }
 
   if (data[accessor] == null || data[accessor][0] == null || String(data[accessor]) === "NA") {
