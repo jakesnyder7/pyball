@@ -3,8 +3,8 @@ import React from 'react';
 import { spreadsheetStats } from '../Stats/StatDefinitions.js';
 import { MemoizedPositionTable } from './PositionTable.js';
 import { Tabs } from './Tabs.js';
+import { fetchData } from '../api/Fetch.js';
 import './ManipulateSpreadsheet.css';
-import Got from '../api/Got.js';
 
 /**
  * Hook to define and display the manipulatable spreadsheet page.
@@ -40,19 +40,10 @@ function ManipulateSpreadsheet() {
 
   // Fetch player data (should only occur once)
   React.useEffect(() => {
-    const fetchData = async() => {
-      try {
-        for (let i = 0; i < tables.length; i++) {
-          const res = await Got.get(`/position/${tables[i].position}/`);
-          tables[i].setData(res.data);
-        }
-        const res = await Got.get('/metrics/');
-        setMetrics(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
+    for (let i = 0; i < tables.length; i++) {
+      fetchData(`/position/${tables[i].position}/`, tables[i].setData, null);
+    }
+    fetchData('/metrics/', setMetrics, null);
   }, []); // no dependencies since this should only occur once
   
   // The tabs containing the tables
@@ -76,7 +67,7 @@ function ManipulateSpreadsheet() {
       <Navigation />
       <div className='Mydiv'>
         { /* Render tabs only if all data has been fetched */ }
-        {tables.every((table) => table.data) && metrics !== null
+        {tables.every((table) => table.data) && metrics
           ? <Tabs tabs={tabs}/>
           : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
         }

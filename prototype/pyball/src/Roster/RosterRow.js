@@ -1,6 +1,7 @@
 import React from 'react';
-import Got from '../api/Got.js';
 import { getStat } from '../Stats/StatFunctions.js';
+import { fetchData } from '../api/Fetch.js';
+import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
 import './RosterRow.css';
 
 /**
@@ -14,28 +15,6 @@ function RemoveButton({onClick}) {
     <button onClick={onClick} style={{backgroundColor: 'red'}}>
       {'×'}
     </button>
-  );
-}
-
-/**
- * Hook to define a form for searching for a player.
- * @author Claire Wagner
- * @param query The query state.
- * @param setQuery The function to use to modify the query state.
- * @param onSubmit The function to call when the search query is submitted.
- * @returns The form.
- */
-function PlayerSearchForm({query, setQuery, onSubmit}) {
-  return (
-    <form style={{display: 'flex', flexDirection: 'row'}}>
-      <input
-        type='text'
-        placeholder='Enter player name'
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={onSubmit} >Add</button>
-    </form>
   );
 }
 
@@ -123,23 +102,6 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
   const [mode, setMode] = React.useState('init');
 
   /**
-   * Helper function to handle queries, including basic validity checks.
-   * Postcondition: If a query is detected as invalid, onError has been called;
-   * otherwise, the mode has been set to 'fetch.'
-   */
-  function handleQuery() {
-    if (query === '') {
-      onError('Error: please enter a name.');
-    } else if (query.split(' ').length < 2) {
-      onError('Error: please enter both first and last name of player.');
-    } else if (query.split(' ').length > 2) {
-      onError('Error: please enter only first and last name of player.');
-    } else {
-      setMode('fetch');
-    }
-  };
-
-  /**
    * Helper function to modify 'pyballRoster' in local storage.
    * Sets the element at rosterIndex in 'pyballRoster' to newVal.
    * @param newVal The new value to set for this row in 'pyballRoster'.
@@ -171,7 +133,9 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
       return <PlayerSearchForm
         query={query}
         setQuery={setQuery}
-        onSubmit={(event) => { event.preventDefault(); handleQuery();}} 
+        buttonText={'Add'}
+        onFail={onError}
+        onPass={() => setMode('fetch')}
       />;
     } else if (mode === 'fetch') {
       return <header>{'Loading data...'}</header>
@@ -206,18 +170,6 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
 
   // Handle state changes
   React.useEffect(() => {
-
-    // Helper function to fetch data from the backend
-    const fetchPlayerData = async() => {
-      try {
-        const res = await Got.get(`/player/${query}/`);
-        setData(res.data);
-      } catch (err) {
-        console.error(err);
-        onError('Error: failed to fetch data.');
-        setData(null);
-      }
-    };
 
     // Helper function to convert position list into a string
     function positionsToString() {
@@ -263,7 +215,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     if (mode === 'fetch') {
       // fetch player data and check for errors
       // if no error was detected, add player to roster and set mode to 'valid'
-      fetchPlayerData();
+      fetchData(`player/${query}/`, setData, onError);
       if (data != null && !checkForError()) {
         // no error detected
         modifyRoster(data.full_name);

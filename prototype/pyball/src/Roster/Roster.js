@@ -1,7 +1,7 @@
 import React from 'react';
 import { rosterStats } from '../Stats/StatDefinitions.js';
 import { RosterRow } from './RosterRow.js';
-import Got from '../api/Got.js';
+import { fetchData } from '../api/Fetch.js';
 
 /**
  * Hook to define a roster.
@@ -54,15 +54,7 @@ export function Roster() {
   
   // Fetch metrics (should only occur once)
   React.useEffect(() => {
-    const fetchData = async() => {
-      try {
-        const res = await Got.get('/metrics/');
-        setMetrics(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
+    fetchData('/metrics/', setMetrics, null);
   }, []); // no dependencies since this should only occur once
 
   return (
