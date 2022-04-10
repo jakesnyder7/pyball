@@ -3,7 +3,8 @@ import './CompareTwoPlayers.css';
 import React from 'react';
 import { Player } from './Player.js';
 import { ComparisonTable } from './ComparisonTable.js';
-import { UseFetchInput } from '../api/UseFetchInput.js';
+import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
+import { fetchData } from '../api/Fetch.js';
 import { ComparisonChart } from './ComparisonChart';
 
 /**
@@ -15,22 +16,41 @@ import { ComparisonChart } from './ComparisonChart';
  * @returns A div containing the player information and the search bar.
  */
 function PlayerDiv({data, setData, validResults, setValidResults}) {
-  // Empty player to use as placeholder before queries entered
+
+  // State to track the player search query
+  const [query, setQuery] = React.useState('');
+
+  // Empty player to use as a placeholder
    const emptyPlayer = {
     full_name: [""],
     headshot_url: ['https://pdtxar.com/wp-content/uploads/2019/04/person-placeholder.jpg'],
   }
 
+  // Each time data changes, update validResults accordingly
+  React.useEffect(() => {
+    setValidResults(data != null && data.full_name != null && data.full_name.length > 0);
+  }, [data, setValidResults]);
+
   return (
     <div className='Playerz' >
-      { validResults && data.results.full_name != null && data.results.full_name.length > 0
-        ? <Player player={data.results} />
+      { validResults
+        ? <Player player={data} />
         : <Player player={emptyPlayer} /> }
-      <UseFetchInput queryPrefix="player" data={data} setData={setData} setValidResults={setValidResults} placeholderText="Enter player name"/>
+      <PlayerSearchForm
+        query={query}
+        setQuery={setQuery}
+        buttonText='Search'
+        onFail={(errorMsg) => {
+          alert(errorMsg);
+          setValidResults(false);
+        }}
+        onPass={() => {
+          fetchData(`player/${query}/`, setData, () => {setValidResults(false)});
+        }}
+      />
     </div>
   );
 }
-
 
 /**
  * Hook to display the Compare Two Players page.
@@ -40,16 +60,10 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
 function CompareTwoPlayers() {
   
   // the data obtained from a query for Player 1
-  const [data1, setData1] = React.useState({
-    query: "",
-    results: [],
-  });
+  const [data1, setData1] = React.useState(null);
 
   // the data obtained from a query for Player 2
-  const [data2, setData2] = React.useState({
-    query: "",
-    results: [],
-  });
+  const [data2, setData2] = React.useState(null);
 
   // whether or not the most recent query for Player 1 produced valid results
   const [validResults1, setValidResults1] = React.useState(false);
@@ -69,7 +83,7 @@ function CompareTwoPlayers() {
     []
   );
 
-  // the names to display for each stat
+  // the labels to display for each stat
   const stat_labels = React.useMemo(
     () => ({
       'passing_yards': 'PASSING YD',
@@ -91,19 +105,35 @@ function CompareTwoPlayers() {
       <Navigation />
       <div className='CompareTwoPlayers'>
         <div className='PlayerDiv' >
-          <PlayerDiv data={data1} setData={setData1} validResults={validResults1} setValidResults={setValidResults1} />
+          <PlayerDiv
+            data={data1}
+            setData={setData1}
+            validResults={validResults1}
+            setValidResults={setValidResults1}
+          />
           <div className='Vs' >
             <h1>
                 VS.
             </h1>
           </div>
-          <PlayerDiv data={data2} setData={setData2} validResults={validResults2} setValidResults={setValidResults2} />
+          <PlayerDiv
+            data={data2}
+            setData={setData2}
+            validResults={validResults2}
+            setValidResults={setValidResults2}
+          />
         </div>
 
         { validResults1 && validResults2
-          && <ComparisonTable player1={data1.results} player2={data2.results} stats_by_position={stats_by_position} stat_labels={stat_labels}/> }
-          { validResults1 && validResults2 && 
-          <ComparisonChart player1={data1.results} player2={data2.results} /> }
+        && <div>
+          <ComparisonTable
+            player1={data1}
+            player2={data2}
+            stats_by_position={stats_by_position}
+            stat_labels={stat_labels}
+          />
+          <ComparisonChart player1={data1} player2={data2} />
+        </div>}
       </div>
     </div>
   );
