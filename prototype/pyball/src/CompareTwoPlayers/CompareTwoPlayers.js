@@ -29,6 +29,9 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
   // Each time data changes, update validResults accordingly
   React.useEffect(() => {
     setValidResults(data != null && data.full_name != null && data.full_name.length > 0);
+    if (data != null && (data.full_name == null || data.full_name.length <= 0)) {
+      alert("Error: No match found");
+    }
   }, [data, setValidResults]);
 
   return (
@@ -44,9 +47,11 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
           alert(errorMsg);
           setValidResults(false);
         }}
-        onPass={() => {
-          fetchData(`player/${query}/`, setData, () => {setValidResults(false)});
-        }}
+        onPass={() => {fetchData(`player/${query}/`, setData, (errorMsg) => {
+            setValidResults(false);
+            alert(errorMsg);
+          }
+        )}}
       />
     </div>
   );
