@@ -2,6 +2,7 @@ import React from 'react';
 import { getStat } from '../Stats/StatFunctions.js';
 import { fetchData } from '../api/Fetch.js';
 import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
+import { YesNoPrompt, AcknowledgePrompt } from '../Prompts/Prompts.js';
 import './RosterRow.css';
 
 /**
@@ -16,53 +17,6 @@ function RemoveButton({onClick}) {
       {'×'}
     </button>
   );
-}
-
-/**
- * Hook to define a component that displays a message and prompts the user to select 'Yes' or 'No' in response.
- * @author Claire Wagner
- * @param message The message to display.
- * @param onYes The function to call if the user selects 'Yes'.
- * @param onNo The function to call if the user selects 'No'.
- * @returns A div containing the component.
- */
-function YesNoChoice({message, onYes, onNo}) {
-  return (
-    <div style={{whiteSpace: 'nowrap', padding: '5px'}}>
-      <header>
-        {message}
-      </header>
-      <button onClick={onYes}>
-        {'Yes'}
-      </button>
-      {' '}
-      <button onClick={onNo}>
-        {'No'}
-      </button>
-    </div>
-  )
-}
-
-/**
- * Hook to define a component that displays a message and asks for the user's acknowledgment.
- * @author Claire Wagner
- * @param message The message to display.
- * @param onAcknowledge The function to call when the user acknowledges the message. 
- * @returns A div containing the component.
- */
-function AcknowledgeMessage({message, onAcknowledge}) {
-  return (
-    <div style={{whiteSpace: 'nowrap', padding: '5px'}}>
-      <header style={{display: 'inline-block'}}>
-        {message}
-      </header>
-      <span style={{padding: '5px'}}>
-        <button style={{display: 'inline-block'}} onClick={onAcknowledge}>
-          {'Ok'}
-        </button>
-      </span>
-    </div>
-  )
 }
 
 /**
@@ -140,7 +94,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     } else if (mode === 'fetch') {
       return <header>{'Loading data...'}</header>
     } else if (mode === 'error') {
-      return <AcknowledgeMessage
+      return <AcknowledgePrompt
         message={errorMsg}
         onAcknowledge={()=> {
           setQuery('');
@@ -152,7 +106,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     } else if (mode === 'valid') {
       return <header>{data.full_name}</header>;
     } else if (mode === 'remove') {
-      return <YesNoChoice
+      return <YesNoPrompt
         message={"Remove " + data.full_name + " from roster?"}
         onYes={()=>{
           modifyRoster(null);
