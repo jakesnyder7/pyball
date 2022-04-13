@@ -16,6 +16,33 @@ export const rosterStats = [
 ];
 
 /**
+ * Stats to display for each position in the comparison chart.
+ */
+export const stats_by_position = {
+  'QB': ['passing_yards', 'passing_tds', 'rushing_yards', 'interceptions'],
+  'RB': ['rushing_yards', 'rushing_tds', 'receptions', 'receiving_yards', 'receiving_tds'],
+  'WR': ['receptions', 'receiving_yards', 'receiving_tds'],
+  'TE': ['receptions', 'receiving_yards', 'receiving_tds'],
+  'K': ['fg_made', 'fg_missed'],
+};
+
+/**
+ * The label to display for each stat in the comparison chart.
+ */
+export const stat_labels = {
+  'passing_yards': 'PASSING YD',
+  'passing_tds': 'PASSING TD',
+  'interceptions': 'INT',
+  'rushing_yards': 'RUSHING YD',
+  'rushing_tds': 'RUSHING TD',
+  'receptions': 'REC',
+  'receiving_yards': 'RECEIVING YD',
+  'receiving_tds': 'RECEIVING TD',
+  'fg_made': 'FG MADE',
+  'fg_missed': 'FG_MISSED',
+}
+
+/**
  * Stats to display in columns in each table, organized by position.
  * @property 'Header' - the header for the column containing the stat.
  * @property 'accessor' - the accessor that will be used to uniquely identify this column (and, if

@@ -6,6 +6,7 @@ import { ComparisonTable } from './ComparisonTable.js';
 import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
 import { fetchData } from '../api/Fetch.js';
 import { ComparisonChart } from './ComparisonChart';
+import { stats_by_position, stat_labels } from '../Stats/StatDefinitions.js';
 
 /**
  * Hook to display player information along a search bar to retrieve player information.
@@ -75,35 +76,6 @@ function CompareTwoPlayers() {
 
   // whether or not the most recent query for Player 2 produced valid results
   const [validResults2, setValidResults2] = React.useState(false);
-
-  // stats to display for each position
-  const stats_by_position = React.useMemo(
-    () => ({
-      'QB': ['passing_yards', 'passing_tds', 'rushing_yards', 'interceptions'],
-      'RB': ['rushing_yards', 'rushing_tds', 'receptions', 'receiving_yards', 'receiving_tds'],
-      'WR': ['receptions', 'receiving_yards', 'receiving_tds'],
-      'TE': ['receptions', 'receiving_yards', 'receiving_tds'],
-      'K': ['fg_made', 'fg_missed'],
-    }),
-    []
-  );
-
-  // the labels to display for each stat
-  const stat_labels = React.useMemo(
-    () => ({
-      'passing_yards': 'PASSING YD',
-      'passing_tds': 'PASSING TD',
-      'interceptions': 'INT',
-      'rushing_yards': 'RUSHING YD',
-      'rushing_tds': 'RUSHING TD',
-      'receptions': 'REC',
-      'receiving_yards': 'RECEIVING YD',
-      'receiving_tds': 'RECEIVING TD',
-      'fg_made': 'FG MADE',
-      'fg_missed': 'FG_MISSED',
-    }),
-    []
-  );
 
   return (
     <div>
