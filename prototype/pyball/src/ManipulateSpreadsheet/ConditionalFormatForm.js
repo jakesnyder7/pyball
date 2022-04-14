@@ -42,16 +42,11 @@ export function ConditionalFormatForm({columnID, applyFormat}) {
   // return form
   return (
     <form>
-      {'highlight '}
-
       {/* for lower bound input */}
       <input type='number' placeholder='min' value={min} onChange={ (e) => {
         setMin(e.target.value);
         applyFormat(e.target.value, max, columnID, color, colorOptions[color].textcolor);
       }} />
-
-      {' to '}
-
       {/* for upper bound input */}
         <input type='number' placeholder='max' value={max} onChange={ (e) => {
           setMax(e.target.value);
@@ -60,7 +55,6 @@ export function ConditionalFormatForm({columnID, applyFormat}) {
       
       {/* for color selection */}
       <label>
-        {'color: '}
         <select value={color} style={{backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black'}} onChange={ (e) => { 
           setColor(e.target.value);
           applyFormat(min, max, columnID, e.target.value, colorOptions[e.target.value].textcolor);
