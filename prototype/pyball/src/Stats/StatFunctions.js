@@ -1,5 +1,5 @@
 /**
- * Helper function to compute the average of an array (rounded to 2 decimal places).
+ * Helper function to compute the average of an array.
  * @author Claire Wagner
  * @param array The array.
  * @returns The average.
@@ -13,7 +13,39 @@ export function average(array) {
       len++;
     }
   }
-  return Number.parseFloat(sum / len, 2).toFixed(2);
+  return sum / (len > 0 ? len : 1);
+  //return Number.parseFloat(sum / len).toFixed(2);
+}
+
+/**
+ * Helper function to sum all values in an array.
+ */
+export function sum(array) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (!isNaN(parseFloat(array[i]))) {
+      sum += array[i];
+    }
+  }
+  return sum;
+}
+
+/**
+ * Round to the specified number of decimal places.
+ * @param n The number to round.
+ * @param places The number of decimal places. 
+ * @returns 
+ */
+export function round(n, places) {
+  return Number.parseFloat(n).toFixed(places);
+}
+
+export function getMin(data) {
+  return Math.min.apply(null, data);
+}
+
+export function getMax(data) {
+  return Math.max.apply(null, data);
 }
 
 /** 
@@ -24,20 +56,21 @@ export function average(array) {
  * @returns The stat.
  */
 export function getStat(data, accessor, func, metrics) {
+  // Helper function to parse stat
+  function parseStat(stat) {
+    let parsed = (func != null ? func(stat) : stat);
+    if (Array.isArray(parsed)) {
+      parsed = parsed[0];
+    }
+    return parsed;
+  }
+
   if (data[accessor] == null || data[accessor][0] == null || String(data[accessor]) === "NA") {
     if (metrics && metrics[accessor]) {
-      return metrics[accessor];
+      return parseStat(metrics[accessor]);
+    } else {
+      return "N/A";
     }
-    //alert(data.full_name);
-    //alert(metrics == null);
-    /*if (metrics[accessor] == null) {
-      alert("metrics[accessor == null]");
-    }*/
-    return "N/A";
   }
-  let stat = (func != null ? func(data[accessor]) : data[accessor]);
-  if (Array.isArray(stat)) {
-    stat = stat[0];
-  }
-  return String(stat);
+  return parseStat(data[accessor]);
 }

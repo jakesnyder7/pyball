@@ -1,6 +1,8 @@
 import React from 'react';
-import Got from '../api/Got.js';
 import { getStat } from '../Stats/StatFunctions.js';
+import { fetchData } from '../api/Fetch.js';
+import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
+import { YesNoPrompt, AcknowledgePrompt } from '../Prompts/Prompts.js';
 import './RosterRow.css';
 
 /**
@@ -15,75 +17,6 @@ function RemoveButton({onClick}) {
       {'×'}
     </button>
   );
-}
-
-/**
- * Hook to define a form for searching for a player.
- * @author Claire Wagner
- * @param query The query state.
- * @param setQuery The function to use to modify the query state.
- * @param onSubmit The function to call when the search query is submitted.
- * @returns The form.
- */
-function PlayerSearchForm({query, setQuery, onSubmit}) {
-  return (
-    <form style={{display: 'flex', flexDirection: 'row'}}>
-      <input
-        type='text'
-        placeholder='Enter player name'
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={onSubmit} >Add</button>
-    </form>
-  );
-}
-
-/**
- * Hook to define a component that displays a message and prompts the user to select 'Yes' or 'No' in response.
- * @author Claire Wagner
- * @param message The message to display.
- * @param onYes The function to call if the user selects 'Yes'.
- * @param onNo The function to call if the user selects 'No'.
- * @returns A div containing the component.
- */
-function YesNoChoice({message, onYes, onNo}) {
-  return (
-    <div style={{whiteSpace: 'nowrap', padding: '5px'}}>
-      <header>
-        {message}
-      </header>
-      <button onClick={onYes}>
-        {'Yes'}
-      </button>
-      {' '}
-      <button onClick={onNo}>
-        {'No'}
-      </button>
-    </div>
-  )
-}
-
-/**
- * Hook to define a component that displays a message and asks for the user's acknowledgment.
- * @author Claire Wagner
- * @param message The message to display.
- * @param onAcknowledge The function to call when the user acknowledges the message. 
- * @returns A div containing the component.
- */
-function AcknowledgeMessage({message, onAcknowledge}) {
-  return (
-    <div style={{whiteSpace: 'nowrap', padding: '5px'}}>
-      <header style={{display: 'inline-block'}}>
-        {message}
-      </header>
-      <span style={{padding: '5px'}}>
-        <button style={{display: 'inline-block'}} onClick={onAcknowledge}>
-          {'Ok'}
-        </button>
-      </span>
-    </div>
-  )
 }
 
 /**
@@ -123,23 +56,6 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
   const [mode, setMode] = React.useState('init');
 
   /**
-   * Helper function to handle queries, including basic validity checks.
-   * Postcondition: If a query is detected as invalid, onError has been called;
-   * otherwise, the mode has been set to 'fetch.'
-   */
-  function handleQuery() {
-    if (query === '') {
-      onError('Error: please enter a name.');
-    } else if (query.split(' ').length < 2) {
-      onError('Error: please enter both first and last name of player.');
-    } else if (query.split(' ').length > 2) {
-      onError('Error: please enter only first and last name of player.');
-    } else {
-      setMode('fetch');
-    }
-  };
-
-  /**
    * Helper function to modify 'pyballRoster' in local storage.
    * Sets the element at rosterIndex in 'pyballRoster' to newVal.
    * @param newVal The new value to set for this row in 'pyballRoster'.
@@ -171,12 +87,14 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
       return <PlayerSearchForm
         query={query}
         setQuery={setQuery}
-        onSubmit={(event) => { event.preventDefault(); handleQuery();}} 
+        buttonText={'Add'}
+        onFail={onError}
+        onPass={() => setMode('fetch')}
       />;
     } else if (mode === 'fetch') {
       return <header>{'Loading data...'}</header>
     } else if (mode === 'error') {
-      return <AcknowledgeMessage
+      return <AcknowledgePrompt
         message={errorMsg}
         onAcknowledge={()=> {
           setQuery('');
@@ -188,7 +106,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     } else if (mode === 'valid') {
       return <header>{data.full_name}</header>;
     } else if (mode === 'remove') {
-      return <YesNoChoice
+      return <YesNoPrompt
         message={"Remove " + data.full_name + " from roster?"}
         onYes={()=>{
           modifyRoster(null);
@@ -206,18 +124,6 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
 
   // Handle state changes
   React.useEffect(() => {
-
-    // Helper function to fetch data from the backend
-    const fetchPlayerData = async() => {
-      try {
-        const res = await Got.get(`/player/${query}/`);
-        setData(res.data);
-      } catch (err) {
-        console.error(err);
-        onError('Error: failed to fetch data.');
-        setData(null);
-      }
-    };
 
     // Helper function to convert position list into a string
     function positionsToString() {
@@ -263,7 +169,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     if (mode === 'fetch') {
       // fetch player data and check for errors
       // if no error was detected, add player to roster and set mode to 'valid'
-      fetchPlayerData();
+      fetchData(`player/${query}/`, setData, onError);
       if (data != null && !checkForError()) {
         // no error detected
         modifyRoster(data.full_name);

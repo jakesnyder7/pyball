@@ -1,10 +1,10 @@
 import Navigation from '../Navigation/Navigation';
 import React from 'react';
+import { spreadsheetStats } from '../Stats/StatDefinitions.js';
 import { MemoizedPositionTable } from './PositionTable.js';
 import { Tabs } from './Tabs.js';
-import { average } from '../Stats/StatFunctions.js';
+import { fetchData } from '../api/Fetch.js';
 import './ManipulateSpreadsheet.css';
-import Got from '../api/Got.js';
 
 /**
  * Hook to define and display the manipulatable spreadsheet page.
@@ -12,50 +12,6 @@ import Got from '../api/Got.js';
  * @returns A div containing all page elements.
  */
 function ManipulateSpreadsheet() {
-
-  // Stats to display in each table, organized by position
-  // 'Header' is the header for the column containing the stat; 'accessor' is the accessor to use
-  // to select the relevant data; 'function' is the function to use on the data in the column before
-  // displaying it (if any)
-  // Optional properties: 'sortDescFirst' (boolean, true by default in PositionTable) to sort first by
-  // descending order; 'formattable' (boolean, true by default in PositionTable) to indicate whether or
-  // not the column should be conditionally formattable
-  const stats = React.useMemo(
-    () => ({
-      all: [ // stats to display for all positions
-        {Header: 'Player', accessor: 'name_and_roster_status', filter: 'any_word_startswith_by_full_name', formattable: false, sortType: 'sort_by_full_name', sortDescFirst: false},
-        // Helper column to use when sorting and filtering Player column
-        {Header: 'PlayerHelper', accessor: 'full_name', formattable: false, sortDescFirst: false},
-        {Header: 'Team', accessor: 'team', formattable: false, sortDescFirst: false},
-        {Header: 'Consistency Grade', accessor: 'consistency_grade', formattable: false, sortDescFirst: false},
-      ],
-      // stats to display for only specific positions
-      QB: [
-        {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: average},
-        {Header: 'Pass TD Avg', accessor: 'passing_tds', function: average},
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
-        {Header: 'INT Avg', accessor: 'interceptions', function: average},
-      ],
-      RB: [
-        {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: average},
-        {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: average},
-        {Header: 'Rec Avg', accessor: 'receptions', function: average},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average},
-      ],
-      WR: [
-        {Header: 'Rec Avg', accessor: 'receptions', function: average},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average},
-      ],
-      TE: [
-        {Header: 'Rec Avg', accessor: 'receptions', function: average},
-        {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: average},
-        {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: average}
-      ],
-    }),
-    []
-  ); 
 
   // State to keep track of the data for each table
   const [data1, setData1] = React.useState(null);
@@ -84,19 +40,10 @@ function ManipulateSpreadsheet() {
 
   // Fetch player data (should only occur once)
   React.useEffect(() => {
-    const fetchData = async() => {
-      try {
-        for (let i = 0; i < tables.length; i++) {
-          const res = await Got.get(`/position/${tables[i].position}/`);
-          tables[i].setData(res.data);
-        }
-        const res = await Got.get('/metrics/');
-        setMetrics(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
+    for (let i = 0; i < tables.length; i++) {
+      fetchData(`/position/${tables[i].position}/`, tables[i].setData, null);
+    }
+    fetchData('/metrics/', setMetrics, null);
   }, []); // no dependencies since this should only occur once
   
   // The tabs containing the tables
@@ -107,12 +54,12 @@ function ManipulateSpreadsheet() {
         children: <MemoizedPositionTable
           data={table.data}
           position={table.position}
-          stats={stats}
+          stats={spreadsheetStats}
           metrics={metrics}
         />
       }))
     ),
-    [tables, stats, metrics]
+    [tables, metrics]
   );
 
   return (
@@ -120,7 +67,7 @@ function ManipulateSpreadsheet() {
       <Navigation />
       <div className='Mydiv'>
         { /* Render tabs only if all data has been fetched */ }
-        {tables.every((table) => table.data) && metrics !== null
+        {tables.every((table) => table.data) && metrics
           ? <Tabs tabs={tabs}/>
           : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
         }
@@ -130,4 +77,3 @@ function ManipulateSpreadsheet() {
   }
   
   export default ManipulateSpreadsheet;
-  

@@ -1,7 +1,7 @@
 import React from 'react';
-import { average } from '../Stats/StatFunctions.js';
+import { rosterStats } from '../Stats/StatDefinitions.js';
 import { RosterRow } from './RosterRow.js';
-import Got from '../api/Got.js'
+import { fetchData } from '../api/Fetch.js';
 
 /**
  * Hook to define a roster.
@@ -22,17 +22,6 @@ export function Roster() {
       'K': { number: 1},
       'BN': { number: 6, positions: ['QB', 'RB', 'WR', 'TE', 'Flex', 'K'] }
     }),
-    []
-  );
-
-  // Define stats to display for each roster entry
-  const stats = React.useMemo(
-    () => [
-      { label: 'Consistency Grade', accessor: 'consistency_grade', function: (data) => data },
-      { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: average },
-      { label: 'Fantasy Pts Min', accessor: 'fantasy_points', function: (data) => Math.min.apply(null, data) },
-      { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: (data) => Math.max.apply(null, data) },
-    ],
     []
   );
 
@@ -65,15 +54,7 @@ export function Roster() {
   
   // Fetch metrics (should only occur once)
   React.useEffect(() => {
-    const fetchData = async() => {
-      try {
-        const res = await Got.get('/metrics/');
-        setMetrics(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
+    fetchData('/metrics/', setMetrics, null);
   }, []); // no dependencies since this should only occur once
 
   return (
@@ -83,7 +64,7 @@ export function Roster() {
         <th>Position</th>
         <th>Player</th>
         {/* Headers */}
-        { stats.map((stat) => 
+        { rosterStats.map((stat) => 
           <th>
             {stat.label}
           </th>
@@ -95,7 +76,7 @@ export function Roster() {
           <RosterRow
             label={entry.label}
             positions={ entry.positions }
-            stats={stats}
+            stats={rosterStats}
             rosterIndex={index}
             metrics={metrics}
           />

@@ -45,7 +45,7 @@ export function ConditionalFormatForm({columnID, applyFormat}) {
       {'highlight '}
 
       {/* for lower bound input */}
-      <input type='number' width={5} placeholder='min' value={min} onChange={ (e) => {
+      <input type='number' placeholder='min' value={min} onChange={ (e) => {
         setMin(e.target.value);
         applyFormat(e.target.value, max, columnID, color, colorOptions[color].textcolor);
       }} />
