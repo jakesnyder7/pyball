@@ -17,20 +17,22 @@ import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/S
     // accessors of columns that should be hidden
     const hiddenColumns = [];
 
-    // helper function to populate the columns for the table from the provided array
-    function populateColumns(cols) {
-      cols.forEach((col) => {
-        // if any prop listed in defaultSpreadsheetStatsProps has been
-        // left unspecified for this column, add the default value
-        Object.keys(defaultSpreadsheetStatsProps).forEach((prop) => {
-          if (col[prop] == null) {
-            col[prop] = defaultSpreadsheetStatsProps[prop];
-          }
-          if (col.hide) {
-            hiddenColumns.push(col.accessor);
-          }
+    // helper function to populate the header groups and columns for the table from the provided array
+    function populateColumns(headerGroups) {
+      headerGroups.forEach((headerGroup) => {
+        headerGroup.columns.forEach((col) => {
+          // if any prop listed in defaultSpreadsheetStatsProps has been
+          // left unspecified for this column, add the default value
+          Object.keys(defaultSpreadsheetStatsProps).forEach((prop) => {
+            if (col[prop] == null) {
+              col[prop] = defaultSpreadsheetStatsProps[prop];
+            }
+            if (col.hide) {
+              hiddenColumns.push(col.accessor);
+            }
+          });
         });
-        columns.push(col);
+        columns.push(headerGroup);
       });
     }
 
@@ -45,15 +47,18 @@ import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/S
         // if the player has more than one id, use the first
         let player_id = Array.isArray(player.gsis_id) ? player.gsis_id[0] : player.gsis_id;
         let row = {};
-        columns.forEach((header) => {
-          row[header.accessor] = getStat(player,
-            header.data_accessor ? header.data_accessor : header.accessor,
-            header.function,
-            metrics[player_id]);
+        columns.forEach((headerGroup) => {
+          headerGroup.columns.forEach((col) => {
+            row[col.accessor] = getStat(player,
+              col.data_accessor ? col.data_accessor : col.accessor,
+              col.function,
+              metrics[player_id]);
+          });
         });
         // add this player to the table only if at least one position-specific stat is not "N/A"
-        if (!stats[position].every((stat) => row[stat.accessor] === "N/A")) {
-          tableData.push(row);
+        if (stats[position].some((hdrGroup) => 
+          hdrGroup.columns.some((col) => row[col.accessor] !== "N/A"))) {
+            tableData.push(row);
         }
       }
     });

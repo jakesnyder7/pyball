@@ -1,5 +1,5 @@
 /**
- * Helper function to compute the average of an array (rounded to 2 decimal places).
+ * Helper function to compute the average of an array.
  * @author Claire Wagner
  * @param array The array.
  * @returns The average.
@@ -13,8 +13,21 @@ export function average(array) {
       len++;
     }
   }
-  return sum / len;
+  return sum / (len > 0 ? len : 1);
   //return Number.parseFloat(sum / len).toFixed(2);
+}
+
+/**
+ * Helper function to sum all values in an array.
+ */
+export function sum(array) {
+  let sum = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (!isNaN(parseFloat(array[i]))) {
+      sum += array[i];
+    }
+  }
+  return sum;
 }
 
 /**
@@ -25,15 +38,6 @@ export function average(array) {
  */
 export function round(n, places) {
   return Number.parseFloat(n).toFixed(places);
-}
-
-/**
- * Compute the average and round to 2 decimal places.
- * @param data The data to round. 
- * @returns The average of the data, rounded to 2 decimal places.
- */
-export function averageRoundTo2(data) {
-  return round(average(data),2);
 }
 
 export function getMin(data) {

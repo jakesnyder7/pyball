@@ -1,4 +1,4 @@
-import { averageRoundTo2, getMin, getMax } from './StatFunctions.js';
+import { average, getMin, getMax, sum, round } from './StatFunctions.js';
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
 
 /**
@@ -10,7 +10,7 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
  */
 export const rosterStats = [
   { label: 'Consistency Grade', accessor: 'consistency_grade'},
-  { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: averageRoundTo2 },
+  { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: (array) => round(average(array),2) },
   { label: 'Fantasy Pts Min', accessor: 'fantasy_points', function: getMin },
   { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: getMax },
 ];
@@ -44,7 +44,8 @@ export const stat_labels = {
 
 /**
  * Stats to display in columns in each table, organized by position.
- * @property 'Header' - the header for the column containing the stat.
+ * @property 'Header' - the header for the header group or column containing the stat.
+ * @property 'columns' - a collection of columns that should appear in this header group.
  * @property 'accessor' - the accessor that will be used to uniquely identify this column (and, if
  * 'data_accessor' is not separately provided, to select the relevant data from the api).
  * @property 'data_accessor' (optional) - if provided, this will be used to select the relevant data from
@@ -62,44 +63,236 @@ export const stat_labels = {
  * the value given in defaultSpreadsheetProps will be used).
  */
 export const spreadsheetStats = {
-  all: [ // stats to display for all positions    
-    {Header: 'Player', accessor: 'name_and_roster_status', data_accessor: 'full_name', formattable: false,
-        filter: 'any_word_startswith_by_full_name', sortType: 'sort_by_full_name', sortDescFirst: false, 
-        function: (data) => { return (<span>{data}{' '}<RosterCheckmark playername={data}/></span>)}},
-    // Helper column to use when sorting and filtering Player column
-    {Header: 'PlayerHelper', accessor: 'full_name', formattable: false, sortDescFirst: false, hide: true},
-    {Header: 'Team', accessor: 'team', formattable: false, sortDescFirst: false},
-    {Header: 'Consistency Grade', accessor: 'consistency_grade', formattable: false, sortDescFirst: false},
+  all: [ // stats to display for all positions
+    {
+      Header: "General",
+      columns: [
+        {
+          Header: 'Player',
+          accessor: 'name_and_roster_status',
+          data_accessor: 'full_name',
+          formattable: false,
+          filter: 'any_word_startswith_by_full_name',
+          sortType: 'sort_by_full_name',
+          sortDescFirst: false, 
+          function: (data) => { return (<span>{data}{' '}<RosterCheckmark playername={data}/></span>)}
+        },
+        { // Helper column to use when sorting and filtering Player column
+          Header: 'PlayerHelper',
+          accessor: 'full_name',
+          formattable: false,
+          sortDescFirst: false,
+          hide: true
+        },
+        {
+          Header: 'Team',
+          accessor: 'team',
+          formattable: false,
+          sortDescFirst: false
+        },
+        {
+          Header: 'Consistency Grade',
+          accessor: 'consistency_grade',
+          formattable: false,
+          sortDescFirst: false
+        },
+      ],
+    },
+    {
+      Header: 'Fantasy',
+      columns: [
+        {
+          Header: 'Total Fantasy Pts',
+          accessor: 'total_fantasy_points',
+          data_accessor: 'fantasy_points',
+          function: (array) => round(sum(array),2),
+        },
+        {
+          Header: 'Avg Fantasy Pts',
+          accessor: 'avg_fantasy_points',
+          data_accessor: 'fantasy_points',
+          function: (array) => round(average(array),2),
+        }
+      ],
+    },
   ],
   // stats to display for specific positions
   QB: [
-    {Header: 'Pass Yd Avg', accessor: 'passing_yards', function: averageRoundTo2},
-    {Header: 'Pass TD Avg', accessor: 'passing_tds', function: averageRoundTo2},
-    {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: averageRoundTo2},
-    {Header: 'INT Avg', accessor: 'interceptions', function: averageRoundTo2},
+    {
+      Header: "Passing",
+      columns: [
+        {
+          Header: 'Yd Avg',
+          accessor: 'passing_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'passing_tds',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'INT Avg',
+          accessor: 'interceptions', function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Rushing",
+      columns: [
+        {
+          Header: 'Yd Avg',
+          accessor: 'rushing_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'rushing_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
   ],
   RB: [
-    {Header: 'Rush Yd Avg', accessor: 'rushing_yards', function: averageRoundTo2},
-    {Header: 'Rush TD Avg', accessor: 'rushing_tds', function: averageRoundTo2},
-    {Header: 'Rec Avg', accessor: 'receptions', function: averageRoundTo2},
-    {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: averageRoundTo2},
-    {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: averageRoundTo2},
-    {Header: 'Rec Share %', accessor: 'rec_share_%', 
-        function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}},
+    {
+      Header: "Rushing",
+      columns: [
+        {
+          Header: 'Yd Avg',
+          accessor: 'rushing_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'rushing_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Receiving",
+      columns: [
+        {
+          Header: 'Rec Avg',
+          accessor: 'receptions',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'Yd Avg',
+          accessor: 'receiving_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'receiving_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Fantasy Portal Metrics",
+      columns: [
+        {
+          Header: 'Rec Share %',
+          accessor: 'rec_share_%', 
+          function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+        },
+      ],
+    },
   ],
   WR: [
-    {Header: 'Rec Avg', accessor: 'receptions', function: averageRoundTo2},
-    {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: averageRoundTo2},
-    {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: averageRoundTo2},
-    {Header: 'Rec Share %', accessor: 'rec_share_%',
-        function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}},
+    {
+      Header: "Rushing",
+      columns: [
+        {
+          Header: 'Yd Avg',
+          accessor: 'rushing_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'rushing_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Receiving",
+      columns: [
+        {
+          Header: 'Rec Avg',
+          accessor: 'receptions',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'Yd Avg',
+          accessor: 'receiving_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'receiving_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Fantasy Portal Metrics",
+      columns: [
+        {
+          Header: 'Rec Share %',
+          accessor: 'rec_share_%', 
+          function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+        },
+      ],
+    },
   ],
   TE: [
-    {Header: 'Rec Avg', accessor: 'receptions', function: averageRoundTo2},
-    {Header: 'Rec Yd Avg', accessor: 'receiving_yards', function: averageRoundTo2},
-    {Header: 'Rec TD Avg', accessor: 'receiving_tds', function: averageRoundTo2},
-    {Header: 'Rec Share %', accessor: 'rec_share_%',
-        function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}},
+    {
+      Header: "Rushing",
+      columns: [
+        {
+          Header: 'Yd Avg',
+          accessor: 'rushing_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'rushing_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Receiving",
+      columns: [
+        {
+          Header: 'Rec Avg',
+          accessor: 'receptions',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'Yd Avg',
+          accessor: 'receiving_yards',
+          function: (array) => round(average(array),2)
+        },
+        {
+          Header: 'TD Avg',
+          accessor: 'receiving_tds',
+          function: (array) => round(average(array),2)
+        },
+      ],
+    },
+    {
+      Header: "Fantasy Portal Metrics",
+      columns: [
+        {
+          Header: 'Rec Share %',
+          accessor: 'rec_share_%', 
+          function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+        },
+      ],
+    },
   ],
 };
 
