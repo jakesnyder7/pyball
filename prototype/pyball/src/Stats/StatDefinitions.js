@@ -5,6 +5,8 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
  * Stats to display for each roster entry.
  * @property 'label' - the label for the stat.
  * @property 'accessor' - the accessor that will be used to select the relevant data from the api.
+ * @property 'hovertext' (optional) - the text that should appear when the user hovers over the stat name.
+ * @property 'datasource' (optional) - the name of the data source to use (if different than the default).
  * @property 'function' (optional) - if provided, this function will be passed the selected data, and its
  * return value will be used as the value to display in the table.
  */
@@ -17,8 +19,9 @@ export const rosterStats = [
   },
   {
     label: 'GRD',
-    hovertext: 'consistency grade',
     accessor: 'consistency_grade',
+    hovertext: 'consistency grade',
+    datasource: 'metrics',
   },
 ];
 
@@ -57,6 +60,8 @@ export const stat_labels = {
  * 'data_accessor' is not separately provided, to select the relevant data from the api).
  * @property 'data_accessor' (optional) - if provided, this will be used to select the relevant data from
  * the api (for example, in a case where two columns have the same data but need to have unique accessors).
+ * @property 'hovertext' (optional) - the text that should appear when the user hovers over the stat name.
+ * @property 'datasource' (optional) - the name of the data source to use (if different than the default). 
  * @property 'function' (optional) - if provided, this function will be passed the selected data, and its
  * return value will be used as the value to display in the table.
  * @property 'hide' (optional) - whether or not to hide this column.
@@ -93,7 +98,6 @@ export const spreadsheetStats = {
         },
         {
           Header: 'Team',
-          hovertext: "testing",
           accessor: 'team',
           formattable: false,
           sortDescFirst: false
@@ -106,16 +110,16 @@ export const spreadsheetStats = {
       columns: [
         {
           Header: 'FPTS',
-          hovertext: 'total fantasy points scored in the 2021 season',
           accessor: 'total_fantasy_points',
           data_accessor: 'fantasy_points',
+          hovertext: 'total fantasy points scored in the 2021 season',
           function: (array) => round(sum(array),2),
         },
         {
           Header: 'FPTS/G',
-          hovertext: 'fantasy points per game',
           accessor: 'avg_fantasy_points',
           data_accessor: 'fantasy_points',
+          hovertext: 'fantasy points per game',
           function: (array) => round(average(array),2),
         }
       ],
@@ -128,8 +132,8 @@ export const spreadsheetStats = {
       columns: [
         {
           Header: 'CMP',
-          hovertext: 'completions',
           accessor: 'completions',
+          hovertext: 'completions',
           function: sum,
         },
         {

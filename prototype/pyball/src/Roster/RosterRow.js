@@ -205,7 +205,10 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
       {stats.map((stat) => (
         <td>
           {mode === 'valid' 
-            ? getStat(data, stat.accessor, stat.function, metrics[data.gsis_id])
+            ? getStat(
+                stat.datasource === 'metrics' ? metrics[data.gsis_id] : data,
+                stat.accessor,
+                stat.function)
             : null}
         </td>
       ))}

@@ -52,10 +52,10 @@ export function getMax(data) {
  * Helper function to get a single stat from the provided data given a player, accessor, and function.
  * @param data The data from which to obtain the stat.
  * @param accessor The accessor to use to access the relevant data.
- * @param function The function to apply to the data to produce the stat (optional).
+ * @param func The function to apply to the data to produce the stat (optional).
  * @returns The stat.
  */
-export function getStat(data, accessor, func, metrics) {
+export function getStat(data, accessor, func) {
   // Helper function to parse stat
   function parseStat(stat) {
     let parsed = (func != null ? func(stat) : stat);
@@ -65,12 +65,9 @@ export function getStat(data, accessor, func, metrics) {
     return parsed;
   }
 
-  if (data[accessor] == null || data[accessor][0] == null || String(data[accessor]) === "NA") {
-    if (metrics && metrics[accessor]) {
-      return parseStat(metrics[accessor]);
-    } else {
-      return "N/A";
-    }
+  if (data && data[accessor] != null && data[accessor][0] != null && String(data[accessor]) !== "NA") {
+    return parseStat(data[accessor]);
+  } else {
+    return "N/A";
   }
-  return parseStat(data[accessor]);
 }
