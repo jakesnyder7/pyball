@@ -1,8 +1,8 @@
 /* Marion Geary */
 .CompareTwoPlayers {
   text-align: center;
-  background-color: #282c34;
-  color: floralwhite;
+  background-color: #212121;
+  color: #727272;
   min-height: 100vh;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -32,18 +32,68 @@ input {
   width: 100%;
   box-sizing: border-box;
   background-color: #404040;
-  color: white;
+  color: #eeffff;
   border-radius: 0.5em;
-  border-color: #ffffff;
+  border-color: #292929;
 }
 
 input::placeholder {
-  color: lightgrey;
+  color: #B0BEC5;
   opacity: .8;
 }
 
 input:focus {
-  border: 3px solid #555;
+  border: 3px solid #3F3F3F;
+}
+
+
+button {
+  background-color: #2A2A2A;
+  border: #292929;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #B0BEC5;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin: 1%;
+}
+
+button:hover,
+button:focus {
+  background-color: #82aaff;
+  color: #eeffff;
+}
+
+#acknowledgeButton:hover,
+#acknowledgeButton:focus {
+  background-color: #82aaff;
+}
+
+#yesButton:hover,
+#yesButton:focus {
+  background-color: #82aaff;
+}
+
+#noButton:hover,
+#noButton:focus {
+  background-color: #ff5370;
 }
 
 .Vs {
@@ -61,7 +111,7 @@ h1 {
   margin: auto;
   vertical-align: bottom;
 	display: table-cell;
-  color: #b3b3b3;
+  color: #eeffff;
 }
 
 

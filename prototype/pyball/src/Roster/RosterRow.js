@@ -13,7 +13,7 @@ import './RosterRow.css';
  */
 function RemoveButton({onClick}) {
   return (
-    <button onClick={onClick} style={{backgroundColor: 'red'}}>
+    <button onClick={onClick} style={{backgroundColor: '#ff5370'}}>
       {'×'}
     </button>
   );

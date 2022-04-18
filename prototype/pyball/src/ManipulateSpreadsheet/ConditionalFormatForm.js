@@ -8,7 +8,7 @@ import React from 'react';
  * @return The form.
  * Parameters: comparand, column ID, color, and function defining comparison against the comparand.
  */
-export function ConditionalFormatForm({columnID, applyFormat}) {
+export function ConditionalFormatForm({ columnID, applyFormat }) {
 
   // options for colors (reference: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value)
   const colorOptions = React.useMemo(
@@ -43,24 +43,25 @@ export function ConditionalFormatForm({columnID, applyFormat}) {
   return (
     <form>
       {/* for lower bound input */}
-      <input type='number' placeholder='min' value={min} onChange={ (e) => {
+      <input className='bound' type='number' placeholder='min' value={min} onChange={(e) => {
         setMin(e.target.value);
         applyFormat(e.target.value, max, columnID, color, colorOptions[color].textcolor);
       }} />
+      <label> </label>
       {/* for upper bound input */}
-        <input type='number' placeholder='max' value={max} onChange={ (e) => {
-          setMax(e.target.value);
-          applyFormat(min, e.target.value, columnID, color, colorOptions[color].textcolor) 
-        }} />
-      
+      <input className='bound' type='number' placeholder='max' value={max} onChange={(e) => {
+        setMax(e.target.value);
+        applyFormat(min, e.target.value, columnID, color, colorOptions[color].textcolor)
+      }} />
+
       {/* for color selection */}
       <label>
-        <select value={color} style={{backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black'}} onChange={ (e) => { 
+        <select value={color} style={{ backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black' }} onChange={(e) => {
           setColor(e.target.value);
           applyFormat(min, max, columnID, e.target.value, colorOptions[e.target.value].textcolor);
         }}>
           {sortedColors.map(color => (
-            <option value={color} style={{backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black'}}>
+            <option value={color} style={{ backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black' }}>
               {colorOptions[color].label}
             </option>
           ))}

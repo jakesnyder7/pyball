@@ -14,11 +14,11 @@ export function YesNoPrompt({message, onYes, onNo}) {
       <p className='bold'>
         {message}
       </p>
-      <button onClick={onYes}>
+      <button id='yesButton' onClick={onYes}>
         {'Yes'}
       </button>
       {' '}
-      <button onClick={onNo}>
+      <button id='noButton' onClick={onNo}>
         {'No'}
       </button>
     </div>
@@ -38,7 +38,7 @@ export function AcknowledgePrompt({message, onAcknowledge}) {
       <p className='bold'>
         {message}
       </p>
-      <button onClick={onAcknowledge}>
+      <button id='acknowledgeButton' onClick={onAcknowledge}>
         {'Ok'}
       </button>
     </div>
