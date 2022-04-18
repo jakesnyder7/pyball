@@ -1,7 +1,8 @@
 /* Formatting based on https://www.digitalocean.com/community/tutorials/react-tabs-component (CC BY-NC-SA 4.0 license). */
 
 .tabList {
-  border-bottom: 1px solid #ccc;
+  color: #eeffff;
+  border-bottom: 1px solid #eeffff;
   padding-left: 0;
 }
 
@@ -13,7 +14,8 @@
 }
 
 .activeTab {
-  background-color: white;
-  border: solid #ccc;
+  color: #616161;
+  background-color: #eeffff;
+  border: solid #292929;
   border-width: 1px 1px 0 1px;
 }

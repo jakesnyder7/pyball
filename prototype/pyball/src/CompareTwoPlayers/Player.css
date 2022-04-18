@@ -1,7 +1,7 @@
 /* Marion Geary */
 .Player {
     text-align: center;
-    color: #ffffff;
+    color: #eeffff;
     font-weight: 700;
     font-family: 'Arial';
     float: center;
@@ -9,13 +9,13 @@
 }
 
 .img-player {
-    background-color: whitesmoke;
+    background-color: #eeffff;
     border-radius: 50%;
-    border: 2px solid #1DB954;
+    border: 2px solid #f78c6c;
 }
 
 .img-logo {
-    border: 0px solid white;
+    border: 0px solid #eeffff;
     border-radius: 0%;
     float: left;
 }

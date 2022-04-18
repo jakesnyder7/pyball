@@ -7,7 +7,7 @@
     margin-left: auto;
     margin-right: auto;
     width: 50%;
-    color: #ffffff;
+    color: #eeffff;
 }
 /*
 tr:first-of-type th:first-of-type {
@@ -19,13 +19,13 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    border: 2px solid #1DB954;
+    border: 2px solid #f78c6c;
     border-radius: 0px;
 
 }
 
 th {
-    border-bottom: 2px solid #b3b3b3; 
+    border-bottom: 2px solid #292929;
     font-family: 'Arial';
     font-weight: 700;
 }

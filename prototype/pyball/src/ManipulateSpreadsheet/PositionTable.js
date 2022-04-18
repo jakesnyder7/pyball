@@ -49,10 +49,10 @@ import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/S
         let row = {};
         columns.forEach((headerGroup) => {
           headerGroup.columns.forEach((col) => {
-            row[col.accessor] = getStat(player,
+            row[col.accessor] = getStat(
+              col.datasource === 'metrics' ? metrics[player_id] : player,
               col.data_accessor ? col.data_accessor : col.accessor,
-              col.function,
-              metrics[player_id]);
+              col.function);
           });
         });
         // add this player to the table only if at least one position-specific stat is not "N/A"

@@ -10,6 +10,10 @@
     display: flex;
 }
 
+.bound {
+    width: 45%;
+}
+
 thead {
     position: sticky;
     top: 0;
@@ -17,12 +21,12 @@ thead {
 
 table{
     width: 100%;
-    color: rgb(255, 255, 255);
+    color: #eeffff;
 }
 
 th {
     font-family: 'helvetica';
-    background-color: rgb(73, 84, 95);
+    background-color: #1A1A1A;
     text-align: center;
     font-size: 16px;
 }
@@ -31,7 +35,7 @@ tr {
     font-family: helvetica;
     font-weight: bold;
     font-size: 16px;
-    background-color: slategray;
+    background-color: #292929;
     text-align: left;
     vertical-align: bottom;
     height: 50px;
@@ -43,9 +47,9 @@ td {
 }
 
 tr:nth-child(even) {
-    background-color: rgb(73, 84, 95);
+    background-color: #212121;
   }
 
 tr:hover {
-    background-color: #363636;
+    background-color: #3F3F3F;
 }

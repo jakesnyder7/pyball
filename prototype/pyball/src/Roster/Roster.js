@@ -65,7 +65,7 @@ export function Roster() {
         <th>Player</th>
         {/* Headers */}
         { rosterStats.map((stat) => 
-          <th>
+          <th title={stat.hovertext}>
             {stat.label}
           </th>
         )}
