@@ -8,10 +8,27 @@
 
 library(nflverse)
 library(tidyverse)
+library(stringr)
+
+#setwd("/Users/Marion/Desktop/csci335/pyball/prototype/backend")
 
 load('APIData.Rdata')
 
 # load in needed data frames from nflverse
+
+ff_rankings <- load_ff_rankings()
+
+ff_rankings <- ff_rankings %>%
+  filter(str_starts(page_type, "redraft")) %>%
+  filter(page_type != "redraft-op") %>%
+  filter(page_type != "redraft-overall") %>%
+  filter(page_type != "redraft-lb") %>%
+  filter(page_type != "redraft-idp") %>%
+  select(yahoo_id, ecr, page_type) %>%
+  mutate(yahoo_id = as.numeric(yahoo_id))
+
+#ff_rankings %>% mutate(player = as.factor(player)) %>% group_by(player) %>% summarize(player, count = n()) %>% arrange(-count)
+
 
 official_player_stats <- calculate_player_stats(nflreadr::load_pbp(), weekly = TRUE) %>% filter(season_type == 'REG')
 
@@ -147,16 +164,29 @@ all_data <- all_data %>%
   select(- (grep(".xyz", names(all_data))))
 
 all_data <- all_data %>%
-  select(-c(espn_id, sportradar_id, yahoo_id, rotowire_id, pff_id,
+  select(-c(espn_id, sportradar_id, rotowire_id, pff_id,
             fantasy_data_id, sleeper_id, player_name, cfb_id, pos, date_modified,
             player_display_name, team_abbr, player_position, player_first_name,
             player_last_name, player_short_name, player_jersey_number,
             pfr_game_id, season_type, player, high_school,
             season, last_name, first_name))
 
+all_data <- all_data %>%
+  left_join(
+    ff_rankings,
+    by = c('yahoo_id' = 'yahoo_id'),
+    suffix = c('', '.xyz'),
+    keep = FALSE,
+    na_matches = "never"
+  ) %>% distinct()
+
 all_data <- all_data %>% mutate_if(is.character, as.factor) %>% filter(!is.na(full_name))
 
-#get_player_data("Josh Jacobs")
+all_data <- all_data %>%
+  distinct() %>%
+  select(- (grep(".xyz", names(all_data))))
+
+#get_player_data("Tom Brady")
 
 #' Get the data about a specified player
 #'
@@ -168,7 +198,8 @@ get_player_data <- function(player_name_query) {
   player_large_data <- all_data %>% filter(str_to_lower(full_name) == query) %>% filter(gsis_id == gsis)
   non_unique <- player_large_data %>%
     summarise_all(n_distinct) %>%
-    select_if(. != 1) 
+    select_if(. != 1)
+  non_unique <- non_unique
   non_unique_cols <- colnames(non_unique)
   player_large_data_1 <- player_large_data %>% select(-non_unique_cols) %>% distinct()
   # stopifnot(dim(player_large_data_1)[1] == 1)
