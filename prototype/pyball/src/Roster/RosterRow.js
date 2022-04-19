@@ -191,15 +191,16 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
   
   return (
     <tr>
-      <td width='65' style={{textAlign: 'left', padding: '10px'}}>
-        {mode === 'valid'
+      <td width='25' style={{textAlign: 'left', padding: '10px'}}>
+        {label}
+      </td>
+      <td width='10' style={{textAlign: 'left'}}>
+      {mode === 'valid'
           && <RemoveButton onClick={() => {
             setMode('remove');
           }}/>}
-        {' '}
-        {label}
       </td>
-      <td style={{backgroundColor: mode === 'error' ? 'red' : null}}>
+      <td style={{backgroundColor: mode === 'error' ? '#ff5370' : null}}>
         {getModalDisplay()}
       </td>
       {stats.map((stat) => (

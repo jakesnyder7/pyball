@@ -62,6 +62,7 @@ export function Roster() {
     <table>
       <thead>
         <th>Position</th>
+        <th></th>
         <th>Player</th>
         {/* Headers */}
         { rosterStats.map((stat) => 
