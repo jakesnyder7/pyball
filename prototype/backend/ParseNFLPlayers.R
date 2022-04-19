@@ -178,6 +178,13 @@ all_data <- all_data %>%
     suffix = c('', '.xyz'),
     keep = FALSE,
     na_matches = "never"
+  ) %>% 
+  left_join(
+    official_player_stats_total,
+    by = c('gsis_id' = 'player_id'),
+    suffix = c('', '_total'),
+    keep = FALSE,
+    na_matches = "never"
   ) %>% distinct()
 
 all_data <- all_data %>% mutate_if(is.character, as.factor) %>% filter(!is.na(full_name))
@@ -186,7 +193,7 @@ all_data <- all_data %>%
   distinct() %>%
   select(- (grep(".xyz", names(all_data))))
 
-#get_player_data("Tom Brady")
+# get_player_data("Tom Brady")
 
 #' Get the data about a specified player
 #'
@@ -225,28 +232,59 @@ get_player_data <- function(player_name_query) {
 #' @param position_query The official abbreviation of the position
 #' @return Data on all players in the specified position formatted as a JSON
 get_position_players <- function(position_query) {
-  if(position_query == 'QB') {
-    return(qb_data)
-  } else if (position_query == 'RB') {
-    return(rb_data)
-  } else if (position_query == 'WR') {
-    return(wr_data)
-  } else {
-    position_roster <- roster %>%
-      filter(position == position_query | depth_chart_position == position_query)
-    position_info <- list()
-    for (player in position_roster$full_name) {
-      player_data <- jsonlite::fromJSON(get_player_data(player))
-      position_info[[player]] <- player_data
+  position_query <- str_to_lower(position_query)
+  data_name <- paste0(position_query, "_data")
+  tryCatch(
+    expr = {
+      return(get(data_name))
+    },
+    error = function(e){ 
+      return("Enter a valid position name")
+    },
+    warming = function(w){ 
+      return("Enter a valid position name")
     }
-    position_info_json <- jsonlite::toJSON(position_info, pretty = TRUE)
-    return(position_info_json)
-  }
+  )
 }
+
+# get_position_players <- function(position_query) {
+#   position_roster <- roster %>%
+#     filter(position == position_query | depth_chart_position == position_query)
+#   position_info <- list()
+#   for (player in position_roster$full_name) {
+#     player_data <- jsonlite::fromJSON(get_player_data(player))
+#     position_info[[player]] <- player_data
+#   }
+#   position_info_json <- jsonlite::toJSON(position_info, pretty = TRUE)
+#   return(position_info_json)
+# }
 
 # qb_data <- get_position_players("QB")
 # rb_data <- get_position_players("RB")
 # wr_data <- get_position_players("WR")
-# get_position_players("PK")
+# pk_data <- get_position_players("PK")
+# cb_data <- get_position_players("CB")
+# db_data <- get_position_players("DB")
+# de_data <- get_position_players("DE")
+# dt_data <- get_position_players("DT")
+# k_data <- get_position_players("K")
+# lb_data <- get_position_players("LB")
+# ls_data <- get_position_players("LS")
+# ol_data <- get_position_players("OL")
+# p_data <- get_position_players("P")
+# t_data <- get_position_players("T")
+# te_data <- get_position_players("TE")
+# c_data <- get_position_players("C")
+# fb_data <- get_position_players("FB")
+# g_data <- get_position_players("G")
+# ot_data <- get_position_players("OT")
+# ss_data <- get_position_players("SS")
+# fs_data <- get_position_players("FS")
+# og_data <- get_position_players("OG")
+# nt_data <- get_position_players("NT")
+# olb_data <- get_position_players("OLB")
+# dl_data <- get_position_players("DL")
+# ilb_data <- get_position_players("ILB")
+# s_data <- get_position_players("S")
 
 # save.image('APIData.Rdata')
