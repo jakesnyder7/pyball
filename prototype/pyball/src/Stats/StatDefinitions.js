@@ -23,12 +23,18 @@ export const rosterStats = [
     },
   },
   {
+    label: 'RNK',
+    accessor: 'ecr',
+    hovertext: 'position rank',
+    function: getDataByAccessor,
+  },
+  {
     label: 'GRD',
     accessor: 'consistency_grade',
     hovertext: 'consistency grade',
     datasource: 'metrics',
     function: getDataByAccessor,
-  },
+  }
 ];
 
 /**
