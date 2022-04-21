@@ -114,7 +114,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
       );
     } else if (mode === 'remove') {
       return <YesNoPrompt
-        message={"Remove " + data.full_name + " from roster?"}
+        message={"Remove " + String(data.full_name).replaceAll('.','') + " from roster?"}
         onYes={()=>{
           modifyRoster(null);
           setQuery('');
