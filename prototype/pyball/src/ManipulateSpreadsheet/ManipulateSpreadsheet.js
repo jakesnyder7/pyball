@@ -17,7 +17,7 @@ function ManipulateSpreadsheet() {
   const [data1, setData1] = React.useState(null);
   const [data2, setData2] = React.useState(null);
   const [data3, setData3] = React.useState(null);
-  //const [data4, setData4] = React.useState('');
+  const [data4, setData4] = React.useState(null);
 
   // State to keep track of metrics
   const [metrics, setMetrics] = React.useState(null);
@@ -28,13 +28,13 @@ function ManipulateSpreadsheet() {
       { position: 'QB', data: data1, setData: setData1 },
       { position: 'RB', data: data2, setData: setData2 },
       { position: 'WR', data: data3, setData: setData3 },
-      //{ position: 'TE', data: data4, setData: setData4 },
+      { position: 'TE', data: data4, setData: setData4 },
     ]),
     [
       data1,
       data2,
       data3,
-      //data4,
+      data4,
     ]
   );
 
