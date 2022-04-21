@@ -10,13 +10,13 @@ function Navigation() {
               Home
             </NavLink>
             <NavLink to="/compare-players" className="inactive" activeClassName='active' >
-                Compare Two Players
+                Compare Players
             </NavLink>
             <NavLink to="/manipulate-spreadsheet" className="inactive" activeClassName='active' >
-                Manipulate Spreadsheet
+                Research
             </NavLink>
             <NavLink to="/edit-team" className="inactive" >
-                Edit Team
+                Team Builder
             </NavLink>
           </nav>
         </div>

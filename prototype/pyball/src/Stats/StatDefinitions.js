@@ -13,10 +13,10 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
 export const rosterStats = [
   {
     label: 'FPTS/G',
-    accessor: 'fantasy_points',
+    accessor: 'fantasy_points_per_game',
     hovertext: 'fantasy points per game',
     function: (data, accessor) => {
-      let fpts = getDataByAccessor(data, 'fantasy_points');
+      let fpts = getDataByAccessor(data, 'fantasy_points_ppr');
       return fpts === "N/A"
         ? "N/A"
         : round(average(fpts),2);
@@ -123,7 +123,7 @@ export const spreadsheetStats = {
           accessor: 'fantasy_points_total',
           hovertext: 'total fantasy points scored in the 2021 season',
           function: (data, accessor) => {
-            let total = getSumByAccessor(data, 'fantasy_points');
+            let total = getSumByAccessor(data, 'fantasy_points_ppr');
             return !isNaN(total)
               ? round(total, 2)
               : "N/A"
@@ -134,7 +134,7 @@ export const spreadsheetStats = {
           accessor: 'fantasy_points_per_game',
           hovertext: 'fantasy points per game',
           function: (data, accessor) => {
-            let fpts = getDataByAccessor(data, 'fantasy_points');
+            let fpts = getDataByAccessor(data, 'fantasy_points_ppr');
             return fpts === "N/A"
               ? "N/A"
               : round(average(fpts),2);
