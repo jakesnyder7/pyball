@@ -196,6 +196,9 @@ all_data <- all_data %>%
   distinct() %>%
   select(- (grep(".xyz", names(all_data))))
 
+all_data <- all_data %>%
+  mutate(full_name = str_remove_all(full_name, "."))
+
 #' Get the data about a specified player
 #'
 #' @param player_name_query The name of the desired player
@@ -207,10 +210,8 @@ get_player_data <- function(player_name_query) {
   non_unique <- player_large_data %>%
     summarise_all(n_distinct) %>%
     select_if(. != 1)
-  non_unique <- non_unique
   non_unique_cols <- colnames(non_unique)
   player_large_data_1 <- player_large_data %>% select(-non_unique_cols) %>% distinct()
-  # stopifnot(dim(player_large_data_1)[1] == 1)
   player_large_data_n <- player_large_data %>% select(non_unique_cols)
   full_player_data <- c(player_large_data_1, player_large_data_n)
   player_json <- jsonlite::toJSON(full_player_data, pretty = TRUE)
