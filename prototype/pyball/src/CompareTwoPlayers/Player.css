@@ -6,12 +6,24 @@
     font-family: 'Arial';
     float: center;
     padding: 20px;
+    display: inline-block;
+}
+
+.img-crop {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid #f78c6c;
+    background-color: #eeffff;
+    display: flex;
+    justify-content: center;
+    width: 225px;
 }
 
 .img-player {
+    align-self: center;
+    display: inline;
     background-color: #eeffff;
-    border-radius: 50%;
-    border: 2px solid #f78c6c;
 }
 
 .img-logo {
