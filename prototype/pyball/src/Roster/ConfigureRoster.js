@@ -86,6 +86,10 @@ export function ConfigureRoster({positions, defaultConfig, onConfigure}) {
 
   return (
     <div>
+      <header className='centered' style={{color: 'white'}}>
+        {'Configure your roster by selecting the number of roster slots for each position'
+        + ` (up to a total of ${MAX_SLOTS} slots).`}
+      </header>
       <table>
         <thead>
           <tr>
