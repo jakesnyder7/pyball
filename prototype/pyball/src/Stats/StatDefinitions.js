@@ -5,14 +5,24 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
  * Stats to display for each roster entry.
  * @property 'label' - the label for the stat.
  * @property 'accessor' - the accessor that will be used to select the relevant data from the api.
+ * @property 'hovertext' (optional) - the text that should appear when the user hovers over the stat name.
+ * @property 'datasource' (optional) - the name of the data source to use (if different than the default).
  * @property 'function' (optional) - if provided, this function will be passed the selected data, and its
  * return value will be used as the value to display in the table.
  */
 export const rosterStats = [
-  { label: 'Consistency Grade', accessor: 'consistency_grade'},
-  { label: 'Fantasy Pts Avg', accessor: 'fantasy_points', function: (array) => round(average(array),2) },
-  { label: 'Fantasy Pts Min', accessor: 'fantasy_points', function: getMin },
-  { label: 'Fantasy Pts Max', accessor: 'fantasy_points', function: getMax },
+  {
+    label: 'FPTS/G',
+    accessor: 'fantasy_points',
+    hovertext: 'fantasy points per game',
+    function: (array) => round(average(array),2),
+  },
+  {
+    label: 'GRD',
+    accessor: 'consistency_grade',
+    hovertext: 'consistency grade',
+    datasource: 'metrics',
+  },
 ];
 
 /**
@@ -50,6 +60,8 @@ export const stat_labels = {
  * 'data_accessor' is not separately provided, to select the relevant data from the api).
  * @property 'data_accessor' (optional) - if provided, this will be used to select the relevant data from
  * the api (for example, in a case where two columns have the same data but need to have unique accessors).
+ * @property 'hovertext' (optional) - the text that should appear when the user hovers over the stat name.
+ * @property 'datasource' (optional) - the name of the data source to use (if different than the default). 
  * @property 'function' (optional) - if provided, this function will be passed the selected data, and its
  * return value will be used as the value to display in the table.
  * @property 'hide' (optional) - whether or not to hide this column.
@@ -90,27 +102,24 @@ export const spreadsheetStats = {
           formattable: false,
           sortDescFirst: false
         },
-        {
-          Header: 'Consistency Grade',
-          accessor: 'consistency_grade',
-          formattable: false,
-          sortDescFirst: false
-        },
+
       ],
     },
     {
       Header: 'Fantasy',
       columns: [
         {
-          Header: 'Total Fantasy Pts',
+          Header: 'FPTS',
           accessor: 'total_fantasy_points',
           data_accessor: 'fantasy_points',
+          hovertext: 'total fantasy points scored in the 2021 season',
           function: (array) => round(sum(array),2),
         },
         {
-          Header: 'Avg Fantasy Pts',
+          Header: 'FPTS/G',
           accessor: 'avg_fantasy_points',
           data_accessor: 'fantasy_points',
+          hovertext: 'fantasy points per game',
           function: (array) => round(average(array),2),
         }
       ],
@@ -122,18 +131,40 @@ export const spreadsheetStats = {
       Header: "Passing",
       columns: [
         {
-          Header: 'Yd Avg',
+          Header: 'CMP',
+          accessor: 'completions',
+          hovertext: 'completions',
+          function: sum,
+        },
+        {
+          Header: 'ATT',
+          accessor: 'attempts',
+          hovertext: 'passing attempts',
+          function: sum,
+        },
+        {
+          Header: 'CMP%',
+          accessor: 'completion_percentage',
+          hovertext: 'completion %',
+          function: (array) => round(sum(array), 2)+"%", // when possible, change to be more accurate
+        },
+        {
+          Header: 'YDS',
           accessor: 'passing_yards',
-          function: (array) => round(average(array),2)
+          hovertext: 'passing yards',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'TD',
           accessor: 'passing_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'passing touchdowns',
+          function: sum,
         },
         {
-          Header: 'INT Avg',
-          accessor: 'interceptions', function: (array) => round(average(array),2)
+          Header: 'INT',
+          accessor: 'interceptions',
+          hovertext: 'interceptions',
+          function: sum,
         },
       ],
     },
@@ -141,14 +172,35 @@ export const spreadsheetStats = {
       Header: "Rushing",
       columns: [
         {
-          Header: 'Yd Avg',
-          accessor: 'rushing_yards',
-          function: (array) => round(average(array),2)
+          Header: 'ATT',
+          accessor: 'carries',
+          hovertext: 'rushing attempts',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'YDS',
+          accessor: 'rushing_yards',
+          hovertext: 'rushing yards',
+          function: sum,
+        },
+        {
+          Header: 'TDS',
           accessor: 'rushing_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'rushing touchdowns',
+          function: sum,
+        },
+      ],
+    },
+    {
+      Header: "Fantasy Portal Metrics",
+      columns: [
+        {
+          Header: 'GRD',
+          accessor: 'consistency_grade',
+          hovertext: 'consistency grade',
+          datasource: 'metrics',
+          formattable: false,
+          sortDescFirst: false
         },
       ],
     },
@@ -158,14 +210,22 @@ export const spreadsheetStats = {
       Header: "Rushing",
       columns: [
         {
-          Header: 'Yd Avg',
-          accessor: 'rushing_yards',
-          function: (array) => round(average(array),2)
+          Header: 'ATT',
+          accessor: 'carries',
+          hovertext: 'rushing attempts',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'YDS',
+          accessor: 'rushing_yards',
+          hovertext: 'rushing yards',
+          function: sum,
+        },
+        {
+          Header: 'TDS',
           accessor: 'rushing_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'rushing touchdowns',
+          function: sum,
         },
       ],
     },
@@ -173,19 +233,28 @@ export const spreadsheetStats = {
       Header: "Receiving",
       columns: [
         {
-          Header: 'Rec Avg',
+          Header: 'REC',
           accessor: 'receptions',
-          function: (array) => round(average(array),2)
+          hovertext: 'receptions',
+          function: sum,
         },
         {
-          Header: 'Yd Avg',
+          Header: 'TGT',
+          accessor: 'targets',
+          hovertext: 'targets',
+          function: sum,
+        },
+        {
+          Header: 'YDS',
           accessor: 'receiving_yards',
-          function: (array) => round(average(array),2)
+          hovertext: 'receiving yards',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'TD',
           accessor: 'receiving_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'receiving touchdowns',
+          function: sum,
         },
       ],
     },
@@ -193,9 +262,19 @@ export const spreadsheetStats = {
       Header: "Fantasy Portal Metrics",
       columns: [
         {
-          Header: 'Rec Share %',
+          Header: 'RSHARE',
           accessor: 'rec_share_%', 
+          hovertext: 'receiver share percentage',
+          datasource: 'metrics',
           function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+        },
+        {
+          Header: 'GRD',
+          accessor: 'consistency_grade',
+          hovertext: 'consistency grade',
+          datasource: 'metrics',
+          formattable: false,
+          sortDescFirst: false
         },
       ],
     },
@@ -205,14 +284,22 @@ export const spreadsheetStats = {
       Header: "Rushing",
       columns: [
         {
-          Header: 'Yd Avg',
-          accessor: 'rushing_yards',
-          function: (array) => round(average(array),2)
+          Header: 'ATT',
+          accessor: 'carries',
+          hovertext: 'rushing attempts',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'YDS',
+          accessor: 'rushing_yards',
+          hovertext: 'rushing yards',
+          function: sum,
+        },
+        {
+          Header: 'TDS',
           accessor: 'rushing_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'rushing touchdowns',
+          function: sum,
         },
       ],
     },
@@ -220,19 +307,28 @@ export const spreadsheetStats = {
       Header: "Receiving",
       columns: [
         {
-          Header: 'Rec Avg',
+          Header: 'REC',
           accessor: 'receptions',
-          function: (array) => round(average(array),2)
+          hovertext: 'receptions',
+          function: sum,
         },
         {
-          Header: 'Yd Avg',
+          Header: 'TGT',
+          accessor: 'targets',
+          hovertext: 'targets',
+          function: sum,
+        },
+        {
+          Header: 'YDS',
           accessor: 'receiving_yards',
-          function: (array) => round(average(array),2)
+          hovertext: 'receiving yards',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'TD',
           accessor: 'receiving_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'receiving touchdowns',
+          function: sum,
         },
       ],
     },
@@ -240,9 +336,19 @@ export const spreadsheetStats = {
       Header: "Fantasy Portal Metrics",
       columns: [
         {
-          Header: 'Rec Share %',
+          Header: 'RSHARE',
           accessor: 'rec_share_%', 
+          hovertext: 'receiver share percentage',
+          datasource: 'metrics',
           function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+        },
+        {
+          Header: 'GRD',
+          accessor: 'consistency_grade',
+          hovertext: 'consistency grade',
+          datasource: 'metrics',
+          formattable: false,
+          sortDescFirst: false
         },
       ],
     },
@@ -252,14 +358,22 @@ export const spreadsheetStats = {
       Header: "Rushing",
       columns: [
         {
-          Header: 'Yd Avg',
-          accessor: 'rushing_yards',
-          function: (array) => round(average(array),2)
+          Header: 'ATT',
+          accessor: 'carries',
+          hovertext: 'rushing attempts',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'YDS',
+          accessor: 'rushing_yards',
+          hovertext: 'rushing yards',
+          function: sum,
+        },
+        {
+          Header: 'TDS',
           accessor: 'rushing_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'rushing touchdowns',
+          function: sum,
         },
       ],
     },
@@ -267,19 +381,28 @@ export const spreadsheetStats = {
       Header: "Receiving",
       columns: [
         {
-          Header: 'Rec Avg',
+          Header: 'REC',
           accessor: 'receptions',
-          function: (array) => round(average(array),2)
+          hovertext: 'receptions',
+          function: sum,
         },
         {
-          Header: 'Yd Avg',
+          Header: 'TGT',
+          accessor: 'targets',
+          hovertext: 'targets',
+          function: sum,
+        },
+        {
+          Header: 'YDS',
           accessor: 'receiving_yards',
-          function: (array) => round(average(array),2)
+          hovertext: 'receiving yards',
+          function: sum,
         },
         {
-          Header: 'TD Avg',
+          Header: 'TD',
           accessor: 'receiving_tds',
-          function: (array) => round(average(array),2)
+          hovertext: 'receiving touchdowns',
+          function: sum,
         },
       ],
     },
@@ -287,9 +410,19 @@ export const spreadsheetStats = {
       Header: "Fantasy Portal Metrics",
       columns: [
         {
-          Header: 'Rec Share %',
+          Header: 'RSHARE',
           accessor: 'rec_share_%', 
+          hovertext: 'receiver share percentage',
+          datasource: 'metrics',
           function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+        },
+        {
+          Header: 'GRD',
+          accessor: 'consistency_grade',
+          hovertext: 'consistency grade',
+          datasource: 'metrics',
+          formattable: false,
+          sortDescFirst: false
         },
       ],
     },

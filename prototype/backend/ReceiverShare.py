@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[23]:
+# In[23]
+
+
+import warnings
+warnings.filterwarnings("ignore")
 
 
 import rpy2.robjects as ro
@@ -13,9 +17,6 @@ r['source']('ParseNFLPlayers.R')
 
 parse_nfl_player_r = ro.globalenv['get_player_data']
 parse_position_players_r = ro.globalenv['get_position_players']
-
-
-# In[24]:
 
 
 from rpy2.robjects import pandas2ri
@@ -39,25 +40,18 @@ with localconverter(ro.default_converter + pandas2ri.converter):
     df_official_player_stats = ro.conversion.rpy2py(official_player_stats_r)
     df_weekly_stats = ro.conversion.rpy2py(weekly_stats)
 
-
-
-
 team_passing_tds = {}
 for index, recent_team in df_official_player_stats.iterrows():
     if(df_official_player_stats["recent_team"][index] not in team_passing_tds.keys()):
         team_passing_tds[df_official_player_stats["recent_team"][index]] = 0
     team_passing_tds[df_official_player_stats["recent_team"][index]] += df_official_player_stats["passing_tds"][index]
-print(team_passing_tds)
+
 
 team_passing_yards = {}
 for index, recent_team in df_official_player_stats.iterrows():
     if(df_official_player_stats["recent_team"][index] not in team_passing_yards.keys()):
         team_passing_yards[df_official_player_stats["recent_team"][index]] = 0
     team_passing_yards[df_official_player_stats["recent_team"][index]] += df_official_player_stats["passing_yards"][index]
-print(team_passing_yards)
-
-
-# In[25]:
 
 
 df_official_player_stats["percent_rec_tds"] = 0
@@ -73,9 +67,6 @@ for index, receving_yards in df_official_player_stats.iterrows():
 df_official_player_stats.sort_values(by='receiving_yards', ascending=False)
 
 
-# In[26]:
-
-
 df_official_player_stats["rec_dom"] = 0
 for index, receving_yards in df_official_player_stats.iterrows():
     df_official_player_stats["rec_dom"][index] = (1/3)*(df_official_player_stats["percent_rec_yards"][index] + df_official_player_stats["percent_rec_tds"][index] + df_official_player_stats["target_share"][index])
@@ -89,10 +80,6 @@ for index, receving_yards in df_official_player_stats.iterrows():
 
 df_official_player_stats.sort_values(by='rec_share', ascending=False)
 
-
-# In[30]:
-
-
 df_sorted_rec_share = df_official_player_stats.sort_values(by='rec_share', ascending=False)
 
-df_sorted_rec_share.head(50)
+

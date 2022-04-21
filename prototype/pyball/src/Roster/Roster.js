@@ -6,24 +6,13 @@ import { fetchData } from '../api/Fetch.js';
 /**
  * Hook to define a roster.
  * @author Claire Wagner
+ * @param rosterPositions The roster positions, each of which should have the property 'number'
+ * specifying the number of roster entries for that position and (optionally) a definition of the
+ * positions that are legal for those roster entries.
  * @returns The roster as a table.
  * Parameters: comparand, column ID, color, and function defining comparison against the comparand.
  */
-export function Roster() {
-
-  // Definition of roster positions
-  const rosterPositions = React.useMemo(
-    () => ({
-      'QB': { number: 1},
-      'RB': { number: 2},
-      'WR': { number: 2},
-      'TE': { number: 1},
-      'Flex': { number: 1, positions: ['RB', 'WR', 'TE'] },
-      'K': { number: 1},
-      'BN': { number: 6, positions: ['QB', 'RB', 'WR', 'TE', 'Flex', 'K'] }
-    }),
-    []
-  );
+export function Roster({rosterPositions}) {
 
   // Helper function to build the roster
   function buildRoster(rosterPos) {
@@ -66,7 +55,7 @@ export function Roster() {
         <th>Player</th>
         {/* Headers */}
         { rosterStats.map((stat) => 
-          <th>
+          <th title={stat.hovertext}>
             {stat.label}
           </th>
         )}

@@ -3,6 +3,9 @@
 
 # In[32]:
 
+import warnings
+warnings.filterwarnings("ignore")
+
 
 import rpy2.robjects as ro
 import pandas as pd
@@ -41,21 +44,8 @@ with localconverter(ro.default_converter + pandas2ri.converter):
     df_weekly_stats = ro.conversion.rpy2py(weekly_stats)
 
 
-# In[102]:
-
-
-df_official_player_stats.head(20)
-
-
-# In[35]:
-
-
 test = df_weekly_stats.iloc[0:17,47]
-print(test)
 st.variance(test)
-
-
-# In[66]:
 
 
 player_scores = {"" : []}
@@ -66,19 +56,10 @@ for index, player_name in df_weekly_stats.iterrows():
         player_scores[name] = []
     player_scores[name].append(df_weekly_stats["fantasy_points_ppr"][index])
 
-print(player_scores["T.Brady"])
-
-
-# In[99]:
-
-
 player_var = {"" : 0}
 for x in player_scores:
     if(len(player_scores[x]) > 1): 
         player_var[x] = st.variance(player_scores[x])
-
-
-# In[100]:
 
 
 st.mean(player_var.values())
@@ -94,10 +75,6 @@ for x in player_var:
         player_grade[x] = "C"
     else:
         player_grade[x] = "D"
-print(player_grade)
-
-
-# In[119]:
 
 
 df_official_player_stats["consistency_grade"] = "F"
@@ -108,5 +85,4 @@ for index, player_name in df_official_player_stats.iterrows():
     if(player_scores.__contains__(pname)):
       if (len(player_scores[pname]) > 1):
         df_official_player_stats["consistency_grade"][index] = player_grade[pname]
-df_official_player_stats.head(20)
 

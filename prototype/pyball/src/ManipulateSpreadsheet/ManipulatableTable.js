@@ -151,7 +151,7 @@ export function ManipulatableTable({columns, data, sortTypes, filterTypes, hidde
               {headerGroup.headers.map(column => (
                 <th {...column.getHeaderProps()}>
                   {/* sorting UI */}
-                  <span {...column.getSortByToggleProps()}>
+                  <span {...column.getSortByToggleProps()} title={column.hovertext}>
                     {column.render('Header')}
                     {column.isSorted ? (column.isSortedDesc ? ' 🔽': ' 🔼') : ''}
                   </span>

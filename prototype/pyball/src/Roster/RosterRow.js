@@ -46,14 +46,15 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
   // The error message to display on error
   const [errorMsg, setErrorMsg] = React.useState('Unspecified error.');
 
+  // Mode definitions
+  const INIT_MODE = 0; // this roster row is initializing its state
+  const SEARCH_MODE = 1; // the user can search for a player to add to this row
+  const FETCH_MODE = 2; // the row is trying to fetch player data based on the provided query
+  const VALID_MODE = 3; // valid player data that meets the row's criteria has been fetched and is being displayed
+  const ERROR_MODE = 4; // an error has occurred and the user is being notified
+
   // The mode that this roster row is in
-  // 'init' means that the row is initializing its state,
-  // 'search' means that the user can use this row to search for a player to add,
-  // 'fetch' means that the row is trying to fetch player data based on the query,
-  // 'valid' means that valid player data that meets the row's criteria has been
-  // loaded and is being displayed,
-  // 'error' means that the user is being notified that an error has occurred.
-  const [mode, setMode] = React.useState('init');
+  const [mode, setMode] = React.useState(INIT_MODE);
 
   /**
    * Helper function to modify 'pyballRoster' in local storage.
@@ -70,12 +71,12 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
   /**
    * Helper function to handle errors.
    * Postcondition: errorMsg has been set to the value of the parameter errorMessage
-   * and mode has been set to 'error'.
+   * and mode has been set to ERROR_MODE.
    * @param errorMessage The error message to set.
    */
   function onError(errorMessage) {
     setErrorMsg(errorMessage);
-    setMode('error');
+    setMode(ERROR_MODE);
   }
 
   /**
@@ -83,27 +84,27 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
    * @returns The elements to display based on the current mode.
    */
   function getModalDisplay() {
-    if (mode === 'search') {
+    if (mode === SEARCH_MODE) {
       return <PlayerSearchForm
         query={query}
         setQuery={setQuery}
         buttonText={'Add'}
         onFail={onError}
-        onPass={() => setMode('fetch')}
+        onPass={() => setMode(FETCH_MODE)}
       />;
-    } else if (mode === 'fetch') {
+    } else if (mode === FETCH_MODE) {
       return <header>{'Loading data...'}</header>
-    } else if (mode === 'error') {
+    } else if (mode === ERROR_MODE) {
       return <AcknowledgePrompt
         message={errorMsg}
         onAcknowledge={()=> {
           setQuery('');
           setData(null);
-          setMode('search');
+          setMode(SEARCH_MODE);
           setErrorMsg('Unspecified error.');
         }}
       />
-    } else if (mode === 'valid') {
+    } else if (mode === VALID_MODE) {
       return <header>{data.full_name}</header>;
     } else if (mode === 'remove') {
       return <YesNoPrompt
@@ -112,10 +113,10 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
           modifyRoster(null);
           setQuery('');
           setData(null);
-          setMode('search');
+          setMode(SEARCH_MODE);
         }}
         onNo={()=>{
-          setMode('valid');
+          setMode(VALID_MODE);
         }}/>
     } else {
       return null;
@@ -166,25 +167,25 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     }
 
     // Update row state based on current mode, data, and local storage values
-    if (mode === 'fetch') {
+    if (mode === FETCH_MODE) {
       // fetch player data and check for errors
-      // if no error was detected, add player to roster and set mode to 'valid'
+      // if no error was detected, add player to roster and set mode to VALID_MODE
       fetchData(`player/${query}/`, setData, onError);
       if (data != null && !checkForError()) {
         // no error detected
         modifyRoster(data.full_name);
-        setMode('valid');
+        setMode(VALID_MODE);
       }
-    } else if (mode === 'init') {
+    } else if (mode === INIT_MODE) {
       // if this row already contains a player in local storage, update state accordingly
       const preexistent = JSON.parse(localStorage.getItem('pyballRoster'))[rosterIndex];
       if (preexistent != null) {
         // this row already contains a player in local storage
         setQuery(String(preexistent));
-        setMode('fetch');
+        setMode(FETCH_MODE);
       } else {
         // this row does not contain a player in local storage
-        setMode('search');
+        setMode(SEARCH_MODE);
       }
     }
   }, [data, mode, query, positions, rosterIndex, modifyRoster, setQuery, setMode]);
@@ -195,18 +196,21 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
         {label}
       </td>
       <td width='10' style={{textAlign: 'left'}}>
-      {mode === 'valid'
+      {mode === VALID_MODE
           && <RemoveButton onClick={() => {
             setMode('remove');
           }}/>}
       </td>
-      <td style={{backgroundColor: mode === 'error' ? '#ff5370' : null}}>
+      <td style={{backgroundColor: mode === ERROR_MODE ? '#ff5370' : null}}>
         {getModalDisplay()}
       </td>
       {stats.map((stat) => (
         <td>
-          {mode === 'valid' 
-            ? getStat(data, stat.accessor, stat.function, metrics[data.gsis_id])
+          {mode === VALID_MODE 
+            ? getStat(
+                stat.datasource === 'metrics' ? metrics[data.gsis_id] : data,
+                stat.accessor,
+                stat.function)
             : null}
         </td>
       ))}
