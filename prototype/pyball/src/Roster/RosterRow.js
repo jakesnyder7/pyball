@@ -105,7 +105,13 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
         }}
       />
     } else if (mode === VALID_MODE) {
-      return <header>{data.full_name}</header>;
+      const name = String(data.full_name).replaceAll('.','');
+      return (
+        <div>
+          <img class="img-player" src={data.headshot_url} alt={name} height={40} />
+          <header>{String(name).replaceAll('.','')}</header>
+        </div>
+      );
     } else if (mode === 'remove') {
       return <YesNoPrompt
         message={"Remove " + data.full_name + " from roster?"}
