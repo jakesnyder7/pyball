@@ -11,8 +11,8 @@ defaultW <- getOption("warn")
 options(warn = -1)
 
 options(nflreadr.verbose = FALSE)
-(library(nflverse))
-(library(tidyverse))
+library(nflverse)
+library(tidyverse)
 
 ff_rankings <- load_ff_rankings()
 
@@ -22,18 +22,13 @@ ff_rankings <- ff_rankings %>%
   filter(page_type != "redraft-overall") %>%
   filter(page_type != "redraft-lb") %>%
   filter(page_type != "redraft-idp") %>%
-  select(yahoo_id, ecr, page_type) %>%
+  select(yahoo_id, ecr, page_type, player) %>%
   mutate(yahoo_id = as.numeric(yahoo_id))
 
 official_player_stats <- calculate_player_stats(
     nflreadr::load_pbp(),
     weekly = TRUE
   ) %>% filter(season_type == 'REG')
-
-official_player_stats_total <- calculate_player_stats(
-    nflreadr::load_pbp(),
-    weekly = FALSE
-  )
 
 player_stats_kicking <- nflreadr::load_player_stats(
     seasons = most_recent_season(),
@@ -173,21 +168,25 @@ all_data <- all_data %>%
             pfr_game_id, season_type, player, high_school,
             season, last_name, first_name))
 
-all_data <- all_data %>%
+all_data_yahoo <- all_data %>%
   left_join(
     ff_rankings,
     by = c('yahoo_id' = 'yahoo_id'),
     suffix = c('', '.xyz'),
     keep = FALSE,
     na_matches = "never"
-  ) %>%
+  ) 
+
+all_data_na_yahoo <- all_data %>% filter(is.na(yahoo_id)) %>%
   left_join(
-    official_player_stats_total,
-    by = c('gsis_id' = 'player_id'),
-    suffix = c('', '_total'),
+    ff_rankings,
+    by = c('full_name' = 'player'),
+    suffix = c('', '.xyz'),
     keep = FALSE,
     na_matches = "never"
-  ) %>% distinct()
+  )
+
+all_data <- bind_rows(all_data_yahoo, all_data_na_yahoo)
 
 all_data <- all_data %>%
   mutate_if(is.character, as.factor) %>%
