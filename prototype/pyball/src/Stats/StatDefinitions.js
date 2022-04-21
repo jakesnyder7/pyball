@@ -1,4 +1,4 @@
-import { average, getMin, getMax, sum, round } from './StatFunctions.js';
+import { average, sum, round, getDataByAccessor, getSumByAccessor } from './StatFunctions.js';
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
 
 /**
@@ -8,21 +8,33 @@ import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
  * @property 'hovertext' (optional) - the text that should appear when the user hovers over the stat name.
  * @property 'datasource' (optional) - the name of the data source to use (if different than the default).
  * @property 'function' (optional) - if provided, this function will be passed the selected data, and its
- * return value will be used as the value to display in the table.
+ * return value will be used to produce the stat.
  */
 export const rosterStats = [
   {
     label: 'FPTS/G',
-    accessor: 'fantasy_points',
+    accessor: 'fantasy_points_per_game',
     hovertext: 'fantasy points per game',
-    function: (array) => round(average(array),2),
+    function: (data, accessor) => {
+      let fpts = getDataByAccessor(data, 'fantasy_points_ppr');
+      return fpts === "N/A"
+        ? "N/A"
+        : round(average(fpts),2);
+    },
+  },
+  {
+    label: 'RNK',
+    accessor: 'ecr',
+    hovertext: 'position rank',
+    function: getDataByAccessor,
   },
   {
     label: 'GRD',
     accessor: 'consistency_grade',
     hovertext: 'consistency grade',
     datasource: 'metrics',
-  },
+    function: getDataByAccessor,
+  }
 ];
 
 /**
@@ -54,25 +66,21 @@ export const stat_labels = {
 
 /**
  * Stats to display in columns in each table, organized by position.
+ * If any properties are left unspecified, the value given in defaultSpreadsheetProps
+ * should be used instead.
  * @property 'Header' - the header for the header group or column containing the stat.
  * @property 'columns' - a collection of columns that should appear in this header group.
- * @property 'accessor' - the accessor that will be used to uniquely identify this column (and, if
- * 'data_accessor' is not separately provided, to select the relevant data from the api).
- * @property 'data_accessor' (optional) - if provided, this will be used to select the relevant data from
- * the api (for example, in a case where two columns have the same data but need to have unique accessors).
+ * @property 'accessor' - the accessor that will be used to uniquely identify this column and
+ * will be passed to the provided function.
  * @property 'hovertext' (optional) - the text that should appear when the user hovers over the stat name.
  * @property 'datasource' (optional) - the name of the data source to use (if different than the default). 
- * @property 'function' (optional) - if provided, this function will be passed the selected data, and its
- * return value will be used as the value to display in the table.
+ * @property 'function' - this function will be passed the selected data and the column's accessor,
+ * and its return value will be used to produce the stat.
  * @property 'hide' (optional) - whether or not to hide this column.
- * @property 'sortDescFirst' - whether or not to sort first by descending order (if not specified,
- * the value given in defaultSpreadsheetProps will be used).
- * @property 'formattable' - whether or not the column should be conditionally formattable (if not
- * specified, the value given in defaultSpreadsheetProps will be used).
- * @property 'filter' - the name of the filter function to use for this column (if not specified,
- * the value given in defaultSpreadsheetProps will be used).
- * @property 'sortType' - the name of the sort function to use for this column (if not specified,
- * the value given in defaultSpreadsheetProps will be used).
+ * @property 'sortDescFirst' - whether or not to sort first by descending order.
+ * @property 'formattable' - whether or not the column should be conditionally formattable.
+ * @property 'filter' - the name of the filter function to use for this column.
+ * @property 'sortType' - the name of the sort function to use for this column.
  */
 export const spreadsheetStats = {
   all: [ // stats to display for all positions
@@ -82,25 +90,27 @@ export const spreadsheetStats = {
         {
           Header: 'Player',
           accessor: 'name_and_roster_status',
-          data_accessor: 'full_name',
           formattable: false,
           filter: 'any_word_startswith_by_full_name',
           sortType: 'sort_by_full_name',
           sortDescFirst: false, 
-          function: (data) => { return (<span>{data}{' '}<RosterCheckmark playername={data}/></span>)}
+          function: (data, accessor) => { 
+            const name = getDataByAccessor(data, 'full_name');
+            return (<span>{name}{' '}<RosterCheckmark playername={name}/></span>)
+          }
         },
         { // Helper column to use when sorting and filtering Player column
           Header: 'PlayerHelper',
           accessor: 'full_name',
           formattable: false,
           sortDescFirst: false,
-          hide: true
+          hide: true,
         },
         {
           Header: 'Team',
           accessor: 'team',
           formattable: false,
-          sortDescFirst: false
+          sortDescFirst: false,
         },
 
       ],
@@ -110,17 +120,25 @@ export const spreadsheetStats = {
       columns: [
         {
           Header: 'FPTS',
-          accessor: 'total_fantasy_points',
-          data_accessor: 'fantasy_points',
+          accessor: 'fantasy_points_total',
           hovertext: 'total fantasy points scored in the 2021 season',
-          function: (array) => round(sum(array),2),
+          function: (data, accessor) => {
+            let total = getSumByAccessor(data, 'fantasy_points_ppr');
+            return !isNaN(total)
+              ? round(total, 2)
+              : "N/A"
+          }
         },
         {
           Header: 'FPTS/G',
-          accessor: 'avg_fantasy_points',
-          data_accessor: 'fantasy_points',
+          accessor: 'fantasy_points_per_game',
           hovertext: 'fantasy points per game',
-          function: (array) => round(average(array),2),
+          function: (data, accessor) => {
+            let fpts = getDataByAccessor(data, 'fantasy_points_ppr');
+            return fpts === "N/A"
+              ? "N/A"
+              : round(average(fpts),2);
+          }
         }
       ],
     },
@@ -134,37 +152,43 @@ export const spreadsheetStats = {
           Header: 'CMP',
           accessor: 'completions',
           hovertext: 'completions',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'ATT',
           accessor: 'attempts',
           hovertext: 'passing attempts',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'CMP%',
           accessor: 'completion_percentage',
           hovertext: 'completion %',
-          function: (array) => round(sum(array), 2)+"%", // when possible, change to be more accurate
+          function: (data, accessor) => {
+            let totalCompletions = sum(getDataByAccessor(data, 'completions'));
+            let totalAttempts = sum(getDataByAccessor(data, 'attempts'));
+            return totalAttempts === 0 || isNaN(totalCompletions) || isNaN(totalAttempts)
+              ? "N/A"  
+              : round(100 * (totalCompletions / totalAttempts)) + "%"
+          },
         },
         {
           Header: 'YDS',
           accessor: 'passing_yards',
           hovertext: 'passing yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TD',
           accessor: 'passing_tds',
           hovertext: 'passing touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'INT',
           accessor: 'interceptions',
           hovertext: 'interceptions',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -175,19 +199,19 @@ export const spreadsheetStats = {
           Header: 'ATT',
           accessor: 'carries',
           hovertext: 'rushing attempts',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'rushing_yards',
           hovertext: 'rushing yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TDS',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -200,7 +224,7 @@ export const spreadsheetStats = {
           hovertext: 'consistency grade',
           datasource: 'metrics',
           formattable: false,
-          sortDescFirst: false
+          sortDescFirst: false,
         },
       ],
     },
@@ -213,19 +237,19 @@ export const spreadsheetStats = {
           Header: 'ATT',
           accessor: 'carries',
           hovertext: 'rushing attempts',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'rushing_yards',
           hovertext: 'rushing yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TDS',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -236,25 +260,25 @@ export const spreadsheetStats = {
           Header: 'REC',
           accessor: 'receptions',
           hovertext: 'receptions',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TGT',
           accessor: 'targets',
           hovertext: 'targets',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'receiving_yards',
           hovertext: 'receiving yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TD',
           accessor: 'receiving_tds',
           hovertext: 'receiving touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -266,7 +290,12 @@ export const spreadsheetStats = {
           accessor: 'rec_share_%', 
           hovertext: 'receiver share percentage',
           datasource: 'metrics',
-          function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+          function: (data, accessor) => {
+            let rshare = getDataByAccessor(data, accessor);
+            return String(rshare).startsWith("nan")
+              ? "N/A"
+              : rshare;
+          },
         },
         {
           Header: 'GRD',
@@ -274,7 +303,7 @@ export const spreadsheetStats = {
           hovertext: 'consistency grade',
           datasource: 'metrics',
           formattable: false,
-          sortDescFirst: false
+          sortDescFirst: false,
         },
       ],
     },
@@ -287,19 +316,19 @@ export const spreadsheetStats = {
           Header: 'ATT',
           accessor: 'carries',
           hovertext: 'rushing attempts',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'rushing_yards',
           hovertext: 'rushing yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TDS',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -310,25 +339,25 @@ export const spreadsheetStats = {
           Header: 'REC',
           accessor: 'receptions',
           hovertext: 'receptions',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TGT',
           accessor: 'targets',
           hovertext: 'targets',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'receiving_yards',
           hovertext: 'receiving yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TD',
           accessor: 'receiving_tds',
           hovertext: 'receiving touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -340,7 +369,12 @@ export const spreadsheetStats = {
           accessor: 'rec_share_%', 
           hovertext: 'receiver share percentage',
           datasource: 'metrics',
-          function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+          function: (data, accessor) => {
+            let rshare = getDataByAccessor(data, accessor);
+            return String(rshare).startsWith("nan")
+              ? "N/A"
+              : rshare;
+          },
         },
         {
           Header: 'GRD',
@@ -348,7 +382,7 @@ export const spreadsheetStats = {
           hovertext: 'consistency grade',
           datasource: 'metrics',
           formattable: false,
-          sortDescFirst: false
+          sortDescFirst: false,
         },
       ],
     },
@@ -361,19 +395,19 @@ export const spreadsheetStats = {
           Header: 'ATT',
           accessor: 'carries',
           hovertext: 'rushing attempts',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'rushing_yards',
           hovertext: 'rushing yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TDS',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -384,25 +418,25 @@ export const spreadsheetStats = {
           Header: 'REC',
           accessor: 'receptions',
           hovertext: 'receptions',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TGT',
           accessor: 'targets',
           hovertext: 'targets',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'YDS',
           accessor: 'receiving_yards',
           hovertext: 'receiving yards',
-          function: sum,
+          function: getSumByAccessor,
         },
         {
           Header: 'TD',
           accessor: 'receiving_tds',
           hovertext: 'receiving touchdowns',
-          function: sum,
+          function: getSumByAccessor,
         },
       ],
     },
@@ -414,7 +448,12 @@ export const spreadsheetStats = {
           accessor: 'rec_share_%', 
           hovertext: 'receiver share percentage',
           datasource: 'metrics',
-          function: (data) => {return String(data).startsWith("nan") ? "N/A" : data}
+          function: (data, accessor) => {
+            let rshare = getDataByAccessor(data, accessor);
+            return String(rshare).startsWith("nan")
+              ? "N/A"
+              : rshare;
+          },
         },
         {
           Header: 'GRD',
@@ -422,7 +461,7 @@ export const spreadsheetStats = {
           hovertext: 'consistency grade',
           datasource: 'metrics',
           formattable: false,
-          sortDescFirst: false
+          sortDescFirst: false,
         },
       ],
     },
@@ -436,6 +475,7 @@ export const defaultSpreadsheetStatsProps = {
   filter: 'startswith',
   formattable: true,
   sortDescFirst: true,
+  function: getDataByAccessor,
 }
 
 /**

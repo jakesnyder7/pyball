@@ -9,10 +9,13 @@ html {
     color: #c0c5ce;
     flex-direction: column;
     display: flex;
-    min-height: 100vh;
     justify-content: center;
     font-size: calc(10px + 2vmin);
   
+  }
+
+  .home-logo {
+    padding-top: 10%;
   }
   
   .App-logo {

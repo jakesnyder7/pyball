@@ -51,7 +51,7 @@ import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/S
           headerGroup.columns.forEach((col) => {
             row[col.accessor] = getStat(
               col.datasource === 'metrics' ? metrics[player_id] : player,
-              col.data_accessor ? col.data_accessor : col.accessor,
+              col.accessor,
               col.function);
           });
         });

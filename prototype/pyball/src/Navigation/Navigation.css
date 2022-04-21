@@ -48,4 +48,5 @@ nav {
     justify-content: center;
     text-align: center;
     font-size: calc(10px + 2vmin);
+    /* left: 50%; */
 }
