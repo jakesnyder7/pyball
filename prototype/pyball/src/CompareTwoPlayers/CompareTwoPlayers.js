@@ -61,13 +61,15 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
             }
           )}}
         />
-      : <AcknowledgePrompt
-          message={error}
-          onAcknowledge={()=> {
-            setQuery('');
-            setError('');
-          }}
-        />}
+      : <span style={{color: '#ff5370'}}>
+          <AcknowledgePrompt
+            message={error}
+            onAcknowledge={()=> {
+              setQuery('');
+              setError('');
+            }}
+          />
+        </span>}
     </div>
   );
 }

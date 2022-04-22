@@ -21,6 +21,9 @@ function ManipulateSpreadsheet() {
 
   // State to keep track of metrics
   const [metrics, setMetrics] = React.useState(null);
+  
+  // State to keep track of errors
+  const [error, setError] = React.useState('');
 
   // The positions and associated data for the tables
   const tables = React.useMemo (
@@ -40,12 +43,42 @@ function ManipulateSpreadsheet() {
 
   // Fetch player data (should only occur once)
   React.useEffect(() => {
-    for (let i = 0; i < tables.length; i++) {
-      fetchData(`/position/${tables[i].position}/`, tables[i].setData, null);
+    function handleFetchError(errorMsg) {
+      setError(`${errorMsg} Please try reloading the page.`);
     }
-    fetchData('/metrics/', setMetrics, null);
+    for (let i = 0; i < tables.length; i++) {
+      fetchData(`/position/${tables[i].position}/`, tables[i].setData, handleFetchError);
+    }
+    fetchData('/metrics/', setMetrics, (errorMsg) => setError(errorMsg));
   }, []); // no dependencies since this should only occur once
   
+  /**
+   * Helper function to compare two rows by the given accessors.
+   * @param rowA The first row.
+   * @param rowB The second row.
+   * @param accessors An ordered array of accessors to use to determine which properties of the rows
+   * to compare (accessors past index 0 will be used in the case of a tie).
+   * @param functions An array of functions, corresponding to accessors, to apply to the properties
+   * being compared before the comparison occurs.
+   * @param desc An array of booleans, corresponding to accessors, indicating whether or not to sort
+   * the properties being compared in descending order.
+   * Precondition: accessors, functions, and desc must have the same length, which must be at least 1.
+   */
+  const compareByAccessors = React.useCallback((rowA, rowB, accessors, functions, desc) => {
+    const a = functions[0](rowA[accessors[0]]);
+    const b = functions[0](rowB[accessors[0]]);
+    if (a > b) {
+      return desc[0] ? -1 : 1;
+    } else if (a < b) {
+      return desc[0] ? 1 : -1;
+    } else {
+      return (accessors.length > 1)
+        // if there is at least one accessor left, use it as a tiebreaker
+        ? compareByAccessors(rowA, rowB, accessors.slice(1), functions.slice(1), desc.slice(1))
+        : 0;
+    }
+  },[]);
+
   // The tabs containing the tables
   const tabs = React.useMemo(
     () => (
@@ -56,10 +89,19 @@ function ManipulateSpreadsheet() {
           position={table.position}
           stats={spreadsheetStats}
           metrics={metrics}
+          initialSortBy={
+            (rowA, rowB) => compareByAccessors(
+              rowA,
+              rowB,
+              ['fantasy_points_per_game', 'full_name'],
+              [parseFloat, String],
+              [true, false]
+            )
+          }
         />
       }))
     ),
-    [tables, metrics]
+    [tables, metrics, compareByAccessors]
   );
 
   return (
@@ -67,9 +109,13 @@ function ManipulateSpreadsheet() {
       <Navigation />
       <div className='Mydiv'>
         { /* Render tabs only if all data has been fetched */ }
-        {tables.every((table) => table.data) && metrics
-          ? <Tabs tabs={tabs}/>
-          : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
+        {error === ''
+          ? tables.every((table) => table.data) && metrics
+            ? <Tabs tabs={tabs}/>
+            : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
+          : <header style={{color: '#ff5370', fontWeight: 'bold'}}>
+              {error}
+            </header>
         }
       </div>
     </div>

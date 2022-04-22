@@ -10,8 +10,8 @@ defaultW <- getOption("warn")
 options(warn = -1)
 
 options(nflreadr.verbose = FALSE)
-(library(nflverse))
-(library(tidyverse))
+library(nflverse)
+library(tidyverse)
 
 
 #setwd("/Users/Marion/Desktop/csci335/pyball/prototype/backend")

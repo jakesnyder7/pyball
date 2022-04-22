@@ -95,7 +95,7 @@ export const spreadsheetStats = {
           sortType: 'sort_by_full_name',
           sortDescFirst: false, 
           function: (data, accessor) => { 
-            const name = getDataByAccessor(data, 'full_name');
+            const name = String(getDataByAccessor(data, 'full_name')).replaceAll('.','');
             return (<span>{name}{' '}<RosterCheckmark playername={name}/></span>)
           }
         },
@@ -105,6 +105,7 @@ export const spreadsheetStats = {
           formattable: false,
           sortDescFirst: false,
           hide: true,
+          function: (data, accessor) => String(getDataByAccessor(data, 'full_name')).replaceAll('.',''),
         },
         {
           Header: 'Team',

@@ -40,39 +40,45 @@ export function Roster({rosterPositions}) {
 
   // State to keep track of metrics
   const [metrics, setMetrics] = React.useState(null);
+
+  // State to keep track of errors
+  const [error, setError] = React.useState('');
   
   // Fetch metrics (should only occur once)
   React.useEffect(() => {
-    fetchData('/metrics/', setMetrics, null);
+    fetchData('/metrics/', setMetrics, (errorMsg) => setError(errorMsg));
   }, []); // no dependencies since this should only occur once
 
   return (
-    metrics &&
-    <table>
-      <thead>
-        <th>Position</th>
-        <th></th>
-        <th>Player</th>
-        {/* Headers */}
-        { rosterStats.map((stat) => 
-          <th title={stat.hovertext}>
-            {stat.label}
-          </th>
-        )}
-      </thead>
-      <tbody>
-        {/* Roster entries */}
-        {roster.map((entry, index) =>
-          <RosterRow
-            label={entry.label}
-            positions={ entry.positions }
-            stats={rosterStats}
-            rosterIndex={index}
-            metrics={metrics}
-          />
-        )}
-      </tbody>
-    </table>
+    error === '' && metrics
+    ? <table>
+        <thead>
+          <th>Position</th>
+          <th></th>
+          <th>Player</th>
+          {/* Headers */}
+          { rosterStats.map((stat) => 
+            <th title={stat.hovertext}>
+              {stat.label}
+            </th>
+          )}
+        </thead>
+        <tbody>
+          {/* Roster entries */}
+          {roster.map((entry, index) =>
+            <RosterRow
+              label={entry.label}
+              positions={ entry.positions }
+              stats={rosterStats}
+              rosterIndex={index}
+              metrics={metrics}
+            />
+          )}
+        </tbody>
+      </table>
+    : <header className='centered' style={{color: '#ff5370', fontWeight: 'bold'}}>
+        {error}
+      </header>
   );
 
 }
