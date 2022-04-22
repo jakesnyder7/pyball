@@ -13,8 +13,8 @@ import './RosterRow.css';
  */
 function RemoveButton({onClick}) {
   return (
-    <button onClick={onClick} style={{backgroundColor: '#ff5370'}}>
-      {'×'}
+    <button class='remove-button' onClick={onClick}>
+      {'✘'}
     </button>
   );
 }
@@ -107,8 +107,10 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     } else if (mode === VALID_MODE) {
       const name = String(data.full_name).replaceAll('.','');
       return (
-        <div>
-          <img class="img-player" src={data.headshot_url} alt={name} height={40} />
+        <div class="player-entry">
+          <div class="img-player-team-cover">
+            <img class="img-player-team" src={data.headshot_url} alt={name} height={40} />
+          </div>
           <header>{String(name).replaceAll('.','')}</header>
         </div>
       );

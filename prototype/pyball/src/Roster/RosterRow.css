@@ -3,3 +3,35 @@ form {
     margin: auto;
     width: 90%;
 }
+
+.player-entry {
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    align-content: center;
+}
+
+.img-player-team-cover {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid #f78c6c;
+    background-color: #eeffff;
+    display: flex;
+    justify-content: center;
+    width: 100px;
+}
+
+.img-player-team {
+    height: 100px;
+}
+
+.remove-button {
+    background-color: #ff5370;
+    color: #474747;
+}
+
+.remove-button:hover,
+.remove-button:focus {
+    background-color: #ff5370;
+}

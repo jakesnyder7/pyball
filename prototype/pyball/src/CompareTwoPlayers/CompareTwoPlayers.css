@@ -49,9 +49,10 @@ input:focus {
 
 
 button {
-  background-color: #2A2A2A;
-  border: #292929;
+  background-color: #404040;
+  border-color: #292929;
   border-radius: 8px;
+  border-style: solid;
   box-sizing: border-box;
   color: #B0BEC5;
   cursor: pointer;
