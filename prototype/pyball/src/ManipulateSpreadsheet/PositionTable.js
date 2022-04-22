@@ -4,12 +4,17 @@ import { getStat } from '../Stats/StatFunctions.js';
 import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/StatDefinitions.js';
 
   /**
-   * Hook to define a ManipulatableTable that displays player stats.
+   * Hook to define a ManipulatableTable that displays player stats for the given position.
    * @param data The player data.
-   * @param columns The columns for the table.
+   * @param position The position for this table.
+   * @param stats The definition of the stats to display in the table.
+   * @param metrics A supplemental source of data that will be used if the stat's datasource property
+   * is equal to "metrics".
+   * @param initialSortBy The function by which to initially sort the stats, which should use
+   * the negative-zero-positive protocol (optional).
    * @returns The table.
    */
-  export function PositionTable({data, position, stats, metrics}) {
+  export function PositionTable({data, position, stats, metrics, initialSortBy}) {
 
     // columns for the table
     const columns = [];
@@ -66,7 +71,7 @@ import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/S
     return (
       <ManipulatableTable
         columns={columns}
-        data={tableData}
+        data={initialSortBy ? tableData.sort(initialSortBy) : tableData}
         sortTypes={sortTypes}
         filterTypes={filterTypes}
         hiddenColumns={hiddenColumns}
