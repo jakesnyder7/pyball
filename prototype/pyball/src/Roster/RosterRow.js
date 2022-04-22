@@ -13,7 +13,7 @@ import './RosterRow.css';
  */
 function RemoveButton({onClick}) {
   return (
-    <button class='remove-button' onClick={onClick}>
+    <button class='remove-button' onClick={onClick} title='remove player from roster'>
       {'✘'}
     </button>
   );

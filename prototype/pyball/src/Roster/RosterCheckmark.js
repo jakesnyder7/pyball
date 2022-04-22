@@ -29,7 +29,7 @@ import { NavLink } from 'react-router-dom';
     return (
         playerInRoster
         ? <NavLink to="/edit-team" target='_blank'>
-           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='added to roster' alt='added to roster' height={20} /> }
+           { <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Check_green_icon.svg' title='go to roster' alt='link to roster' height={20} /> }
           </NavLink>
         : null
     );

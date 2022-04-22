@@ -1,5 +1,6 @@
 import './Table.css';
 import React from 'react';
+import { round, getSumByAccessor, getAvgByAccessor } from '../Stats/StatFunctions';
 
 /**
  * Hook to define a dropdown menu with options, the value of each of which is that option's index.
@@ -12,7 +13,7 @@ import React from 'react';
 function IndexOptionSelect({labels, choice, setChoice}) {
     return (
         <select value={choice} onChange={ (e) => { 
-            setChoice(e.target.value);
+            setChoice(parseInt(e.target.value));
         }}>
             {labels.map((label, index) => (
               <option value={index}>
@@ -39,7 +40,7 @@ function populateStatHelper(array_index, player_index, player, player_data, acce
     } else {
         player_data[array_index] = 0;
         return player_index;
-    }         
+    }
 }
 
  /**
@@ -58,21 +59,43 @@ function populateStatHelper(array_index, player_index, player, player_data, acce
     let p2_data = {};
 
     // the maximum week for which data for at least one of these players exists
-    const maxWeek = player1.week.length > player2.week.length
+    const MAX_WEEK = player1.week.length > player2.week.length
         ? player1.week.at(-1)
         : player2.week.at(-1);
 
-    // an array of labels to display in the week selection dropdown menu
-    const weeklabels = new Array(maxWeek);
+    const NUM_OPTIONS = MAX_WEEK + 2;
+
+    // an array of labels to display for each option in the view selection dropdown menu
+    const labels = new Array(NUM_OPTIONS);
+    
+    // an array of functions to retrieve the data to display for each option in the view selection dropdown menu
+    const functions = new Array(NUM_OPTIONS);
+
+    // add option to view each week of the season and the corresponding function
+    for (let i = 0; i < MAX_WEEK; i++) {
+        labels[i] = `Week ${i+1}`;
+        functions[i] = (data, accessor, index) => { return data[accessor][index] };
+    }
+    
+    // add option to view season average and the corresponding function
+    labels[NUM_OPTIONS-2] = 'Average';
+    functions[NUM_OPTIONS-2] = (data, accessor, index) => {
+        return round(getAvgByAccessor(data, accessor),2)
+    };
+
+    // add option to view season total and the corresponding function
+    labels[NUM_OPTIONS-1] = 'Total';
+    functions[NUM_OPTIONS-1] = (data, accessor, index) => {
+        return getSumByAccessor(data, accessor)
+    };
 
     // populate p1_data and p2_data for each stat
     stats_by_position[player1.position].forEach((stat) => {
-        const p1_stat = new Array(maxWeek);
-        const p2_stat = new Array(maxWeek);
+        const p1_stat = new Array(MAX_WEEK);
+        const p2_stat = new Array(MAX_WEEK);
         let p1_index = 0;
         let p2_index = 0;
-        for (let i = 0; i < maxWeek; i++) {
-            weeklabels[i] = `Week ${i+1}`;
+        for (let i = 0; i < MAX_WEEK; i++) {
             p1_index = populateStatHelper(i, p1_index, player1, p1_stat, stat);
             p2_index = populateStatHelper(i, p2_index, player2, p2_stat, stat);
         }
@@ -80,8 +103,8 @@ function populateStatHelper(array_index, player_index, player, player_data, acce
         p2_data[stat] = p2_stat;
     });
 
-    // the week for which to show stats
-    const [weekChoice, setWeekChoice] = React.useState(0);
+    // the index of the view for which to show stats
+    const [choiceIndex, setChoiceIndex] = React.useState(0);
 
     return (
         stats_by_position[player1.position] != null &&
@@ -89,20 +112,20 @@ function populateStatHelper(array_index, player_index, player, player_data, acce
             {<tr>
                 <th colspan="3">
                     {"Stats from "}
-                    <IndexOptionSelect labels={weeklabels} choice={weekChoice} setChoice={setWeekChoice} />
+                    <IndexOptionSelect labels={labels} choice={choiceIndex} setChoice={setChoiceIndex} />
                     {" of 2021 Season"}
                 </th>
             </tr>}
             {stats_by_position[player1.position].map((stat) => 
             <tr>
                 <td>
-                    {p1_data[stat][weekChoice]}
+                    {functions[choiceIndex](p1_data, stat, choiceIndex)}
                 </td>
                 <th>
                     {stat_labels[stat]}
                 </th>
                 <td>
-                    {p2_data[stat][weekChoice]}
+                {functions[choiceIndex](p2_data, stat, choiceIndex)}
                 </td>
             </tr>
             )}

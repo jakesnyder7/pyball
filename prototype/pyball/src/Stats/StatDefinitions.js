@@ -1,4 +1,4 @@
-import { average, sum, round, getDataByAccessor, getSumByAccessor } from './StatFunctions.js';
+import { average, sum, round, getDataByAccessor, getSumByAccessor, getAvgByAccessor } from './StatFunctions.js';
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
 
 /**
@@ -135,10 +135,10 @@ export const spreadsheetStats = {
           accessor: 'fantasy_points_per_game',
           hovertext: 'fantasy points per game',
           function: (data, accessor) => {
-            let fpts = getDataByAccessor(data, 'fantasy_points_ppr');
-            return fpts === "N/A"
+            let avg = getAvgByAccessor(data, 'fantasy_points_ppr');
+            return avg === "N/A"
               ? "N/A"
-              : round(average(fpts),2);
+              : round(avg,2);
           }
         }
       ],

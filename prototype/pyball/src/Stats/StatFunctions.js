@@ -108,3 +108,17 @@ export function getSumByAccessor(data, accessor) {
     ? "N/A"
     : sum(stats);
 };
+
+/**
+ * Helper function that calls getDataByAccessor, passing it the provided parameters, and returns
+ * the average of the return value from getDataByAccessor (or "N/A" if the return value is also "N/A").
+ * @author Claire Wagner
+ * @param data The data to pass getDataByAccessor.
+ * @param accessor The accessor to pass getDataByAccessor.
+ */
+ export function getAvgByAccessor(data, accessor) {
+  const stats = getDataByAccessor(data, accessor);
+  return stats === "N/A"
+    ? "N/A"
+    : average(stats);
+};

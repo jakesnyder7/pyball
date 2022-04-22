@@ -13,7 +13,7 @@ export const fetchData = async(query, setData, onError) => {
     setData(res.data);
   } catch (err) {
     console.error(err);
-    onError && onError('Error: failed to fetch data.');
+    onError && onError('Error: failed to fetch data from server.');
     setData(null);
   }
 };
