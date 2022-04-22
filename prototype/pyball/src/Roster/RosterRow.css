@@ -19,11 +19,11 @@ form {
     background-color: #eeffff;
     display: flex;
     justify-content: center;
-    width: 100px;
+    width: 50px;
 }
 
 .img-player-team {
-    height: 100px;
+    height: 50px;
 }
 
 .remove-button {
