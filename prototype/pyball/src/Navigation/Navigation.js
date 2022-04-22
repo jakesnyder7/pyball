@@ -4,7 +4,7 @@ import './Navigation.css';
 
 function Navigation() {
     return (
-        <div>
+        <div className='nav-div'>
           <nav>
             <NavLink to="/" className="inactive" activeClassName='active' >
               Home

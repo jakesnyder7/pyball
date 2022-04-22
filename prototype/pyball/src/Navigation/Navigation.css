@@ -37,13 +37,17 @@
     background-color: #82aaff;
 }
 
+.nav-div {
+    text-align: center;
+}
+
 nav {
-    /* position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    align-self: center; */
+    position: -webkit-sticky;
+    position: sticky;
+    display: inline-block;
+    left: 0;
+    align-self: center;
     background-color: #212121;
-    display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
