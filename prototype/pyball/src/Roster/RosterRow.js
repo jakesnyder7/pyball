@@ -95,15 +95,17 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
     } else if (mode === FETCH_MODE) {
       return <header>{'Loading data...'}</header>
     } else if (mode === ERROR_MODE) {
-      return <AcknowledgePrompt
-        message={errorMsg}
-        onAcknowledge={()=> {
-          setQuery('');
-          setData(null);
-          setMode(SEARCH_MODE);
-          setErrorMsg('Unspecified error.');
-        }}
-      />
+      return <span style={{color: '#ff5370'}}>
+        <AcknowledgePrompt
+          message={errorMsg}
+          onAcknowledge={()=> {
+            setQuery('');
+            setData(null);
+            setMode(SEARCH_MODE);
+            setErrorMsg('Unspecified error.');
+          }}
+        />
+      </span>
     } else if (mode === VALID_MODE) {
       const name = String(data.full_name).replaceAll('.','');
       return (
@@ -207,7 +209,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
             setMode('remove');
           }}/>}
       </td>
-      <td style={{backgroundColor: mode === ERROR_MODE ? '#ff5370' : null}}>
+      <td>
         {getModalDisplay()}
       </td>
       {stats.map((stat) => (
