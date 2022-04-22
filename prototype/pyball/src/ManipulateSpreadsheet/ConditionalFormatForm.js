@@ -56,7 +56,7 @@ export function ConditionalFormatForm({ columnID, applyFormat }) {
 
       {/* for color selection */}
       <label>
-        <select value={color} style={{ backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black' }} onChange={(e) => {
+        <select value={color} style={{ backgroundColor: color, color: colorOptions[color].textcolor === 'white' ? 'white' : 'black', width: '80px' }} onChange={(e) => {
           setColor(e.target.value);
           applyFormat(min, max, columnID, e.target.value, colorOptions[e.target.value].textcolor);
         }}>
