@@ -43,11 +43,8 @@ function ManipulateSpreadsheet() {
 
   // Fetch player data (should only occur once)
   React.useEffect(() => {
-    function handleFetchError(errorMsg) {
-      setError(`${errorMsg} Please try reloading the page.`);
-    }
     for (let i = 0; i < tables.length; i++) {
-      fetchData(`/position/${tables[i].position}/`, tables[i].setData, handleFetchError);
+      fetchData(`/position/${tables[i].position}/`, tables[i].setData, (errorMsg) => setError(errorMsg));
     }
     fetchData('/metrics/', setMetrics, (errorMsg) => setError(errorMsg));
   }, []); // no dependencies since this should only occur once
@@ -113,7 +110,7 @@ function ManipulateSpreadsheet() {
           ? tables.every((table) => table.data) && metrics
             ? <Tabs tabs={tabs}/>
             : <img className='center' src={require('./icons8-rugby.gif')} alt='loading icon'/>
-          : <header style={{color: '#ff5370', fontWeight: 'bold'}}>
+          : <header className='error'>
               {error}
             </header>
         }

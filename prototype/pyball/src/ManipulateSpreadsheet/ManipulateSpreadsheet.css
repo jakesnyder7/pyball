@@ -6,6 +6,13 @@
     padding: 20%;
 }
 
+.error {
+    margin: auto;
+    padding: 5%;
+    color: #ff5370;
+    font-weight: bold;
+}
+
 .Mydiv {
     display: flex;
 }

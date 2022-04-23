@@ -92,21 +92,17 @@ export function ManipulatableTable({columns, data, sortTypes, filterTypes, hidde
    * background colors of cells in other columns have not been changed.
   */
   function applyConditionalFormatting(min, max, columnID, color, textcolor) {
-    // Helper function to determine whether argument is parseable as a float
-    function validFloat(x) {
-      return !isNaN(parseFloat(x));
-    }
     // Helper function to determine whether value is in range
     function inRange(min, max, val) {
       let valAsFloat = parseFloat(val);
-      let validMin = validFloat(min);
-      let validMax = validFloat(max);
-      if (validMin && validMax) {
-        return valAsFloat >= min && val <= max;
-      } else if (validMin) {
-        return valAsFloat >= min;
-      } else if (validMax) {
-        return valAsFloat <= max;
+      let minAsFloat = parseFloat(min);
+      let maxAsFloat = parseFloat(max);
+      if (!isNaN(minAsFloat) && !isNaN(maxAsFloat)) {
+        return valAsFloat >= minAsFloat && valAsFloat <= maxAsFloat;
+      } else if (!isNaN(minAsFloat)) {
+        return valAsFloat >= minAsFloat;
+      } else if (!isNaN(maxAsFloat)) {
+        return valAsFloat <= maxAsFloat;
       }
       return false;
     }
