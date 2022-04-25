@@ -18,14 +18,16 @@ library(tidyverse)
 
 load('APIData.Rdata')
 
+all_data <- all_data %>% add_column(name = str_to_lower(str_remove_all(all_data$full_name, "[.]")))
+
 #' Get the data about a specified player
 #'
 #' @param player_name_query The name of the desired player
 #' @return Data on the player formatted as a JSON
 get_player_data <- function(player_name_query) {
-  query <- str_to_lower(player_name_query)
-  gsis <- all_data %>% filter(str_to_lower(full_name) == query) %>% select(gsis_id) %>% slice(1) %>% pluck(1)
-  player_large_data <- all_data %>% filter(str_to_lower(full_name) == query) %>% filter(gsis_id == gsis)
+  query <- str_remove_all(str_to_lower(player_name_query), "[.]")
+  gsis <- all_data %>% filter(name == query) %>% select(gsis_id) %>% slice(1) %>% pluck(1)
+  player_large_data <- all_data %>% filter(name == query) %>% filter(gsis_id == gsis)
   non_unique <- player_large_data %>%
     summarise_all(n_distinct) %>%
     select_if(. != 1)
