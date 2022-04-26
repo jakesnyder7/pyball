@@ -20,6 +20,13 @@ load('APIData.Rdata')
 
 all_data <- all_data %>% add_column(name = str_to_lower(str_remove_all(all_data$full_name, "[.]")))
 
+all_data %>%
+  add_column(name_json = str_remove_all(all_data$full_name, "[.]")) %>%
+  select(name_json) %>%
+  distinct() %>%
+  jsonlite::toJSON()
+
+
 #' Get the data about a specified player
 #'
 #' @param player_name_query The name of the desired player
@@ -54,7 +61,7 @@ get_position_players <- function(position_query) {
     error = function(e){ 
       return("Enter a valid position name")
     },
-    warming = function(w){ 
+    warning = function(w){ 
       return("Enter a valid position name")
     }
   )
