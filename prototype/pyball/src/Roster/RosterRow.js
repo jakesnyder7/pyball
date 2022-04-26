@@ -93,6 +93,7 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
             buttonText={'Add'}
             onFail={onError}
             onPass={() => setMode(FETCH_MODE)}
+            positions = {positions}
           />
         </div>
       );

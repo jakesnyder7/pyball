@@ -13,15 +13,19 @@ import { formatPlayerName } from '../Stats/StatFunctions.js';
  * @param onFail The function to call if the search query is submitted and fails the validity checks
  * (this function will be passed a string describing the error that occurred).
  * @param onPass The function to call if the search query is submitted and passes the validity checks.
+ * @param positions An array of positions to use when filtering (any player with a position not in this
+ * array will be omitted from the autocomplete suggestions).
  * @returns The form.
  */
- export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFail, onPass}) {
+ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFail, onPass, positions}) {
 
   /**
    * Helper function to handle queries, including basic validity checks.
    * @param query The query.
+   * @param
    * @param onFail The function to call if a query is detected as invalid.
    * @param onPass The function to call if a query is not detected as invalid.
+   * @param
    * Postcondition: If a query is detected as invalid, onFail has been called;
    * otherwise, onPass has been called.
    */
@@ -100,7 +104,9 @@ import { formatPlayerName } from '../Stats/StatFunctions.js';
             ? PlayerList
                 .filter(item => !inputValue ||
                     // case-insensitive matching that ignores periods
-                    formatForMatching(item.full_name).includes(formatForMatching(inputValue)))
+                    (formatForMatching(item.full_name).includes(formatForMatching(inputValue))
+                    // suggest only players that match the list of positions
+                    && positions.includes(String(item.position))))
                 .map((item, index) => (
                   <li
                     {...getItemProps({

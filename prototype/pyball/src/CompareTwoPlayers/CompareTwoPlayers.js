@@ -68,6 +68,7 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
                 setError(errorMsg);
               });
           }}
+          positions = {['QB', 'RB', 'WR', 'TE', 'K']}
         />
       : <span style={{color: '#ff5370'}}>
           <AcknowledgePrompt
