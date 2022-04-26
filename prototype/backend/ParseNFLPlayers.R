@@ -18,14 +18,7 @@ library(tidyverse)
 
 load('APIData.Rdata')
 
-all_data <- all_data %>% add_column(name = str_to_lower(str_remove_all(all_data$full_name, "[.]")))
-
-all_data %>%
-  add_column(name_json = str_remove_all(all_data$full_name, "[.]")) %>%
-  select(name_json) %>%
-  distinct() %>%
-  jsonlite::toJSON()
-
+#all_data <- all_data %>% add_column(name = str_to_lower(str_remove_all(all_data$full_name, "[.]")))
 
 #' Get the data about a specified player
 #'
@@ -41,7 +34,7 @@ get_player_data <- function(player_name_query) {
   non_unique <- non_unique
   non_unique_cols <- colnames(non_unique)
   player_large_data_1 <- player_large_data %>% select(-non_unique_cols) %>% distinct()
-  player_large_data_n <- player_large_data %>% select(non_unique_cols)
+  player_large_data_n <- player_large_data %>% select(all_of(non_unique_cols))
   full_player_data <- c(player_large_data_1, player_large_data_n)
   player_json <- jsonlite::toJSON(full_player_data, pretty = TRUE)
   return(player_json)
