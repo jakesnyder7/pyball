@@ -22,6 +22,9 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
   // State to track the current error
   const [error, setError] = React.useState('');
 
+  // Query state
+  const [query, setQuery] = React.useState('');
+
   // Empty player to use as a placeholder
    const emptyPlayer = {
     full_name: [""],
@@ -47,9 +50,12 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
       {/* If an error has occurred, notify the user; otherwise, display a player search form */}
       {error === ''
       ? <AutocompletePlayerSearchForm
+          query={query}
+          setQuery={setQuery}
           buttonText='Search'
           onFail={(errorMsg) => {
             setError(errorMsg);
+            setQuery('');
             setValidResults(false);
           }}
           onPass={(query) => {
@@ -58,6 +64,7 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
               setData,
               (errorMsg) => {
                 setValidResults(false);
+                setQuery('');
                 setError(errorMsg);
               });
           }}

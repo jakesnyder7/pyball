@@ -1,7 +1,7 @@
 import React from 'react';
 import { getStat } from '../Stats/StatFunctions.js';
 import { fetchData } from '../api/Fetch.js';
-import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
+import { AutocompletePlayerSearchForm } from '../api/PlayerSearchForm.js';
 import { YesNoPrompt, AcknowledgePrompt } from '../Prompts/Prompts.js';
 import './RosterRow.css';
 
@@ -85,13 +85,17 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
    */
   function getModalDisplay() {
     if (mode === SEARCH_MODE) {
-      return <PlayerSearchForm
-        query={query}
-        setQuery={setQuery}
-        buttonText={'Add'}
-        onFail={onError}
-        onPass={() => setMode(FETCH_MODE)}
-      />;
+      return (
+        <div style={{color: '#474747'}}>
+          <AutocompletePlayerSearchForm
+            query={query}
+            setQuery={setQuery}
+            buttonText={'Add'}
+            onFail={onError}
+            onPass={() => setMode(FETCH_MODE)}
+          />
+        </div>
+      );
     } else if (mode === FETCH_MODE) {
       return <header>{'Loading data...'}</header>
     } else if (mode === ERROR_MODE) {

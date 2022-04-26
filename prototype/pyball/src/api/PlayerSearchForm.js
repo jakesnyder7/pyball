@@ -6,12 +6,15 @@ import React from "react";
  * based on API results for the search query.
  * @author Claire Wagner
  * @author Marion Geary
+ * @param query The query state.
+ * @param setQuery The function to use to modify the query state.
+ * @param buttonText The text to display on the button.
  * @param onFail The function to call if the search query is submitted and fails the validity checks
  * (this function will be passed a string describing the error that occurred).
  * @param onPass The function to call if the search query is submitted and passes the validity checks.
  * @returns The form.
  */
-export function AutocompletePlayerSearchForm({buttonText, onFail, onPass}) {
+export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFail, onPass}) {
 
   function handleQuery(query, onFail, onPass) {
     if (query === '') {
@@ -26,8 +29,6 @@ export function AutocompletePlayerSearchForm({buttonText, onFail, onPass}) {
   };
 
   const PlayerList = require('./PlayerList.json');
-
-  const [query, setQuery] = React.useState('');
 
   return(
     <Downshift
