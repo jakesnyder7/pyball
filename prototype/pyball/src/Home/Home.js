@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import '../Navigation/Navigation.css';
+// modified from https://commons.wikimedia.org/wiki/File:Portal_2_Official_Logo.svg
 import logo from './Fantasy_Portal_svg.png';
 import Navigation from '../Navigation/Navigation';
 

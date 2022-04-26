@@ -28,7 +28,7 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
   // Empty player to use as a placeholder
    const emptyPlayer = {
     full_name: [""],
-    headshot_url: ['https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Flaweisslab.ucsf.edu%2Fsites%2Fall%2Fmodules%2Fcustom%2Fucsf_person_content_type%2Fimages%2Fperson-placeholder.png&f=1&nofb=1'],
+    headshot_url: ['https://upload.wikimedia.org/wikipedia/commons/a/ad/Placeholder_no_text.svg'],
   }
 
   // Each time data changes, update validResults accordingly
@@ -74,6 +74,7 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
             message={error}
             onAcknowledge={()=> {
               setError('');
+              setQuery('');
             }}
           />
         </span>}

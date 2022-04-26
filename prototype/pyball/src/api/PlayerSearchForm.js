@@ -76,7 +76,7 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
       </form>
         </div>
         <ul {...getMenuProps({ style: {listStyle: 'none'} })}>
-          {isOpen
+          {isOpen && query !== ''
             ? PlayerList
                 .filter(item => !inputValue ||
                     // case-insensitive matching
