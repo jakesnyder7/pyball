@@ -115,7 +115,7 @@ import { formatPlayerName } from '../Stats/StatFunctions.js';
                       item,
                       style: {
                         color:
-                          highlightedIndex === index ? '#FFFFFF' : '#727272',
+                          highlightedIndex === index ? '#eeffff' : '#B0BEC5',
                         backgroundColor:
                           highlightedIndex === index ? '#323232' : '#292929',
                         fontWeight: selectedItem === item ? 'bold' : 'normal',
