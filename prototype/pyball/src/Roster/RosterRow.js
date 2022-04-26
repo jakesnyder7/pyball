@@ -1,5 +1,5 @@
 import React from 'react';
-import { getStat } from '../Stats/StatFunctions.js';
+import { getStat, formatPlayerName } from '../Stats/StatFunctions.js';
 import { fetchData } from '../api/Fetch.js';
 import { AutocompletePlayerSearchForm } from '../api/PlayerSearchForm.js';
 import { YesNoPrompt, AcknowledgePrompt } from '../Prompts/Prompts.js';
@@ -111,18 +111,18 @@ export function RosterRow({label, positions, stats, rosterIndex, metrics}) {
         />
       </span>
     } else if (mode === VALID_MODE) {
-      const name = String(data.full_name).replaceAll('.','');
+      const name = formatPlayerName(data.full_name);
       return (
         <div class="player-entry">
           <div class="img-player-team-cover">
             <img class="img-player-team" src={data.headshot_url} alt={name} height={40} />
           </div>
-          <header>{String(name).replaceAll('.','')}</header>
+          <header>{formatPlayerName(data.full_name)}</header>
         </div>
       );
     } else if (mode === 'remove') {
       return <YesNoPrompt
-        message={"Remove " + String(data.full_name).replaceAll('.','') + " from roster?"}
+        message={"Remove " + formatPlayerName(data.full_name) + " from roster?"}
         onYes={()=>{
           modifyRoster(null);
           setQuery('');

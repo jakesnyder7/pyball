@@ -1,4 +1,5 @@
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
+import { formatPlayerName } from '../Stats/StatFunctions.js';
 import './Player.css';
 
 /**
@@ -20,7 +21,7 @@ export function Player({ player }) {
             </div>
             { 'jersey_number' in player ? <p>{player.position} #{player.jersey_number}</p> : null }
             <header>
-                {player.full_name}
+                {formatPlayerName(player.full_name)}
                 {" "}
                 {<RosterCheckmark playername={player.full_name} />}
             </header>

@@ -122,3 +122,12 @@ export function getSumByAccessor(data, accessor) {
     ? "N/A"
     : average(stats);
 };
+
+/**
+ * Helper function to format player names for display.
+ * @param name The player name.
+ * @returns The formatted player name.
+ */
+export function formatPlayerName(name) {
+  return String(name).replaceAll('.','');
+}

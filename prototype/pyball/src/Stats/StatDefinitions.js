@@ -1,4 +1,4 @@
-import { average, sum, round, getDataByAccessor, getSumByAccessor, getAvgByAccessor } from './StatFunctions.js';
+import { average, sum, round, getDataByAccessor, getSumByAccessor, getAvgByAccessor, formatPlayerName } from './StatFunctions.js';
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
 
 /**
@@ -95,7 +95,7 @@ export const spreadsheetStats = {
           sortType: 'sort_by_full_name',
           sortDescFirst: false, 
           function: (data, accessor) => { 
-            const name = String(getDataByAccessor(data, 'full_name')).replaceAll('.','');
+            const name = formatPlayerName(getDataByAccessor(data, 'full_name'));
             return (<span>{name}{' '}<RosterCheckmark playername={name}/></span>)
           }
         },
@@ -105,7 +105,7 @@ export const spreadsheetStats = {
           formattable: false,
           sortDescFirst: false,
           hide: true,
-          function: (data, accessor) => String(getDataByAccessor(data, 'full_name')).replaceAll('.',''),
+          function: (data, accessor) => formatPlayerName(getDataByAccessor(data, 'full_name')),
         },
         {
           Header: 'Team',

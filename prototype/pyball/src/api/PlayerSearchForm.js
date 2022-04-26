@@ -1,5 +1,6 @@
 import Downshift from "downshift";
 import React from "react";
+import { formatPlayerName } from '../Stats/StatFunctions.js';
 
 /**
  * Hook to define a form for searching for a player using a dropdown list that is autopopulated
@@ -14,8 +15,16 @@ import React from "react";
  * @param onPass The function to call if the search query is submitted and passes the validity checks.
  * @returns The form.
  */
-export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFail, onPass}) {
+ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFail, onPass}) {
 
+  /**
+   * Helper function to handle queries, including basic validity checks.
+   * @param query The query.
+   * @param onFail The function to call if a query is detected as invalid.
+   * @param onPass The function to call if a query is not detected as invalid.
+   * Postcondition: If a query is detected as invalid, onFail has been called;
+   * otherwise, onPass has been called.
+   */
   function handleQuery(query, onFail, onPass) {
     if (query === '') {
       onFail('Error: please enter a name. ');
@@ -29,6 +38,15 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
   };
 
   const PlayerList = require('./PlayerList.json');
+
+  /**
+   * Helper function to format a player name for case-insensitive pattern matching that ignores periods.
+   * @param name The name.
+   * @returns The name converted to lowercase with all periods removed.
+   */
+  function formatForMatching(name) {
+    return formatPlayerName(String(name).toLowerCase());
+  }
 
   return(
     <Downshift
@@ -81,8 +99,8 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
           {isOpen && query !== ''
             ? PlayerList
                 .filter(item => !inputValue ||
-                    // case-insensitive matching
-                    item.full_name.toLowerCase().includes(inputValue.toLowerCase()))
+                    // case-insensitive matching that ignores periods
+                    formatForMatching(item.full_name).includes(formatForMatching(inputValue)))
                 .map((item, index) => (
                   <li
                     {...getItemProps({
@@ -104,7 +122,7 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
       </div>
     )}
   </Downshift>
-    )
+  )
 }
 
 /**
