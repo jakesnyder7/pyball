@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { formatPlayerName } from '../Stats/StatFunctions.js';
 
 /**
  * Hook that displays a checkmark if the specified player is in the roster.
@@ -11,7 +12,8 @@ import { NavLink } from 'react-router-dom';
 
     const inRosterRecord = React.useCallback(() => {
         return localStorage.getItem('pyballRoster')
-            && JSON.parse(localStorage.getItem('pyballRoster')).some((entry) => String(entry) === String(playername));
+            && JSON.parse(localStorage.getItem('pyballRoster')).some((entry) => 
+                formatPlayerName(entry) === formatPlayerName(playername));
     },
     [playername]);
   

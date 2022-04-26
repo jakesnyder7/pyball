@@ -44,13 +44,11 @@
 nav {
     position: -webkit-sticky;
     position: sticky;
-    display: inline-block;
+    display: inline-flex;
     left: 0;
     align-self: center;
-    background-color: #212121;
     align-items: center;
     justify-content: center;
     text-align: center;
     font-size: calc(10px + 2vmin);
-    /* left: 50%; */
 }
