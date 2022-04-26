@@ -3052,10 +3052,6 @@
         "position": "WR"
     },
     {
-        "full_name": "Garrett Scantling",
-        "position": "WR"
-    },
-    {
         "full_name": "Adam Redmond",
         "position": "C"
     },
@@ -3172,10 +3168,6 @@
         "position": "DT"
     },
     {
-        "full_name": "Daniel Henry",
-        "position": "FS"
-    },
-    {
         "full_name": "Ben Powers",
         "position": "G"
     },
@@ -3260,14 +3252,6 @@
         "position": "OT"
     },
     {
-        "full_name": "Zach Terrell",
-        "position": "QB"
-    },
-    {
-        "full_name": "Aaron Bailey",
-        "position": "QB"
-    },
-    {
         "full_name": "Gus Edwards",
         "position": "RB"
     },
@@ -3290,10 +3274,6 @@
     {
         "full_name": "David Sharpe",
         "position": "T"
-    },
-    {
-        "full_name": "Barrett Burns",
-        "position": "TE"
     },
     {
         "full_name": "Jaylon Moore",
@@ -3612,10 +3592,6 @@
         "position": "G"
     },
     {
-        "full_name": "Lirim Hajrullahu",
-        "position": "K"
-    },
-    {
         "full_name": "Zane Gonzalez",
         "position": "K"
     },
@@ -3674,10 +3650,6 @@
     {
         "full_name": "Cameron Erving",
         "position": "T"
-    },
-    {
-        "full_name": "Wyatt Houston",
-        "position": "TE"
     },
     {
         "full_name": "Aaron Parker",
@@ -3876,16 +3848,8 @@
         "position": "RB"
     },
     {
-        "full_name": "Franko House",
-        "position": "TE"
-    },
-    {
         "full_name": "J.P. Holtz",
         "position": "TE"
-    },
-    {
-        "full_name": "Shaq Roland",
-        "position": "WR"
     },
     {
         "full_name": "Thomas Ives",
@@ -3934,6 +3898,10 @@
     {
         "full_name": "Eli Apple",
         "position": "CB"
+    },
+    {
+        "full_name": "Michael Thomas",
+        "position": "DB"
     },
     {
         "full_name": "Vernon Hargreaves",
@@ -4224,10 +4192,6 @@
         "position": "K"
     },
     {
-        "full_name": "Chris Blewitt",
-        "position": "K"
-    },
-    {
         "full_name": "Mack Wilson",
         "position": "LB"
     },
@@ -4353,10 +4317,6 @@
     },
     {
         "full_name": "Jourdan Lewis",
-        "position": "CB"
-    },
-    {
-        "full_name": "Michael Coe",
         "position": "CB"
     },
     {
@@ -4572,10 +4532,6 @@
         "position": "DE"
     },
     {
-        "full_name": "Jonathan Kongbo",
-        "position": "DE"
-    },
-    {
         "full_name": "DeShawn Williams",
         "position": "DT"
     },
@@ -4678,10 +4634,6 @@
     {
         "full_name": "Zack Johnson",
         "position": "OL"
-    },
-    {
-        "full_name": "Josh Banderas",
-        "position": "OLB"
     },
     {
         "full_name": "Quinn Bailey",
@@ -4970,10 +4922,6 @@
     {
         "full_name": "Abdullah Anderson",
         "position": "DE"
-    },
-    {
-        "full_name": "Aiulua Fanene",
-        "position": "DT"
     },
     {
         "full_name": "Tyler Lancaster",
@@ -5544,10 +5492,6 @@
         "position": "QB"
     },
     {
-        "full_name": "Jalen Morton",
-        "position": "QB"
-    },
-    {
         "full_name": "Julien Davenport",
         "position": "T"
     },
@@ -5577,10 +5521,6 @@
     },
     {
         "full_name": "J.J. Nelson",
-        "position": "WR"
-    },
-    {
-        "full_name": "Al Riles",
         "position": "WR"
     },
     {
@@ -6060,10 +6000,6 @@
         "position": "FS"
     },
     {
-        "full_name": "Anthony McMeans",
-        "position": "G"
-    },
-    {
         "full_name": "Ryan Santoso",
         "position": "K"
     },
@@ -6457,10 +6393,6 @@
     },
     {
         "full_name": "Denzelle Good",
-        "position": "G"
-    },
-    {
-        "full_name": "Jordan Wade",
         "position": "G"
     },
     {
@@ -7404,15 +7336,7 @@
         "position": "T"
     },
     {
-        "full_name": "Michael Thomas",
-        "position": "WR"
-    },
-    {
         "full_name": "Jalen McCleskey",
-        "position": "WR"
-    },
-    {
-        "full_name": "Eldridge Massington",
         "position": "WR"
     },
     {
@@ -7828,10 +7752,6 @@
         "position": "WR"
     },
     {
-        "full_name": "Myles White",
-        "position": "WR"
-    },
-    {
         "full_name": "Jason Kelce",
         "position": "C"
     },
@@ -7913,10 +7833,6 @@
     },
     {
         "full_name": "Javon Hargrave",
-        "position": "DT"
-    },
-    {
-        "full_name": "Charles Walker",
         "position": "DT"
     },
     {
@@ -8196,10 +8112,6 @@
         "position": "QB"
     },
     {
-        "full_name": "Nick Schuessler",
-        "position": "QB"
-    },
-    {
         "full_name": "Trey Edmunds",
         "position": "RB"
     },
@@ -8378,10 +8290,6 @@
     {
         "full_name": "Michael Dickson",
         "position": "P"
-    },
-    {
-        "full_name": "Skyler Howard",
-        "position": "QB"
     },
     {
         "full_name": "Darwin Thompson",
@@ -8636,10 +8544,6 @@
         "position": "QB"
     },
     {
-        "full_name": "Glen Coffee",
-        "position": "RB"
-    },
-    {
         "full_name": "Brian Hill",
         "position": "RB"
     },
@@ -8824,10 +8728,6 @@
         "position": "LS"
     },
     {
-        "full_name": "Austin Albrecht",
-        "position": "OL"
-    },
-    {
         "full_name": "Jonathan Hubbard",
         "position": "OT"
     },
@@ -8862,9 +8762,6 @@
     {
         "full_name": "Travis Jonsen",
         "position": "WR"
-    },
-    {
-        "full_name": "Evan Perroni"
     },
     {
         "full_name": "Ben Jones",
@@ -8940,10 +8837,6 @@
     },
     {
         "full_name": "Trevon Coley",
-        "position": "DT"
-    },
-    {
-        "full_name": "Roderick Henderson",
         "position": "DT"
     },
     {
@@ -15283,10 +15176,6 @@
         "position": "RB"
     },
     {
-        "full_name": "John David Moore",
-        "position": "RB"
-    },
-    {
         "full_name": "Doug Martin",
         "position": "RB"
     },
@@ -17635,9 +17524,6 @@
         "position": "TE"
     },
     {
-        "full_name": "Ryan Langford"
-    },
-    {
         "full_name": "Darren Hall",
         "position": "CB"
     },
@@ -17646,15 +17532,7 @@
         "position": "CB"
     },
     {
-        "full_name": "Heath Harding",
-        "position": "CB"
-    },
-    {
         "full_name": "Richie Grant",
-        "position": "DB"
-    },
-    {
-        "full_name": "Dee Alford",
         "position": "DB"
     },
     {
@@ -17690,10 +17568,6 @@
         "position": "RB"
     },
     {
-        "full_name": "Brayden Lenius",
-        "position": "TE"
-    },
-    {
         "full_name": "Austin Trammell",
         "position": "WR"
     },
@@ -17704,10 +17578,6 @@
     {
         "full_name": "Brandon Stephens",
         "position": "DB"
-    },
-    {
-        "full_name": "Xavier Kelly",
-        "position": "DT"
     },
     {
         "full_name": "Ben Mason",
@@ -17754,6 +17624,10 @@
         "position": "OL"
     },
     {
+        "full_name": "Spencer Brown",
+        "position": "OT"
+    },
+    {
         "full_name": "Tommy Doyle",
         "position": "OT"
     },
@@ -17778,20 +17652,12 @@
         "position": "CB"
     },
     {
-        "full_name": "J.T. Ibe",
-        "position": "DB"
-    },
-    {
         "full_name": "Phil Hoskins",
         "position": "DT"
     },
     {
         "full_name": "Daviyon Nixon",
         "position": "DT"
-    },
-    {
-        "full_name": "Mason Stokke",
-        "position": "FB"
     },
     {
         "full_name": "Deonte Brown",
@@ -17804,10 +17670,6 @@
     {
         "full_name": "Thomas Fletcher",
         "position": "LS"
-    },
-    {
-        "full_name": "Spencer Brown",
-        "position": "RB"
     },
     {
         "full_name": "Brady Christensen",
@@ -17848,10 +17710,6 @@
     {
         "full_name": "Teven Jenkins",
         "position": "OL"
-    },
-    {
-        "full_name": "Ryan Willis",
-        "position": "QB"
     },
     {
         "full_name": "Trey Hill",
@@ -17906,6 +17764,10 @@
         "position": "DT"
     },
     {
+        "full_name": "David Moore",
+        "position": "G"
+    },
+    {
         "full_name": "Tony Fields",
         "position": "LB"
     },
@@ -17920,10 +17782,6 @@
     {
         "full_name": "Tre Harbison",
         "position": "RB"
-    },
-    {
-        "full_name": "Nick Guggemos",
-        "position": "TE"
     },
     {
         "full_name": "Miller Forristall",
@@ -18182,10 +18040,6 @@
         "position": "DT"
     },
     {
-        "full_name": "Sam Cooper",
-        "position": "G"
-    },
-    {
         "full_name": "Garret Wallow",
         "position": "LB"
     },
@@ -18228,18 +18082,6 @@
     {
         "full_name": "Jake Verity",
         "position": "K"
-    },
-    {
-        "full_name": "Jordan Murray",
-        "position": "T"
-    },
-    {
-        "full_name": "Nikola Kalinic",
-        "position": "TE"
-    },
-    {
-        "full_name": "Michael Jacobson",
-        "position": "TE"
     },
     {
         "full_name": "Lorenzo Burns",
@@ -18294,10 +18136,6 @@
         "position": "DB"
     },
     {
-        "full_name": "Brandin Dandridge",
-        "position": "DB"
-    },
-    {
         "full_name": "Zayne Anderson",
         "position": "DB"
     },
@@ -18338,15 +18176,7 @@
         "position": "TE"
     },
     {
-        "full_name": "Mark Vital",
-        "position": "TE"
-    },
-    {
         "full_name": "Cornell Powell",
-        "position": "WR"
-    },
-    {
-        "full_name": "Joe Forson",
         "position": "WR"
     },
     {
@@ -18542,18 +18372,6 @@
         "position": "T"
     },
     {
-        "full_name": "Kalif Jackson",
-        "position": "TE"
-    },
-    {
-        "full_name": "Sal Cannella",
-        "position": "TE"
-    },
-    {
-        "full_name": "DeVonte Dedmon",
-        "position": "WR"
-    },
-    {
         "full_name": "Bryan Mills",
         "position": "CB"
     },
@@ -18638,10 +18456,6 @@
         "position": "LB"
     },
     {
-        "full_name": "Drew Desjarlais",
-        "position": "OL"
-    },
-    {
         "full_name": "Will Sherman",
         "position": "T"
     },
@@ -18651,10 +18465,6 @@
     },
     {
         "full_name": "Paulson Adebo",
-        "position": "CB"
-    },
-    {
-        "full_name": "Lawrence Woods",
         "position": "CB"
     },
     {
@@ -18684,9 +18494,6 @@
     {
         "full_name": "Kawaan Baker",
         "position": "WR"
-    },
-    {
-        "full_name": "Derrick Kelly II"
     },
     {
         "full_name": "Rodarius Williams",
@@ -18757,10 +18564,6 @@
         "position": "DB"
     },
     {
-        "full_name": "Hamilcar Rashed",
-        "position": "DE"
-    },
-    {
         "full_name": "Jonathan Marshall",
         "position": "DT"
     },
@@ -18779,10 +18582,6 @@
     {
         "full_name": "Jamien Sherwood",
         "position": "LB"
-    },
-    {
-        "full_name": "Parker Ferguson",
-        "position": "OL"
     },
     {
         "full_name": "Grant Hermanns",
@@ -18861,10 +18660,6 @@
         "position": "DB"
     },
     {
-        "full_name": "J.T. Jones",
-        "position": "DE"
-    },
-    {
         "full_name": "Isaiahh Loudermilk",
         "position": "DE"
     },
@@ -18901,23 +18696,11 @@
         "position": "DT"
     },
     {
-        "full_name": "Lakiem Williams",
-        "position": "LB"
-    },
-    {
         "full_name": "Aaron Donkor",
         "position": "LB"
     },
     {
         "full_name": "Jon Rhattigan",
-        "position": "LB"
-    },
-    {
-        "full_name": "Alex Tchangam",
-        "position": "LB"
-    },
-    {
-        "full_name": "Keith Butler",
         "position": "LB"
     },
     {
@@ -18973,10 +18756,6 @@
         "position": "DB"
     },
     {
-        "full_name": "Augie Contressa",
-        "position": "DB"
-    },
-    {
         "full_name": "Jose Borregales",
         "position": "K"
     },
@@ -19003,10 +18782,6 @@
     {
         "full_name": "Robert Hainsey",
         "position": "OL"
-    },
-    {
-        "full_name": "Calvin Ashley",
-        "position": "OT"
     },
     {
         "full_name": "Kyle Trask",
