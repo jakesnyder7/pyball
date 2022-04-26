@@ -34,6 +34,8 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
     <Downshift
       onChange={(selection) => {
         setQuery(selection.full_name);
+        // send API request when a selection is made
+        handleQuery(selection.full_name, onFail, onPass);
       }}
       
       itemToString={item => (item ? item.value : '')}
@@ -51,29 +53,29 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
       <div>
         
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <form style={{ display: 'flex', flexDirection: 'row' }} onSubmit={(event) => {
-        event.preventDefault();
-        handleQuery(query, onFail, onPass);
-      }}>
-        <input {...getInputProps({ 
-          placeholder: "Enter player name",
-          type: "text",
-          value: query,
-          onChange: (e) => {
-            setQuery(e.target.value);
-          },
-          onSubmit: (e) => {
-            console.log(query);
-          }
-        })} />
-      <button onClick={(event) => {
-        event.preventDefault();
-        isOpen && closeMenu(); // close autocomplete menu if open
-        handleQuery(query, onFail, onPass);
-      }} type='submit'>
-        {buttonText}
-      </button>
-      </form>
+          <form
+            style={{ display: 'flex', flexDirection: 'row' }}
+            onSubmit={(event) => { event.preventDefault(); }}
+          >
+            <input {...getInputProps({ 
+              placeholder: "Enter player name",
+              type: "text",
+              value: query,
+              onChange: (e) => {
+                setQuery(e.target.value);
+              },
+            })} />
+            <button
+              type='submit'
+              onClick={(event) => {
+                event.preventDefault();
+                isOpen && closeMenu(); // close autocomplete menu if open
+                handleQuery(query, onFail, onPass);
+              }}
+            >
+              {buttonText}
+            </button>
+          </form>
         </div>
         <ul {...getMenuProps({ style: {listStyle: 'none'} })}>
           {isOpen && query !== ''
