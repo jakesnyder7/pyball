@@ -11,7 +11,7 @@ import React from "react";
  * @param onPass The function to call if the search query is submitted and passes the validity checks.
  * @returns The form.
  */
-export function AutocompletePlayerSearchForm({onFail, onPass}) {
+export function AutocompletePlayerSearchForm({buttonText, onFail, onPass}) {
 
   function handleQuery(query, onFail, onPass) {
     if (query === '') {
@@ -27,10 +27,12 @@ export function AutocompletePlayerSearchForm({onFail, onPass}) {
 
   const PlayerList = require('./PlayerList.json');
 
+  const [query, setQuery] = React.useState('');
+
   return(
     <Downshift
       onChange={(selection) => {
-        handleQuery(selection.full_name, onFail, onPass)
+        setQuery(selection.full_name);
       }}
       itemToString={item => (item ? item.value : '')}
     >
@@ -42,15 +44,32 @@ export function AutocompletePlayerSearchForm({onFail, onPass}) {
       inputValue,
       highlightedIndex,
       selectedItem,
+      closeMenu,
     }) => (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <input {...getInputProps({ placeholder: "Enter player name", type: "text"})} />
+        <input {...getInputProps({ 
+          placeholder: "Enter player name",
+          type: "text",
+          value: query,
+          onChange: (e) => {
+            setQuery(e.target.value);
+          },
+        })} />
+      <button onClick={(event) => {
+        event.preventDefault();
+        isOpen && closeMenu(); // close autocomplete menu if open
+        handleQuery(query, onFail, onPass);
+      }}>
+        {buttonText}
+      </button>
         </div>
         <ul {...getMenuProps({ style: {listStyle: 'none'} })}>
           {isOpen
             ? PlayerList
-                .filter(item => !inputValue || item.full_name.includes(inputValue))
+                .filter(item => !inputValue ||
+                    // case-insensitive matching
+                    item.full_name.toLowerCase().includes(inputValue.toLowerCase()))
                 .map((item, index) => (
                   <li
                     {...getItemProps({
