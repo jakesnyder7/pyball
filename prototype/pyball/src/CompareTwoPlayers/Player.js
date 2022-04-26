@@ -1,5 +1,5 @@
 import { RosterCheckmark } from '../Roster/RosterCheckmark.js';
-import { formatPlayerName } from '../Stats/StatFunctions.js';
+import { formatPlayerName, getStat, getDataByAccessor } from '../Stats/StatFunctions.js';
 import './Player.css';
 
 /**
@@ -10,16 +10,30 @@ import './Player.css';
  * @returns A div containing the name and image of the player.
  */
 export function Player({ player }) {
+    //alert(player.team_name);
+    //alert(player.team_logo_espn);
     return (
         <div className='Player' >
             <div class="img-crop">
                 <img class="img-player" src={player.headshot_url} alt={player.full_name} height={200} />
             </div>
-            <div>
-                <img class="img-logo" src={player.team_logo_espn} alt={player.team_nick} height={50} />
-                <p>{player.team_name}</p>
+            {player.team_logo_espn != null
+            ? <div>
+                <img
+                    class="img-logo"
+                    src={getStat(player, 'team_logo_espn', getDataByAccessor)}
+                    alt={getStat(player, 'team_nick', getDataByAccessor)}
+                    height={50}
+                />
+                <p>{getStat(player, 'team_name', getDataByAccessor)}</p>
             </div>
-            { 'jersey_number' in player ? <p>{player.position} #{player.jersey_number}</p> : null }
+            : null}
+            { 'jersey_number' in player
+            ? <p>
+                {getStat(player, 'position', getDataByAccessor)}
+                #{getStat(player, 'jersey_number', getDataByAccessor)}
+            </p>
+            : null }
             <header>
                 {formatPlayerName(player.full_name)}
                 {" "}
