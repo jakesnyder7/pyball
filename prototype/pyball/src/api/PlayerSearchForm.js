@@ -47,7 +47,7 @@ export function AutocompletePlayerSearchForm({onFail, onPass}) {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
         <input {...getInputProps({ placeholder: "Enter player name", type: "text"})} />
         </div>
-        <ul {...getMenuProps()}>
+        <ul {...getMenuProps({ style: {listStyle: 'none'} })}>
           {isOpen
             ? PlayerList
                 .filter(item => !inputValue || item.full_name.includes(inputValue))
