@@ -539,8 +539,8 @@ export const filterTypes = {
  * starts with the same characters as the second.
  */
  function anyWordStartsWithHelper(str1, str2) {
-  let compStr1 = str1.toLowerCase();
-  let compStr2 = str2.toLowerCase();
+  let compStr1 = str1.toLowerCase().replaceAll('.','');
+  let compStr2 = str2.toLowerCase().replaceAll('.','');
   if (compStr1.startsWith(compStr2)) {
     return true;
   }
