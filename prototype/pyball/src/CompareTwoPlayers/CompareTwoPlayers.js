@@ -3,7 +3,7 @@ import './CompareTwoPlayers.css';
 import React from 'react';
 import { Player } from './Player.js';
 import { ComparisonTable } from './ComparisonTable.js';
-import { PlayerSearchForm } from '../api/PlayerSearchForm.js';
+import { AutocompletePlayerSearchForm } from '../api/PlayerSearchForm.js';
 import { fetchData } from '../api/Fetch.js';
 import { ComparisonChart } from './ComparisonChart';
 import { AcknowledgePrompt } from '../Prompts/Prompts.js';
@@ -33,11 +33,30 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
 
   // Each time data changes, update validResults accordingly
   React.useEffect(() => {
-    setValidResults(data != null && data.full_name != null && data.full_name.length > 0);
+    setValidResults(data != null
+      && data.full_name != null
+      && data.full_name.length > 0
+    );
     if (data != null && (data.full_name == null || data.full_name.length <= 0)) {
       setError("Error: No match found.");
     }
   }, [data, setValidResults]);
+
+  const onFail = React.useCallback((errorMsg) => {
+    setError(errorMsg);
+    setValidResults(false);
+  },[setError, setValidResults]);
+
+  const onPass = React.useCallback(() => {
+    fetchData(
+      `player/${query}/`,
+      setData,
+      (errorMsg) => {
+        setValidResults(false);
+        setQuery('');
+        setError(errorMsg);
+      });
+  }, [query, setData, setValidResults, setQuery, setError]);
 
   return (
     <div className='Playerz' >
@@ -46,20 +65,12 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
         : <Player player={emptyPlayer} /> }
       {/* If an error has occurred, notify the user; otherwise, display a player search form */}
       {error === ''
-      ? <PlayerSearchForm
+      ? <AutocompletePlayerSearchForm
           query={query}
           setQuery={setQuery}
           buttonText='Search'
-          onFail={(errorMsg) => {
-            setError(errorMsg);
-            setValidResults(false);
-          }}
-          onPass={() => {fetchData(`player/${query}/`, setData, (errorMsg) => {
-              setValidResults(false);
-              setQuery('');
-              setError(errorMsg);
-            }
-          )}}
+          onFail={onFail}
+          onPass={onPass}
         />
       : <span style={{color: '#ff5370'}}>
           <AcknowledgePrompt
@@ -119,12 +130,14 @@ function CompareTwoPlayers() {
 
         { validResults1 && validResults2
         && <div>
-          <ComparisonTable
-            player1={data1}
-            player2={data2}
-            stats_by_position={stats_by_position}
-            stat_labels={stat_labels}
-          />
+          {stats_by_position[data1.position] != null
+          && <ComparisonTable
+              player1={data1}
+              player2={data2}
+              stats_by_position={stats_by_position}
+              stat_labels={stat_labels}
+            />
+          }
           <ComparisonChart player1={data1} player2={data2} />
         </div>}
       </div>

@@ -50,6 +50,7 @@ function populateStatHelper(array_index, player_index, player, player_data, acce
   * @param player2 The stats for the second player.
   * @param stats_by_position The stats to display for each position.
   * @param stat_labels The labels to display for the stats.
+  * Precondition: stats_by_position[player1.position] != null.
   * @returns A div containing the table.
   */
  export function ComparisonTable({player1, player2, stats_by_position, stat_labels}) {
@@ -59,9 +60,11 @@ function populateStatHelper(array_index, player_index, player, player_data, acce
     let p2_data = {};
 
     // the maximum week for which data for at least one of these players exists
-    const MAX_WEEK = player1.week.length > player2.week.length
-        ? player1.week.at(-1)
-        : player2.week.at(-1);
+    const MAX_WEEK = String(player1.week) === "NA" && String(player2.week) === "NA"
+        ? 0
+        : player1.week.length > player2.week.length
+            ? player1.week.at(-1)
+            : player2.week.at(-1);
 
     const NUM_OPTIONS = MAX_WEEK + 2;
 
