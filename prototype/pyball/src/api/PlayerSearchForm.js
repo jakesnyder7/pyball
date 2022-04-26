@@ -35,6 +35,7 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
       onChange={(selection) => {
         setQuery(selection.full_name);
       }}
+      
       itemToString={item => (item ? item.value : '')}
     >
     {({
@@ -48,7 +49,12 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
       closeMenu,
     }) => (
       <div>
+        
         <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <form style={{ display: 'flex', flexDirection: 'row' }} onSubmit={(event) => {
+        event.preventDefault();
+        handleQuery(query, onFail, onPass);
+      }}>
         <input {...getInputProps({ 
           placeholder: "Enter player name",
           type: "text",
@@ -56,14 +62,18 @@ export function AutocompletePlayerSearchForm({query, setQuery, buttonText, onFai
           onChange: (e) => {
             setQuery(e.target.value);
           },
+          onSubmit: (e) => {
+            console.log(query);
+          }
         })} />
       <button onClick={(event) => {
         event.preventDefault();
         isOpen && closeMenu(); // close autocomplete menu if open
         handleQuery(query, onFail, onPass);
-      }}>
+      }} type='submit'>
         {buttonText}
       </button>
+      </form>
         </div>
         <ul {...getMenuProps({ style: {listStyle: 'none'} })}>
           {isOpen
