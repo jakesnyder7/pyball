@@ -6,42 +6,31 @@ import React from "react";
  * based on API results for the search query.
  * @author Claire Wagner
  * @author Marion Geary
- * @param query The query state.
- * @param setQuery The function to use to modify the query state.
- * @param buttonText The text to display on the button.
  * @param onFail The function to call if the search query is submitted and fails the validity checks
- * (this function will be passed a string describing the error that occurred). Must be memoized (e.g.
- * with useCallback).
+ * (this function will be passed a string describing the error that occurred).
  * @param onPass The function to call if the search query is submitted and passes the validity checks.
- * Must be memoized (e.g. with useCallback).
  * @returns The form.
  */
-export function AutocompletePlayerSearchForm({query, setQuery, onFail, onPass}) {
+export function AutocompletePlayerSearchForm({onFail, onPass}) {
 
-  // Handle the query each time it changes
-  React.useEffect(() => {
-    function handleQuery(query, onFail, onPass) {
-      if (query === '') {
-        onFail('Error: please enter a name. ');
-      } else if (query.split(' ').length < 2) {
-        onFail('Error: please enter both first and last name of player.');
-      } else if (query.split(' ').length > 2) {
-        onFail('Error: please enter only first and last name of player.');
-      } else {
-        onPass();
-      }
-    };
-    if (query !== '') {
-      handleQuery(query, onFail, onPass);
+  function handleQuery(query, onFail, onPass) {
+    if (query === '') {
+      onFail('Error: please enter a name. ');
+    } else if (query.split(' ').length < 2) {
+      onFail('Error: please enter both first and last name of player.');
+    } else if (query.split(' ').length > 2) {
+      onFail('Error: please enter only first and last name of player.');
+    } else {
+      onPass(query);
     }
-  }, [query, onFail, onPass]);
+  };
 
   const PlayerList = require('./PlayerList.json');
 
   return(
     <Downshift
       onChange={(selection) => {
-        setQuery(selection.full_name);
+        handleQuery(selection.full_name, onFail, onPass)
       }}
       itemToString={item => (item ? item.value : '')}
     >

@@ -19,9 +19,6 @@ import { stats_by_position, stat_labels } from '../Stats/StatDefinitions.js';
  */
 function PlayerDiv({data, setData, validResults, setValidResults}) {
 
-  // State to track the player search query
-  const [query, setQuery] = React.useState('');
-
   // State to track the current error
   const [error, setError] = React.useState('');
 
@@ -42,22 +39,6 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
     }
   }, [data, setValidResults]);
 
-  const onFail = React.useCallback((errorMsg) => {
-    setError(errorMsg);
-    setValidResults(false);
-  },[setError, setValidResults]);
-
-  const onPass = React.useCallback(() => {
-    fetchData(
-      `player/${query}/`,
-      setData,
-      (errorMsg) => {
-        setValidResults(false);
-        setQuery('');
-        setError(errorMsg);
-      });
-  }, [query, setData, setValidResults, setQuery, setError]);
-
   return (
     <div className='Playerz' >
       { validResults
@@ -66,17 +47,25 @@ function PlayerDiv({data, setData, validResults, setValidResults}) {
       {/* If an error has occurred, notify the user; otherwise, display a player search form */}
       {error === ''
       ? <AutocompletePlayerSearchForm
-          query={query}
-          setQuery={setQuery}
           buttonText='Search'
-          onFail={onFail}
-          onPass={onPass}
+          onFail={(errorMsg) => {
+            setError(errorMsg);
+            setValidResults(false);
+          }}
+          onPass={(query) => {
+            fetchData(
+              `player/${query}/`,
+              setData,
+              (errorMsg) => {
+                setValidResults(false);
+                setError(errorMsg);
+              });
+          }}
         />
       : <span style={{color: '#ff5370'}}>
           <AcknowledgePrompt
             message={error}
             onAcknowledge={()=> {
-              setQuery('');
               setError('');
             }}
           />
