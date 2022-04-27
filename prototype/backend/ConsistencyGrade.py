@@ -47,7 +47,7 @@ with localconverter(ro.default_converter + pandas2ri.converter):
 test = df_weekly_stats.iloc[0:17,47]
 st.variance(test)
 
-
+## array of weekly scores
 player_scores = {"" : []}
 name = ""
 for index, player_name in df_weekly_stats.iterrows():
@@ -56,22 +56,79 @@ for index, player_name in df_weekly_stats.iterrows():
         player_scores[name] = []
     player_scores[name].append(df_weekly_stats["fantasy_points_ppr"][index])
 
+## name to id connection
+player_name_id = {"" : ""}
+for index, player_name in df_official_player_stats.iterrows():
+    name = df_official_player_stats["player_name"][index]
+    id = df_official_player_stats["player_id"][index]
+    player_name_id[name] = id
+
+## id to pos connection
+idpos = {"":""}
+for index, gsis_id in df_roster.iterrows():
+    id2 = df_roster["gsis_id"][index]
+    pos1 = df_roster["position"][index]
+    idpos[id2] = pos1
+
+## adding position
+df_official_player_stats["pos"] = "NA"
+for index, player_name in df_official_player_stats.iterrows():
+    name = df_official_player_stats["player_name"][index]
+    id1 = player_name_id[name]
+    if(idpos.__contains__(id1)):
+        position = idpos[id1]
+        df_official_player_stats["pos"][index] = position
+
+## Calculating good games
+player_gg = {"" : 0}
+for x in player_scores:
+    if(len(player_scores[x]) > 1):
+        score = 0
+        if(player_name_id.__contains__(x) and idpos.__contains__(player_name_id[x])):
+            pos2 = idpos[player_name_id[x]]
+        if(pos2 == "QB"):
+            for y in player_scores[x]:
+                if(y > 19.2):
+                    score += 1
+        if(pos2 == "RB"):
+            for y in player_scores[x]:
+                if(y > 14.8):
+                    score += 1
+        if(pos2 == "WR"):
+            for y in player_scores[x]:
+                if(y > 14.2):
+                    score += 1
+        if(pos2 == "TE"):
+            for y in player_scores[x]:
+                if(y > 10.4):
+                    score += 1
+        player_gg[x] = score
+
+
+
 player_var = {"" : 0}
 for x in player_scores:
     if(len(player_scores[x]) > 1): 
         player_var[x] = st.variance(player_scores[x])
 
-
-st.mean(player_var.values())
-##st.variance(player_var.values())
 player_grade = {"" : "F"}
-for x in player_var:
-    var = player_var[x]
-    if(var < 40):
+for x in player_gg:
+    score1 = player_gg[x]
+    if(score1 >= 14):
+        player_grade[x] = "A+"
+    elif(score1 >= 12):
         player_grade[x] = "A"
-    elif(var < 60):
+    elif(score1 >= 10):
+        player_grade[x] = "A-"
+    elif(score1 >= 9):
+        player_grade[x] = "B+"
+    elif(score1 >= 7):
         player_grade[x] = "B"
-    elif(var < 90):
+    elif(score1 == 6):
+        player_grade[x] = "B-"
+    elif(score1 == 5):
+        player_grade[x] = "C+"
+    elif(score1 < 4 and score1 > 2):
         player_grade[x] = "C"
     else:
         player_grade[x] = "D"
