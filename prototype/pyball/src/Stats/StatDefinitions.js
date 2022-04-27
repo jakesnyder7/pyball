@@ -226,6 +226,7 @@ export const spreadsheetStats = {
           datasource: 'metrics',
           formattable: false,
           sortDescFirst: false,
+          sortType: 'grade_sort',
         },
       ],
     },
@@ -305,6 +306,7 @@ export const spreadsheetStats = {
           datasource: 'metrics',
           formattable: false,
           sortDescFirst: false,
+          sortType: 'grade_sort',
         },
       ],
     },
@@ -384,6 +386,7 @@ export const spreadsheetStats = {
           datasource: 'metrics',
           formattable: false,
           sortDescFirst: false,
+          sortType: 'grade_sort',
         },
       ],
     },
@@ -463,6 +466,7 @@ export const spreadsheetStats = {
           datasource: 'metrics',
           formattable: false,
           sortDescFirst: false,
+          sortType: 'grade_sort',
         },
       ],
     },
@@ -483,6 +487,7 @@ export const defaultSpreadsheetStatsProps = {
  * Definition of sort types for use with react-table.
  */
 export const sortTypes = {
+  // sort rows by the full_name column
   sort_by_full_name: (rowA, rowB, columnID, desc) => {
     let rowAName = rowA.values.full_name;
     let rowBName = rowB.values.full_name;
@@ -492,6 +497,29 @@ export const sortTypes = {
       return -1;
     } else {
       return 0;
+    }
+  },
+  // sort by letter grade (A+ > A > A- > B+ > ...)
+  grade_sort: (rowA, rowB, columnID, desc) => {
+    function grade_suffix_sort(suff1, suff2) {
+      if ((suff1 === '+') || (suff2 === '-')) {
+        return -1;
+      } else if ((suff2 === '+') || (suff1 === '-')) {
+        return 1;
+      } else {
+        return 0;
+      }
+    };
+    let grade1 = String(rowA.values[columnID]);
+    let grade2 = String(rowB.values[columnID]);
+    if (grade1[0] > grade2[0]) {
+      return 1;
+    } else if (grade1[0] < grade2[0]) {
+      return -1;
+    } else if (grade1 === grade2) {
+      return 0;
+    } else {
+      return grade_suffix_sort(grade1[1], grade2[1]);
     }
   },
 }
