@@ -18,9 +18,7 @@ library(tidyverse)
 
 load('APIData.Rdata')
 
-all_data <- a
-
-x<-all_data %>% filter(is.na(gsis_id)) %>% select(full_name, yahoo_id)
+all_data <- all_data %>% filter(!is.na(gsis_id))
 
 #all_data <- all_data %>% add_column(name = str_to_lower(str_remove_all(all_data$full_name, "[.]")))
 
