@@ -4,20 +4,18 @@ import { ConditionalFormatForm } from './ConditionalFormatForm.js';
 
 /**
  * Default filtering UI.
- * Source: https://github.com/TanStack/react-table/blob/v7/examples/filtering/src/App.js (MIT license).
+ * Based on https://github.com/TanStack/react-table/blob/v7/examples/filtering/src/App.js (MIT license).
 */
 function DefaultColumnFilter({
   column: { filterValue, preFilteredRows, setFilter },
 }) {
-  const count = preFilteredRows.length
-
   return (
     <input
       value={filterValue || ''}
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
       }}
-      placeholder={`Search ${count} records...`}
+      placeholder={'Filter...'}
     />
   )
 }
