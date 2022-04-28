@@ -213,7 +213,7 @@ export const spreadsheetStats = {
           function: getSumByAccessor,
         },
         {
-          Header: 'TDS',
+          Header: 'TD',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
           function: getSumByAccessor,
@@ -260,7 +260,7 @@ export const spreadsheetStats = {
           function: getSumByAccessor,
         },
         {
-          Header: 'TDS',
+          Header: 'TD',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
           function: getSumByAccessor,
@@ -348,7 +348,7 @@ export const spreadsheetStats = {
           function: getSumByAccessor,
         },
         {
-          Header: 'TDS',
+          Header: 'TD',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
           function: getSumByAccessor,
@@ -436,7 +436,7 @@ export const spreadsheetStats = {
           function: getSumByAccessor,
         },
         {
-          Header: 'TDS',
+          Header: 'TD',
           accessor: 'rushing_tds',
           hovertext: 'rushing touchdowns',
           function: getSumByAccessor,
