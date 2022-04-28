@@ -87,22 +87,21 @@ export function ManipulatableTable({columns, data, sortTypes, filterTypes, hidde
    * @param columnID The id of the column to which to apply the conditional formatting.
    * @param color The background color to apply.
    * @param textcolor The text color to apply.
+   * @param validate The function to use to validate min and max bounds for conditional formatting.
+   * @param compare The function to use for conditional formatting comparisons.
    * Postcondition: The background color of each cells in the given column has been set to
    * the specified color if the cell value lies in the range and null otherwise. The
    * background colors of cells in other columns have not been changed.
   */
-  function applyConditionalFormatting(min, max, columnID, color, textcolor) {
+  function applyConditionalFormatting(min, max, columnID, color, textcolor, validate, compare) {
     // Helper function to determine whether value is in range
     function inRange(min, max, val) {
-      let valAsFloat = parseFloat(val);
-      let minAsFloat = parseFloat(min);
-      let maxAsFloat = parseFloat(max);
-      if (!isNaN(minAsFloat) && !isNaN(maxAsFloat)) {
-        return valAsFloat >= minAsFloat && valAsFloat <= maxAsFloat;
-      } else if (!isNaN(minAsFloat)) {
-        return valAsFloat >= minAsFloat;
-      } else if (!isNaN(maxAsFloat)) {
-        return valAsFloat <= maxAsFloat;
+      if (validate(min) && validate(max)) {
+        return compare(val, min) >= 0 && compare(val, max) <= 0;
+      } else if (validate(min)) {
+        return compare(val, min) >= 0
+      } else if (validate(max)) {
+        return compare(val, max) <= 0
       }
       return false;
     }
@@ -152,10 +151,13 @@ export function ManipulatableTable({columns, data, sortTypes, filterTypes, hidde
                     {column.isSorted ? (column.isSortedDesc ? ' 🔽': ' 🔼') : ''}
                   </span>
                   {/* conditional formatting UI */}
-                  {column.formattable && <span>
-                    <ConditionalFormatForm columnID={column.id} applyFormat={
-                      applyConditionalFormatting
-                    } />                            
+                  {column.conditionallyFormattable && <span>
+                    <ConditionalFormatForm
+                      columnID={column.id}
+                      applyFormat={applyConditionalFormatting}
+                      validate={column.conditionalFormatValidate}
+                      compare={column.conditionalFormatCompare}
+                    />                            
                   </span>} 
                   {/* filtering UI */}
                   <div>{column.canFilter ? column.render('Filter') : null}</div>

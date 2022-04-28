@@ -67,7 +67,7 @@ export const stat_labels = {
 /**
  * Stats to display in columns in each table, organized by position.
  * If any properties are left unspecified, the value given in defaultSpreadsheetProps
- * should be used instead.
+ * or defaultConditionalFormatProps should be used instead.
  * @property 'Header' - the header for the header group or column containing the stat.
  * @property 'columns' - a collection of columns that should appear in this header group.
  * @property 'accessor' - the accessor that will be used to uniquely identify this column and
@@ -78,9 +78,13 @@ export const stat_labels = {
  * and its return value will be used to produce the stat.
  * @property 'hide' (optional) - whether or not to hide this column.
  * @property 'sortDescFirst' - whether or not to sort first by descending order.
- * @property 'formattable' - whether or not the column should be conditionally formattable.
+ * @property 'conditionallyFormattable' - whether or not the column should be conditionally formattable.
  * @property 'filter' - the name of the filter function to use for this column.
  * @property 'sortType' - the name of the sort function to use for this column.
+ * @property 'conditionalFormatValidate' - the function that will be used to validate min and max bounds
+ * for conditional formatting.
+ * @property 'conditionalFormatCompare' - the function that will be used to compare values for
+ * conditional formatting.
  */
 export const spreadsheetStats = {
   all: [ // stats to display for all positions
@@ -90,7 +94,7 @@ export const spreadsheetStats = {
         {
           Header: 'Player',
           accessor: 'name_and_roster_status',
-          formattable: false,
+          conditionallyFormattable: false,
           filter: 'any_word_startswith_by_full_name',
           sortType: 'sort_by_full_name',
           sortDescFirst: false, 
@@ -102,7 +106,7 @@ export const spreadsheetStats = {
         { // Helper column to use when sorting and filtering Player column
           Header: 'PlayerHelper',
           accessor: 'full_name',
-          formattable: false,
+          conditionallyFormattable: false,
           sortDescFirst: false,
           hide: true,
           function: (data, accessor) => formatPlayerName(getDataByAccessor(data, 'full_name')),
@@ -110,7 +114,7 @@ export const spreadsheetStats = {
         {
           Header: 'Team',
           accessor: 'team',
-          formattable: false,
+          conditionallyFormattable: false,
           sortDescFirst: false,
         },
 
@@ -224,9 +228,17 @@ export const spreadsheetStats = {
           accessor: 'consistency_grade',
           hovertext: 'consistency grade',
           datasource: 'metrics',
-          formattable: false,
           sortDescFirst: false,
           sortType: 'grade_sort',
+          conditionallyFormattable: true,
+          conditionalFormatValidate: (x) => {
+            let str = String(x).toUpperCase();
+            return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
+          },
+          conditionalFormatCompare: (a, b) => {
+            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
+            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
+          },
         },
       ],
     },
@@ -304,9 +316,17 @@ export const spreadsheetStats = {
           accessor: 'consistency_grade',
           hovertext: 'consistency grade',
           datasource: 'metrics',
-          formattable: false,
           sortDescFirst: false,
           sortType: 'grade_sort',
+          conditionallyFormattable: true,
+          conditionalFormatValidate: (x) => {
+            let str = String(x).toUpperCase();
+            return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
+          },
+          conditionalFormatCompare: (a, b) => {
+            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
+            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
+          },
         },
       ],
     },
@@ -384,9 +404,17 @@ export const spreadsheetStats = {
           accessor: 'consistency_grade',
           hovertext: 'consistency grade',
           datasource: 'metrics',
-          formattable: false,
           sortDescFirst: false,
           sortType: 'grade_sort',
+          conditionallyFormattable: true,
+          conditionalFormatValidate: (x) => {
+            let str = String(x).toUpperCase();
+            return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
+          },
+          conditionalFormatCompare: (a, b) => {
+            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
+            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
+          },
         },
       ],
     },
@@ -464,9 +492,17 @@ export const spreadsheetStats = {
           accessor: 'consistency_grade',
           hovertext: 'consistency grade',
           datasource: 'metrics',
-          formattable: false,
           sortDescFirst: false,
           sortType: 'grade_sort',
+          conditionallyFormattable: true,
+          conditionalFormatValidate: (x) => {
+            let str = String(x).toUpperCase();
+            return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
+          },
+          conditionalFormatCompare: (a, b) => {
+            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
+            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
+          },
         },
       ],
     },
@@ -478,9 +514,11 @@ export const spreadsheetStats = {
  */
 export const defaultSpreadsheetStatsProps = {
   filter: 'startswith',
-  formattable: true,
+  conditionallyFormattable: true,
   sortDescFirst: true,
   function: getDataByAccessor,
+  conditionalFormatValidate: (val) => !isNaN(parseFloat(val)),
+  conditionalFormatCompare: (a,b) => (parseFloat(a) - parseFloat(b)),
 }
 
 /**
@@ -501,28 +539,30 @@ export const sortTypes = {
   },
   // sort by letter grade (A+ > A > A- > B+ > ...)
   grade_sort: (rowA, rowB, columnID, desc) => {
-    function grade_suffix_sort(suff1, suff2) {
-      if ((suff1 === '+') || (suff2 === '-')) {
-        return -1;
-      } else if ((suff2 === '+') || (suff1 === '-')) {
-        return 1;
-      } else {
-        return 0;
-      }
-    };
-    let grade1 = String(rowA.values[columnID]);
-    let grade2 = String(rowB.values[columnID]);
-    if (grade1[0] > grade2[0]) {
-      return 1;
-    } else if (grade1[0] < grade2[0]) {
-      return -1;
-    } else if (grade1 === grade2) {
-      return 0;
-    } else {
-      return grade_suffix_sort(grade1[1], grade2[1]);
-    }
+    return gradeSort(String(rowA.values[columnID]), String(rowB.values[columnID]));
   },
-}
+};
+
+function gradeSort(grade1, grade2) {
+  function grade_suffix_sort(suff1, suff2) {
+    if ((suff1 === '+') || (suff2 === '-')) {
+      return -1;
+    } else if ((suff2 === '+') || (suff1 === '-')) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+  if (grade1[0] > grade2[0]) {
+    return 1;
+  } else if (grade1[0] < grade2[0]) {
+    return -1;
+  } else if (grade1 === grade2) {
+    return 0;
+  } else {
+    return grade_suffix_sort(grade1[1], grade2[1]);
+  }
+};
 
 /**
  * Definition of filter types for use with react-table.
