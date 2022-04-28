@@ -17,7 +17,7 @@ export function Player({ player }) {
             <div class="img-crop">
                 <img class="img-player" src={player.headshot_url} alt={player.full_name} height={200} />
             </div>
-            {player.team_logo_espn != null
+            {getDataByAccessor(player, 'team_logo_espn') !== "N/A"
             ? <div>
                 <img
                     class="img-logo"
