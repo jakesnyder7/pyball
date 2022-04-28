@@ -170,11 +170,18 @@ const spreadsheetStatsMaster = {
           accessor: 'completion_percentage',
           hovertext: 'completion %',
           function: (data, accessor) => {
-            let totalCompletions = sum(getDataByAccessor(data, 'completions'));
-            let totalAttempts = sum(getDataByAccessor(data, 'attempts'));
-            return totalAttempts === 0 || isNaN(totalCompletions) || isNaN(totalAttempts)
+            let completions = getDataByAccessor(data, 'completions');
+            let attempts = getDataByAccessor(data, 'attempts');
+            if (attempts === "N/A") {
+              return "N/A";
+            }
+            let totalCompletions = sum(completions);
+            let totalAttempts = sum(attempts);
+            return isNaN(totalCompletions) || isNaN(totalAttempts)
               ? "N/A"  
-              : round(100 * (totalCompletions / totalAttempts)) + "%"
+              : totalAttempts === 0
+                ? "0%"
+                : round(100 * (totalCompletions / totalAttempts)) + "%"
           },
         },
         {
