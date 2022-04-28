@@ -228,7 +228,7 @@ const spreadsheetStatsMaster = {
           accessor: 'consistency_grade',
           hovertext: 'consistency grade',
           datasource: 'metrics',
-          sortDescFirst: false,
+          sortDescFirst: true,
           sortType: 'grade_sort',
           conditionallyFormattable: true,
           conditionalFormatValidate: (x) => {
@@ -236,8 +236,7 @@ const spreadsheetStatsMaster = {
             return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
           },
           conditionalFormatCompare: (a, b) => {
-            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
-            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
+            return gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
           },
         },
       ],
@@ -316,7 +315,7 @@ const spreadsheetStatsMaster = {
           accessor: 'consistency_grade',
           hovertext: 'consistency grade',
           datasource: 'metrics',
-          sortDescFirst: false,
+          sortDescFirst: true,
           sortType: 'grade_sort',
           conditionallyFormattable: true,
           conditionalFormatValidate: (x) => {
@@ -324,8 +323,7 @@ const spreadsheetStatsMaster = {
             return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
           },
           conditionalFormatCompare: (a, b) => {
-            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
-            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
+            return gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
           },
         },
       ],
@@ -381,17 +379,17 @@ export const sortTypes = {
 function gradeSort(grade1, grade2) {
   function grade_suffix_sort(suff1, suff2) {
     if ((suff1 === '+') || (suff2 === '-')) {
-      return -1;
-    } else if ((suff2 === '+') || (suff1 === '-')) {
       return 1;
+    } else if ((suff2 === '+') || (suff1 === '-')) {
+      return -1;
     } else {
       return 0;
     }
   };
   if (grade1[0] > grade2[0]) {
-    return 1;
-  } else if (grade1[0] < grade2[0]) {
     return -1;
+  } else if (grade1[0] < grade2[0]) {
+    return 1;
   } else if (grade1 === grade2) {
     return 0;
   } else {
