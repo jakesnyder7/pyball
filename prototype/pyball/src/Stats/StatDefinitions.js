@@ -65,9 +65,9 @@ export const stat_labels = {
 }
 
 /**
- * Stats to display in columns in each table, organized by position.
- * If any properties are left unspecified, the value given in defaultSpreadsheetProps
- * or defaultConditionalFormatProps should be used instead.
+ * Master definition of stats to display in columns in each spreadsheet, organized by groups of positions.
+ * If any properties are left unspecified, the value given in defaultSpreadsheetProps or should be used
+ * instead. See "spreadsheetStats" for the mapping of these stats to individual positions.
  * @property 'Header' - the header for the header group or column containing the stat.
  * @property 'columns' - a collection of columns that should appear in this header group.
  * @property 'accessor' - the accessor that will be used to uniquely identify this column and
@@ -86,7 +86,7 @@ export const stat_labels = {
  * @property 'conditionalFormatCompare' - the function that will be used to compare values for
  * conditional formatting.
  */
-export const spreadsheetStats = {
+const spreadsheetStatsMaster = {
   all: [ // stats to display for all positions
     {
       Header: "General",
@@ -243,183 +243,7 @@ export const spreadsheetStats = {
       ],
     },
   ],
-  RB: [
-    {
-      Header: "Rushing",
-      columns: [
-        {
-          Header: 'ATT',
-          accessor: 'carries',
-          hovertext: 'rushing attempts',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'YDS',
-          accessor: 'rushing_yards',
-          hovertext: 'rushing yards',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'TD',
-          accessor: 'rushing_tds',
-          hovertext: 'rushing touchdowns',
-          function: getSumByAccessor,
-        },
-      ],
-    },
-    {
-      Header: "Receiving",
-      columns: [
-        {
-          Header: 'REC',
-          accessor: 'receptions',
-          hovertext: 'receptions',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'TGT',
-          accessor: 'targets',
-          hovertext: 'targets',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'YDS',
-          accessor: 'receiving_yards',
-          hovertext: 'receiving yards',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'TD',
-          accessor: 'receiving_tds',
-          hovertext: 'receiving touchdowns',
-          function: getSumByAccessor,
-        },
-      ],
-    },
-    {
-      Header: "Fantasy Portal Metrics",
-      columns: [
-        {
-          Header: 'RSHARE',
-          accessor: 'rec_share_%', 
-          hovertext: 'receiver share percentage',
-          datasource: 'metrics',
-          function: (data, accessor) => {
-            let rshare = getDataByAccessor(data, accessor);
-            return String(rshare).startsWith("nan")
-              ? "N/A"
-              : rshare;
-          },
-        },
-        {
-          Header: 'GRD',
-          accessor: 'consistency_grade',
-          hovertext: 'consistency grade',
-          datasource: 'metrics',
-          sortDescFirst: false,
-          sortType: 'grade_sort',
-          conditionallyFormattable: true,
-          conditionalFormatValidate: (x) => {
-            let str = String(x).toUpperCase();
-            return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
-          },
-          conditionalFormatCompare: (a, b) => {
-            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
-            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
-          },
-        },
-      ],
-    },
-  ],
-  WR: [
-    {
-      Header: "Rushing",
-      columns: [
-        {
-          Header: 'ATT',
-          accessor: 'carries',
-          hovertext: 'rushing attempts',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'YDS',
-          accessor: 'rushing_yards',
-          hovertext: 'rushing yards',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'TD',
-          accessor: 'rushing_tds',
-          hovertext: 'rushing touchdowns',
-          function: getSumByAccessor,
-        },
-      ],
-    },
-    {
-      Header: "Receiving",
-      columns: [
-        {
-          Header: 'REC',
-          accessor: 'receptions',
-          hovertext: 'receptions',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'TGT',
-          accessor: 'targets',
-          hovertext: 'targets',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'YDS',
-          accessor: 'receiving_yards',
-          hovertext: 'receiving yards',
-          function: getSumByAccessor,
-        },
-        {
-          Header: 'TD',
-          accessor: 'receiving_tds',
-          hovertext: 'receiving touchdowns',
-          function: getSumByAccessor,
-        },
-      ],
-    },
-    {
-      Header: "Fantasy Portal Metrics",
-      columns: [
-        {
-          Header: 'RSHARE',
-          accessor: 'rec_share_%', 
-          hovertext: 'receiver share percentage',
-          datasource: 'metrics',
-          function: (data, accessor) => {
-            let rshare = getDataByAccessor(data, accessor);
-            return String(rshare).startsWith("nan")
-              ? "N/A"
-              : rshare;
-          },
-        },
-        {
-          Header: 'GRD',
-          accessor: 'consistency_grade',
-          hovertext: 'consistency grade',
-          datasource: 'metrics',
-          sortDescFirst: false,
-          sortType: 'grade_sort',
-          conditionallyFormattable: true,
-          conditionalFormatValidate: (x) => {
-            let str = String(x).toUpperCase();
-            return str.length > 0 && str[0] <= 'F' && str[0] >= 'A';
-          },
-          conditionalFormatCompare: (a, b) => {
-            let gradesort = gradeSort(String(a).toUpperCase(),String(b).toUpperCase());
-            return (gradesort > 0) ? -1 : (gradesort < 0) ? 1 : 0;
-          },
-        },
-      ],
-    },
-  ],
-  TE: [
+  RB_WR_TE: [
     {
       Header: "Rushing",
       columns: [
@@ -508,6 +332,17 @@ export const spreadsheetStats = {
     },
   ],
 };
+
+/**
+ * Mapping of stats to display in each spreadsheet to individual positions.
+ */
+export const spreadsheetStats = {
+  all: spreadsheetStatsMaster.all,
+  QB: spreadsheetStatsMaster.QB,
+  RB: spreadsheetStatsMaster.RB_WR_TE,
+  WR: spreadsheetStatsMaster.RB_WR_TE,
+  TE: spreadsheetStatsMaster.RB_WR_TE,
+}
 
 /**
  * Default values for spreadsheetStats props (to be used if no other values are specified).
