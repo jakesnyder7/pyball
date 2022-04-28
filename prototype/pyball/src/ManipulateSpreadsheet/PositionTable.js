@@ -1,7 +1,7 @@
 import React from 'react';
 import { ManipulatableTable } from './ManipulatableTable.js';
 import { getStat } from '../Stats/StatFunctions.js';
-import { filterTypes, sortTypes, defaultSpreadsheetStatsProps, defaultConditionalFormatProps } from '../Stats/StatDefinitions.js';
+import { filterTypes, sortTypes, defaultSpreadsheetStatsProps } from '../Stats/StatDefinitions.js';
 
   /**
    * Hook to define a ManipulatableTable that displays player stats for the given position.
