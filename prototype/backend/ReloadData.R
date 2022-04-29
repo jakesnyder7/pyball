@@ -168,23 +168,37 @@ all_data <- all_data %>%
             pfr_game_id, season_type, player, high_school,
             season, last_name, first_name))
 
-all_data_yahoo <- all_data %>%
-  left_join(
-    ff_rankings,
+ff_rankings_no_yahoo <- ff_rankings %>% filter(is.na(yahoo_id))
+ff_rankings_yahoo <- ff_rankings %>% filter(!is.na(yahoo_id))
+yahoo <- all_data %>% filter(!is.na(yahoo_id))
+no_yahoo <- all_data %>% filter(is.na(yahoo_id))
+
+
+all_data_yahoo <- yahoo %>%
+  full_join(
+    ff_rankings_yahoo,
     by = c('yahoo_id' = 'yahoo_id'),
     suffix = c('', '.xyz'),
     keep = FALSE,
     na_matches = "never"
-  ) 
+  ) %>% distinct()
 
 all_data_na_yahoo <- all_data %>% filter(is.na(yahoo_id)) %>%
-  left_join(
+  full_join(
     ff_rankings,
     by = c('full_name' = 'player'),
-    suffix = c('', '.xyz'),
+    suffix = c('.xyz', ''),
     keep = FALSE,
     na_matches = "never"
   )
+
+all_data_yahoo <- all_data_yahoo %>%
+  distinct() %>%
+  select(- (grep(".xyz", names(all_data_yahoo))))
+
+all_data_na_yahoo <- all_data_na_yahoo %>%
+  distinct() %>%
+  select(- (grep(".xyz", names(all_data_na_yahoo))))
 
 all_data <- bind_rows(all_data_yahoo, all_data_na_yahoo)
 
@@ -197,26 +211,37 @@ all_data <- all_data %>%
   select(- (grep(".xyz", names(all_data))))
 
 all_data <- all_data %>%
-  mutate(full_name = str_remove_all(full_name, "."))
+  mutate(name = str_to_lower(str_remove_all(full_name, "[.]")))
 
 #' Get the data about a specified player
 #'
 #' @param player_name_query The name of the desired player
 #' @return Data on the player formatted as a JSON
 get_player_data <- function(player_name_query) {
-  query <- str_to_lower(player_name_query)
-  gsis <- all_data %>% filter(str_to_lower(full_name) == query) %>% select(gsis_id) %>% slice(1) %>% pluck(1)
-  player_large_data <- all_data %>% filter(str_to_lower(full_name) == query) %>% filter(gsis_id == gsis)
+  query <- str_remove_all(str_to_lower(player_name_query), "[.]")
+  gsis <- all_data %>% filter(name == query) %>% select(gsis_id) %>% slice(1) %>% pluck(1)
+  player_large_data <- all_data %>% filter(name == query) %>% filter(gsis_id == gsis)
   non_unique <- player_large_data %>%
     summarise_all(n_distinct) %>%
     select_if(. != 1)
   non_unique_cols <- colnames(non_unique)
-  player_large_data_1 <- player_large_data %>% select(-non_unique_cols) %>% distinct()
-  player_large_data_n <- player_large_data %>% select(non_unique_cols)
+  player_large_data_1 <- player_large_data %>% select(-all_of(non_unique_cols)) %>% distinct()
+  player_large_data_n <- player_large_data %>% select(all_of(non_unique_cols)) %>% distinct()
   full_player_data <- c(player_large_data_1, player_large_data_n)
   player_json <- jsonlite::toJSON(full_player_data, pretty = TRUE)
   return(player_json)
 }
+
+# Some sample calls for testing:
+# get_player_data("tom ..brady")
+# get_player_data("jaylen waddle")
+# get_player_data("trace mcsorley")
+# get_player_data("lamar jackson")
+# get_player_data("Maxx Williams")
+# get_player_data("Mike Williams")
+# get_player_data("Colt McCoy")
+# get_player_data("Chris Thompson")
+
 
 #' Update the data about the players in each position
 #'
