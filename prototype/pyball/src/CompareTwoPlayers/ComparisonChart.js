@@ -27,6 +27,9 @@ export function ComparisonChart({player1, player2}) {
         plugins: {
           legend: {
             position: 'top',
+            labels: {
+                boxWidth: 10,
+            },
           },
           title: {
             display: true,
@@ -93,8 +96,8 @@ export function ComparisonChart({player1, player2}) {
           {
             label: player2.full_name,
             data:  p2Data,
-            borderColor: player2.team_color,
-            backgroundColor: player2.team_color2,
+            borderColor: player2.team_color2,
+            backgroundColor: player2.team_color,
           },
         ],
       };
